@@ -1,0 +1,59 @@
+\section{Preliminaries}
+\label{sec:preliminaries}
+
+\subsection{Notation}
+\label{subsec:notation}
+
+We denote the security parameter by $\secparam \in \NN$ and write $\unary{\secparam}$ for its unary encoding. All asymptotic statements are taken with respect to the limit $\secparam \to \infty$. For an integer $n \in \NN$ we write $[n] \coloneqq \{1, \ldots, n\}$. The binary alphabet is $\bits$, and $\bits^n$ and $\bits^*$ denote strings of length $n$ and all finite strings respectively. For a finite set $\calS$ we write $\abs{\calS}$ for its cardinality and $x \sample \calS$ to indicate that $x$ is drawn uniformly at random from $\calS$.
+
+For a real matrix $M \in \RR^{n \times n}$ we write $\norm{M}_2$ for the spectral norm, $\norm{M}_F$ for the Frobenius norm, and $\rho(M)$ for the spectral radius. For a vector $v \in \RR^n$ we write $\norm{v}_2$ for the Euclidean norm and $\norm{v}_1$ for the $\ell_1$ norm. The all-ones vector is $\mathbf{1}$ and the uniform distribution over $[n]$ corresponds to the vector $\mathbf{u} = \mathbf{1}/n$. For a symmetric matrix $M$ with eigenvalues $\mu_1 \geq \mu_2 \geq \cdots \geq \mu_n$ we write $\lambda_1(M) \geq \lambda_2(M) \geq \cdots \geq \lambda_n(M)$ for the ordered spectrum.
+
+\subsection{Graphs}
+\label{subsec:graphs}
+
+Throughout this note, $G = (V, E)$ denotes a finite undirected graph with vertex set $V$ and edge set $E \subseteq \binom{V}{2}$. We write $n = \abs{V}$ and $m = \abs{E}$. For a vertex $v \in V$ the degree is $\deg(v) = \abs{\{u \in V : \{u, v\} \in E\}}$. The graph is $d$-regular if $\deg(v) = d$ for all $v \in V$. A multigraph allows parallel edges and self-loops; in the context of random walks, self-loops count once toward the degree while parallel edges count with their multiplicity.
+
+For a set $S \subseteq V$ we define the edge boundary $\partial S \coloneqq \{\{u,v\} \in E : u \in S, v \notin S\}$ and the vertex boundary $\delta S \coloneqq \{v \notin S : \{u,v\} \in E \text{ for some } u \in S\}$. The volume of $S$ in a $d$-regular graph is $\mathrm{vol}(S) = d \cdot \abs{S}$.
+
+\subsection{Markov Chains and Mixing}
+\label{subsec:markov-chains}
+
+A $d$-regular graph $G$ on $n$ vertices defines a natural random walk whose transition matrix is $\Markov{G} = A_G / d$, where $A_G$ is the adjacency matrix of $G$. This Markov chain is reversible and has stationary distribution $\Stationary = \mathbf{u}$, the uniform distribution over $V$.
+
+The total variation distance between two distributions $\mu, \nu$ over $V$ is
+\[
+    \StatDist(\mu, \nu) \coloneqq \frac{1}{2} \sum_{v \in V} \abs{\mu(v) - \nu(v)} = \max_{S \subseteq V} \abs{\mu(S) - \nu(S)}.
+\]
+The mixing time of the random walk starting from worst-case initial vertex $v_0$ at total variation distance $\epsilon$ is
+\[
+    \Mixing(\epsilon) \coloneqq \max_{v_0 \in V} \min \left\{ t \in \NN : \StatDist\bigl(\Markov{G}^t(v_0, \cdot),\, \Stationary\bigr) \leq \epsilon \right\}.
+\]
+The mixing time governs how many steps are needed before the walk forgets its starting position and produces a sample that is nearly uniform, a fact that is central to the construction of pseudorandom generators from random walks on expanders.
+
+\subsection{Pseudorandomness}
+\label{subsec:pseudorandomness}
+
+We recall the standard definitions of min-entropy, extractors, and pseudorandom generators; the reader is referred to Vadhan~\cite{Vad12} for a thorough treatment.
+
+\begin{definition}[Min-Entropy]
+    \label{def:min-entropy}
+    The min-entropy of a random variable $X$ over a finite set $\calX$ is $\MinEntropy(X) \coloneqq -\log_2 \max_{x \in \calX} \Prob[X = x]$.
+\end{definition}
+
+\begin{definition}[Randomness Extractor]
+    \label{def:extractor}
+    A function $\Extractor \colon \bits^n \times \bits^d \to \bits^m$ is a $(k, \epsilon)$-extractor if for every distribution $X$ over $\bits^n$ with $\MinEntropy(X) \geq k$ and every independent uniform seed $Y \sim \bits^d$,
+    \[
+        \StatDist\bigl((\Extractor(X, Y), Y),\; (\mathbf{U}_m, Y)\bigr) \leq \epsilon,
+    \]
+    where $\mathbf{U}_m$ denotes the uniform distribution over $\bits^m$.
+\end{definition}
+
+\begin{definition}[Pseudorandom Generator]
+    \label{def:prg}
+    A function $\PRGEval \colon \bits^\secparam \to \bits^{\ell(\secparam)}$ with $\ell(\secparam) > \secparam$ is a pseudorandom generator with stretch $\ell(\secparam) - \secparam$ if for every \PPT\ distinguisher $\advD$,
+    \[
+        \bigl|\Prob[\advD(\PRGEval(s)) = 1] - \Prob[\advD(r) = 1]\bigr| \leq \negl(\secparam),
+    \]
+    where $s \sample \bits^\secparam$ and $r \sample \bits^{\ell(\secparam)}$.
+\end{definition}

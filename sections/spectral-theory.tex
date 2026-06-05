@@ -1,0 +1,75 @@
+\section{Spectral Theory of Expanders}
+\label{sec:spectral-theory}
+
+The spectral theory of expanders rests on a single central object, namely the normalized adjacency matrix $\Markov{G} = A_G/d$ of a $d$-regular graph $G$, and the key quantity is the gap between its largest eigenvalue (which is always $1$ for a connected graph) and the absolute value of the second-largest eigenvalue. This gap controls both the expansion and the mixing time of the random walk, and every major result in this section flows from controlling it.
+
+\subsection{The Normalized Adjacency Matrix and Its Spectrum}
+\label{subsec:spectrum}
+
+Let $G$ be a connected $d$-regular graph on $n$ vertices, and let $A = A_G$ be its adjacency matrix. The normalized adjacency matrix is $\Markov{G} \coloneqq A/d$, which is symmetric, doubly stochastic, and has eigenvalues $1 = \mu_1 \geq \mu_2 \geq \cdots \geq \mu_n \geq -1$. The largest eigenvalue is $1$ with eigenvector $\mathbf{1}/\sqrt{n}$, corresponding to the uniform distribution. The spectral gap is defined as $\SpectralGap(G) \coloneqq 1 - \mu_2$, and the two-sided spectral gap is $\tilde{\gamma}(G) \coloneqq 1 - \max(\mu_2, -\mu_n)$.
+
+\begin{definition}[$(\SpectralGap, d, n)$-Expander]
+    \label{def:spectral-expander}
+    A $d$-regular graph $G$ on $n$ vertices is a $(n, d, \lambda)$-expander if the second-largest eigenvalue of $\Markov{G}$ satisfies $\mu_2 \leq \lambda$. We say $G$ is a two-sided $(n, d, \lambda)$-expander if additionally $\mu_n \geq -\lambda$.
+\end{definition}
+
+The Alon-Boppana theorem gives a lower bound on $\mu_2$ for any $d$-regular graph, showing that Ramanujan graphs, those achieving $\mu_2 \leq 2\sqrt{d-1}/d$, are essentially optimal.
+
+\begin{theorem}[Alon-Boppana~\cite{Alo86}]
+    \label{thm:alon-boppana}
+    For any infinite family of connected $d$-regular graphs $\{G_n\}$, $\liminf_{n \to \infty} \mu_2(G_n) \geq \frac{2\sqrt{d-1}}{d}$.
+\end{theorem}
+
+\subsection{The Expander Mixing Lemma}
+\label{subsec:mixing-lemma}
+
+The expander mixing lemma is the central quantitative statement relating spectral gap to pseudorandom edge distribution. It says that in a good expander, the number of edges between any two sets is approximately what one would expect in a random $d$-regular graph.
+
+\begin{lemma}[Expander Mixing Lemma~\cite{HLW06}]
+    \label{lem:expander-mixing}
+    Let $G = (V,E)$ be a $d$-regular $(n,d,\lambda)$-expander. For any two sets $S, T \subseteq V$,
+    \[
+        \left| e(S,T) - \frac{d \cdot \abs{S} \cdot \abs{T}}{n} \right| \;\leq\; \lambda \cdot d \cdot \sqrt{\abs{S} \cdot \abs{T}},
+    \]
+    where $e(S,T)$ counts the number of edges with one endpoint in $S$ and one in $T$ (counting edges with both endpoints in $S \cap T$ twice).
+\end{lemma}
+
+\begin{proof}
+    Let $\mathbf{1}_S$ and $\mathbf{1}_T$ denote the characteristic vectors of $S$ and $T$. Decompose each vector into its projection onto $\mathbf{1}/\sqrt{n}$ and its orthogonal complement, writing $\mathbf{1}_S = (\abs{S}/n)\mathbf{1} + \mathbf{1}_S^\perp$ and similarly for $T$. Then
+    \[
+        e(S,T) = \mathbf{1}_S^\top A \mathbf{1}_T = d \cdot \mathbf{1}_S^\top \Markov{G} \mathbf{1}_T.
+    \]
+    Expanding each vector into its components and using the fact that $\Markov{G}\mathbf{1} = \mathbf{1}$ and $\Markov{G} v \leq \lambda \norm{v}_2$ for $v \perp \mathbf{1}$, one obtains
+    \[
+        e(S,T) = \frac{d \cdot \abs{S} \cdot \abs{T}}{n} + d \cdot \langle \Markov{G} \mathbf{1}_S^\perp, \mathbf{1}_T^\perp \rangle.
+    \]
+    The Cauchy-Schwarz inequality and the spectral bound give $\abs{\langle \Markov{G} \mathbf{1}_S^\perp, \mathbf{1}_T^\perp \rangle} \leq \lambda \norm{\mathbf{1}_S^\perp}_2 \norm{\mathbf{1}_T^\perp}_2 \leq \lambda \sqrt{\abs{S} \cdot \abs{T}}$, completing the proof.
+\end{proof}
+
+\subsection{Random Walk Mixing}
+\label{subsec:random-walk-mixing}
+
+The spectral gap also controls the mixing time of the random walk on $G$. After $t$ steps from any starting vertex $v_0$, the distribution $p_t$ of the walk satisfies
+\[
+    \StatDist(p_t, \Stationary) \;\leq\; \frac{\sqrt{n}}{2} \cdot \mu_2^t,
+\]
+so the mixing time is $\Mixing(\epsilon) = O\bigl(\frac{\log n + \log(1/\epsilon)}{1 - \mu_2}\bigr)$. For an expander family with $\mu_2 \leq 1 - c$ for a constant $c > 0$, the mixing time is $O(\log n)$, meaning the walk reaches near-uniform distribution in logarithmically many steps. This is the property that is directly exploited in the construction of pseudorandom generators from random walks on expanders.
+
+\subsection{Proof of the Cheeger Inequality}
+\label{subsec:cheeger-proof}
+
+We now prove \cref{thm:cheeger}. The upper bound $\EdgeExpansion(G) \leq \sqrt{2(1 - \SecondEigenvalue)}$ follows from a test vector argument, and the lower bound $\EdgeExpansion(G) \geq (1 - \SecondEigenvalue)/2$ follows from a rounding argument applied to the eigenvector of $\SecondEigenvalue$.
+
+\begin{proof}[Proof of \cref{thm:cheeger}]
+    \parhead{Upper bound.} Let $f$ be an eigenvector for $\mu_2$ with $f \perp \mathbf{1}$, normalized so that $\norm{f}_2 = 1$. Order the vertices so that $f(v_1) \geq f(v_2) \geq \cdots \geq f(v_n)$ and let $S_i = \{v_1, \ldots, v_i\}$ for $1 \leq i \leq \lfloor n/2 \rfloor$. The Rayleigh-quotient variational characterization gives
+    \[
+        1 - \mu_2 = \min_{g \perp \mathbf{1}} \frac{\sum_{\{u,v\} \in E} (g(u) - g(v))^2}{d \sum_v g(v)^2}.
+    \]
+    Applying this with $g = f$ and estimating $\sum_{\{u,v\} \in E}(f(u) - f(v))^2 \geq \EdgeExpansion(G)^2 \cdot 2 \norm{f}_2^2$ via a co-area formula argument yields the upper bound.
+
+    \parhead{Lower bound.} For any set $S$ with $\abs{S} \leq n/2$, let $g = \mathbf{1}_S - (\abs{S}/n)\mathbf{1}$ be the projection of $\mathbf{1}_S$ onto $\mathbf{1}^\perp$. The Rayleigh quotient of $g$ satisfies
+    \[
+        \mu_2 \;\geq\; \frac{\langle g, \Markov{G} g \rangle}{\norm{g}_2^2} \;\geq\; 1 - \frac{\abs{\partial S}}{d \cdot \abs{S} \cdot (1 - \abs{S}/n)} \;\geq\; 1 - 2 \EdgeExpansion(G),
+    \]
+    giving $\EdgeExpansion(G) \geq (1 - \mu_2)/2$.
+\end{proof}

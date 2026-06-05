@@ -1,0 +1,59 @@
+\section{Expander Graphs}
+\label{sec:expander-graphs}
+
+An expander graph is a sparse graph in which every not-too-large set of vertices has many neighbors outside itself. This property can be formalized in several ways that turn out to be essentially equivalent, though quantitatively distinct, and the interplay between these formulations is one of the central themes of the theory.
+
+\subsection{Edge Expansion}
+\label{subsec:edge-expansion}
+
+\begin{definition}[Edge Expansion]
+    \label{def:edge-expansion}
+    The edge expansion, or Cheeger constant, of a $d$-regular graph $G = (V,E)$ on $n$ vertices is
+    \[
+        \EdgeExpansion(G) \coloneqq \min_{\substack{S \subseteq V \\ 0 < \abs{S} \leq n/2}} \frac{\abs{\partial S}}{d \cdot \abs{S}}.
+    \]
+    A family $\{G_n\}_{n \geq 1}$ of $d$-regular graphs is an expander family if $\EdgeExpansion(G_n) \geq c > 0$ for all $n$ and some constant $c$ depending only on $d$.
+\end{definition}
+
+Intuitively, $\EdgeExpansion(G) \geq c$ says that every not-too-large set $S$ sends at least a $c$-fraction of its edges to vertices outside $S$, so information flowing along edges cannot be bottlenecked inside $S$. We stress that the condition $\abs{S} \leq n/2$ is a normalization convention; since $\partial S = \partial(V \setminus S)$, one would otherwise always minimize over $S$ or $V \setminus S$.
+
+\begin{example}[Complete Graph]
+    \label{ex:complete-graph}
+    The complete graph $K_n$ has $\EdgeExpansion(K_n) = 1/2$, since every set $S$ with $\abs{S} \leq n/2$ satisfies $\abs{\partial S} = \abs{S} \cdot (n - \abs{S}) \geq \abs{S} \cdot n/2$, and the denominator is $\abs{S} \cdot (n-1)$. Concretely, $K_n$ is the best possible expander but has degree $n-1$, so it is not sparse. The central question is whether one can achieve $\EdgeExpansion(G) = \Omega(1)$ with $d = O(1)$.
+\end{example}
+
+\begin{example}[Cycle]
+    \label{ex:cycle}
+    The $n$-cycle $C_n$ is $2$-regular but has $\EdgeExpansion(C_n) = O(1/n)$, since the set $S$ of $n/2$ consecutive vertices satisfies $\abs{\partial S} = 2$ while $d \cdot \abs{S} = n$. This shows that regularity alone does not imply expansion.
+\end{example}
+
+\subsection{Vertex Expansion}
+\label{subsec:vertex-expansion}
+
+A closely related but distinct notion measures the size of the neighborhood of small sets.
+
+\begin{definition}[Vertex Expansion]
+    \label{def:vertex-expansion}
+    The vertex expansion of a $d$-regular graph $G = (V,E)$ is
+    \[
+        \VertexExpansion(G) \coloneqq \min_{\substack{S \subseteq V \\ 0 < \abs{S} \leq n/2}} \frac{\abs{\delta S}}{\abs{S}}.
+    \]
+    A bipartite graph $G = (L \cup R, E)$ with $\abs{L} = \abs{R} = n$ is a lossless expander with expansion $K$ if every set $S \subseteq L$ with $\abs{S} \leq n/K$ satisfies $\abs{\delta S} \geq (1 - \epsilon) \cdot d \cdot \abs{S}$ for a small constant $\epsilon > 0$; the term lossless reflects the fact that essentially all of the $d \abs{S}$ edges from $S$ reach distinct vertices in $R$.
+\end{definition}
+
+Lossless expanders are considerably stronger than edge expanders and their explicit construction is more demanding; the zig-zag product construction of Capalbo, Reingold, Vadhan, and Wigderson~\cite{CRVW02} achieves them.
+
+\subsection{The Cheeger Inequality}
+\label{subsec:cheeger}
+
+The discrete Cheeger inequality, named by analogy with the continuous Riemannian version due to Cheeger, relates edge expansion to the spectral gap of the normalized adjacency matrix. Its proof is the heart of the combinatorial-spectral correspondence and is given in full in \cref{sec:spectral-theory}.
+
+\begin{theorem}[Discrete Cheeger Inequality]
+    \label{thm:cheeger}
+    Let $G$ be a $d$-regular graph with second-largest eigenvalue $\SecondEigenvalue = \SecondEigenvalue(A_G/d)$ of the normalized adjacency matrix. Then
+    \[
+        \frac{1 - \SecondEigenvalue}{2} \;\leq\; \EdgeExpansion(G) \;\leq\; \sqrt{2(1 - \SecondEigenvalue)}.
+    \]
+\end{theorem}
+
+Loosely speaking, the theorem says that expansion and spectral gap are within a quadratic factor of each other, so that one can freely pass between the combinatorial and spectral definitions up to polynomial factors. For the purposes of cryptographic applications, the spectral version is often more convenient since the spectral gap can be controlled explicitly in algebraic constructions.
