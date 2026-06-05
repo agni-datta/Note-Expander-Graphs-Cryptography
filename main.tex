@@ -11,8 +11,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Mathematics, Fonts, and Typography
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\usepackage[T1]{fontenc}
 \usepackage{csamsmath}
 \usepackage{tcscrypto}
 
@@ -83,8 +81,8 @@
 \hypersetup{
     colorlinks = true,
     linkcolor  = Blue3,
-    citecolor  = Purple3,
-    urlcolor   = Maroon3,
+    citecolor  = Blue3,
+    urlcolor   = Blue3,
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -124,9 +122,9 @@
 \providecommand{\StatDist}{\Delta}
 
 \let\BigO\bigO
-
+\renewcommand{\EE}{\mathop{\mathbb{E}}}
 \newclass{\LOGSPACE}{LOGSPACE}
-\providecommand{\zzprod}{\mathbin{\textcircled{\footnotesize z}}}
+\newcommand{\zzprod}{\mathbin{\mathop{\ooalign{$\circ$\cr\hfil$z$\hfil\cr}}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Author Comment Markers
