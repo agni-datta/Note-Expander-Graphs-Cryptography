@@ -6,24 +6,24 @@ The existence of expander families follows easily from the probabilistic method:
 \subsection{Algebraic Constructions: Ramanujan Graphs}
 \label{subsec:ramanujan}
 
-The first explicit constructions of Ramanujan graphs were given independently by Lubotzky, Phillips, and Sarnak~\cite{LPS88} and by Margulis~\cite{Mar73}. The LPS construction produces $(p+1)$-regular bipartite Ramanujan graphs for any prime $p \equiv 1 \pmod{4}$, achieving the optimal second eigenvalue $2\sqrt{p}/(p+1)$ predicted by the Alon-Boppana theorem.
+The first explicit constructions of Ramanujan graphs were given independently by Lubotzky, Phillips, and Sarnak~\cite{LPS1988} and by Margulis~\cite{Mar1973}. The LPS construction produces $(p+1)$-regular bipartite Ramanujan graphs for any prime $p \equiv 1 \pmod{4}$, achieving the optimal second eigenvalue $2\sqrt{p}/(p+1)$ predicted by the Alon-Boppana theorem.
 
-\begin{construction}[LPS Ramanujan Graphs~\cite{LPS88}]
+\begin{construction}[LPS Ramanujan Graphs~\cite{LPS1988}]
     \label{con:lps}
-    Let $p, q$ be distinct primes with $p \equiv q \equiv 1 \pmod{4}$ and $p$ a quadratic residue modulo $q$. The LPS graph $X^{p,q}$ has vertex set $\mathrm{PGL}(2, \FF_q)$ or $\mathrm{PSL}(2, \FF_q)$ and edges defined by multiplication by a fixed set of $p+1$ generators derived from the integer solutions to $\alpha_0^2 + \alpha_1^2 + \alpha_2^2 + \alpha_3^2 = p$ with $\alpha_0 > 0$ odd and $\alpha_1, \alpha_2, \alpha_3$ even. The resulting graph is $(p+1)$-regular and Ramanujan, with $\abs{V} = q(q^2-1)/2$ for the $\mathrm{PSL}(2,\FF_q)$ version. Interestingly, the proof that this graph is Ramanujan relies on deep results in number theory, specifically the Ramanujan conjecture for holomorphic cusp forms proved by Deligne~\cite{LPS88}.
+    Let $p, q$ be distinct primes with $p \equiv q \equiv 1 \pmod{4}$ and $p$ a quadratic residue modulo $q$. The LPS graph $X^{p,q}$ has vertex set $\mathrm{PGL}(2, \FF_q)$ or $\mathrm{PSL}(2, \FF_q)$ and edges defined by multiplication by a fixed set of $p+1$ generators derived from the integer solutions to $\alpha_0^2 + \alpha_1^2 + \alpha_2^2 + \alpha_3^2 = p$ with $\alpha_0 > 0$ odd and $\alpha_1, \alpha_2, \alpha_3$ even. The resulting graph is $(p+1)$-regular and Ramanujan, with $\abs{V} = q(q^2-1)/2$ for the $\mathrm{PSL}(2,\FF_q)$ version. Interestingly, the proof that this graph is Ramanujan relies on deep results in number theory, specifically the Ramanujan conjecture for holomorphic cusp forms proved by Deligne~\cite{LPS1988}.
 \end{construction}
 
 \subsection{Combinatorial Constructions: The Zig-Zag Product}
 \label{subsec:zig-zag}
 
-The zig-zag product of Reingold, Vadhan, and Wigderson~\cite{RVW02} gives an entirely combinatorial construction of expanders with optimal or near-optimal parameters and has the advantage of being simpler to analyze and more flexible to apply than the algebraic constructions.
+The zig-zag product of Reingold, Vadhan, and Wigderson~\cite{RVW2002} gives an entirely combinatorial construction of expanders with optimal or near-optimal parameters and has the advantage of being simpler to analyze and more flexible to apply than the algebraic constructions.
 
-\begin{definition}[Zig-Zag Product~\cite{RVW02}]
+\begin{definition}[Zig-Zag Product~\cite{RVW2002}]
     \label{def:zig-zag}
     Let $G_1$ be an $(n_1, D_1, \lambda_1)$-expander and $G_2$ a $(D_1, D_2, \lambda_2)$-expander, where the vertex set of $G_2$ has size equal to the degree of $G_1$. The zig-zag product $G_1 \zzprod G_2$ is a graph on $n_1 \cdot D_1$ vertices with degree $D_2^2$, defined by a three-step walk: take a step in $G_2$, then a step in $G_1$, then another step in $G_2$. Concretely, each vertex of $G_1 \zzprod G_2$ is a pair $(v, c)$ where $v \in V(G_1)$ is a vertex and $c \in V(G_2)$ is a cloud vertex labeling a port of $v$ in $G_1$.
 \end{definition}
 
-\begin{theorem}[Zig-Zag Expansion~\cite{RVW02}]
+\begin{theorem}[Zig-Zag Expansion~\cite{RVW2002}]
     \label{thm:zig-zag}
     The zig-zag product $G_1 \zzprod G_2$ is an $(n_1 D_1, D_2^2, \lambda)$-expander where $\lambda \leq \lambda_1 + \lambda_2 + \lambda_2^2 \leq \lambda_1 + 2\lambda_2$.
 \end{theorem}
@@ -31,10 +31,10 @@ The zig-zag product of Reingold, Vadhan, and Wigderson~\cite{RVW02} gives an ent
 We stress that the key feature of this construction is that the degree of the product depends only on the degree of $G_2$, not on $n_1$. Starting with a constant-size expander $G_2$ and repeatedly taking zig-zag products with derandomized squarings of $G_1$, one obtains an explicit construction of constant-degree expanders on $n$ vertices for every $n$, with the expansion constant depending only on $D_2$.
 
 \begin{remark}
-    The zig-zag product is the combinatorial engine behind Reingold's proof~\cite{Rei08} that undirected $s$-$t$ connectivity lies in $\LOGSPACE$. The idea is to replace a graph $G$ by $G \zzprod H$ for a small expander $H$, reducing the degree while maintaining expansion, and then iterate to produce a graph of constant degree without losing much expansion. The random walk on this constant-degree expander can be simulated in logarithmic space, giving a $\LOGSPACE$ algorithm for connectivity.
+    The zig-zag product is the combinatorial engine behind Reingold's proof~\cite{Rei2008} that undirected $s$-$t$ connectivity lies in $\LOGSPACE$. The idea is to replace a graph $G$ by $G \zzprod H$ for a small expander $H$, reducing the degree while maintaining expansion, and then iterate to produce a graph of constant degree without losing much expansion. The random walk on this constant-degree expander can be simulated in logarithmic space, giving a $\LOGSPACE$ algorithm for connectivity.
 \end{remark}
 
 \subsection{The Replacement Product and Tensor Product}
 \label{subsec:other-products}
 
-Two other graph products arise in cryptographic applications. The replacement product $G_1 \circledR G_2$ is a variant of the zig-zag product that reduces the degree from $D_1$ to $D_2 + 1$ while preserving expansion up to a constant factor; it is used in the construction of lossless expanders~\cite{CRVW02}. The tensor product (or categorical product) $G_1 \otimes G_2$ has vertex set $V(G_1) \times V(G_2)$ and edges $\{(u_1, u_2), (v_1, v_2)\}$ whenever $\{u_1, v_1\} \in E(G_1)$ and $\{u_2, v_2\} \in E(G_2)$; its spectrum is the set of products $\{\mu_i(G_1) \cdot \mu_j(G_2)\}$, which is useful for amplifying expansion.
+Two other graph products arise in cryptographic applications. The replacement product $G_1 \circledR G_2$ is a variant of the zig-zag product that reduces the degree from $D_1$ to $D_2 + 1$ while preserving expansion up to a constant factor; it is used in the construction of lossless expanders~\cite{CRVW2002}. The tensor product (or categorical product) $G_1 \otimes G_2$ has vertex set $V(G_1) \times V(G_2)$ and edges $\{(u_1, u_2), (v_1, v_2)\}$ whenever $\{u_1, v_1\} \in E(G_1)$ and $\{u_2, v_2\} \in E(G_2)$; its spectrum is the set of products $\{\mu_i(G_1) \cdot \mu_j(G_2)\}$, which is useful for amplifying expansion.

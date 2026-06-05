@@ -13,7 +13,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage[T1]{fontenc}
-\usepackage[]{csamsmath}
+\usepackage{csamsmath}
 \usepackage{tcscrypto}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -108,22 +108,25 @@
 %%% Additional Definitions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newcommand{\Expander}{\mathsf{G}}
-\newcommand{\Spectral}[1]{\lambda(#1)}
-\newcommand{\SecondEigenvalue}{\lambda_2}
-\newcommand{\SpectralGap}{\gamma}
-\newcommand{\EdgeExpansion}{h}
-\newcommand{\VertexExpansion}{\phi}
-\newcommand{\Mixing}{\tau_{\mathrm{mix}}}
-\newcommand{\Markov}[1]{P_{#1}}
-\newcommand{\Stationary}{\pi}
-\newcommand{\RandomWalk}[2]{W_{#1}^{#2}}
-\newcommand{\Extractor}{\mathsf{Ext}}
-\newcommand{\Condenser}{\mathsf{Con}}
-\newcommand{\MinEntropy}{\mathrm{H}_\infty}
-\newcommand{\StatDist}{\Delta}
+\providecommand{\Expander}{\mathsf{G}}
+\providecommand{\Spectral}[1]{\lambda(#1)}
+\providecommand{\SecondEigenvalue}{\lambda_2}
+\providecommand{\SpectralGap}{\gamma}
+\providecommand{\EdgeExpansion}{h}
+\providecommand{\VertexExpansion}{\phi}
+\providecommand{\Mixing}{\tau_{\mathrm{mix}}}
+\providecommand{\Markov}[1]{P_{#1}}
+\providecommand{\Stationary}{\pi}
+\providecommand{\RandomWalk}[2]{W_{#1}^{#2}}
+\providecommand{\Extractor}{\mathsf{Ext}}
+\providecommand{\Condenser}{\mathsf{Con}}
+\providecommand{\MinEntropy}{\mathrm{H}_\infty}
+\providecommand{\StatDist}{\Delta}
 
 \let\BigO\bigO
+
+\newclass{\LOGSPACE}{LOGSPACE}
+\providecommand{\zzprod}{\mathbin{\textcircled{\footnotesize z}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Author Comment Markers
@@ -135,7 +138,7 @@
 %%% Title and Author Metadata
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{A Note on Expander Graphs and Their Applications in Cryptography}
+\title{A Note on Expanders and Cryptography}
 
 \author[1]{Agni Datta}
 
