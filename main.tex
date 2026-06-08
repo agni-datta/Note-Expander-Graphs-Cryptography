@@ -18,10 +18,7 @@
 % Typography and Layout
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\linespread{1.08}
-\hbadness=10000
-\vbadness=10000
-\geometry{margin=1in,letterpaper}
+\geometry{margin=1in}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Bibliography and Table of Contents
@@ -46,46 +43,6 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Nord Color Palette
-%%% https://www.nordtheme.com/
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%% Polar Night
-\definecolor{NordNight0}{RGB}{46,52,64}
-\definecolor{NordNight1}{RGB}{59,66,82}
-\definecolor{NordNight2}{RGB}{67,76,94}
-\definecolor{NordNight3}{RGB}{76,86,106}
-
-%%% Snow Storm
-\definecolor{NordSnow0}{RGB}{216,222,233}
-\definecolor{NordSnow1}{RGB}{229,233,240}
-\definecolor{NordSnow2}{RGB}{236,239,244}
-
-%%% Frost
-\definecolor{NordFrost0}{RGB}{143,188,187}
-\definecolor{NordFrost1}{RGB}{136,192,208}
-\definecolor{NordFrost2}{RGB}{129,161,193}
-\definecolor{NordFrost3}{RGB}{94,129,172}
-
-%%% Aurora
-\definecolor{NordRed}{RGB}{191,97,106}
-\definecolor{NordOrange}{RGB}{208,135,112}
-\definecolor{NordYellow}{RGB}{235,203,139}
-\definecolor{NordGreen}{RGB}{163,190,140}
-\definecolor{NordPurple}{RGB}{180,142,173}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Hyperlinks
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\hypersetup{
-    colorlinks = true,
-    linkcolor  = Blue3,
-    citecolor  = Blue3,
-    urlcolor   = Blue3,
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Abstract
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -106,25 +63,24 @@
 %%% Additional Definitions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\let\BigO\bigO
+\newclass{\LOGSPACE}{LOGSPACE}
+\providecommand{\Condenser}{\mathsf{Con}}
+\providecommand{\EdgeExpansion}{h}
 \providecommand{\Expander}{\mathsf{G}}
-\providecommand{\Spectral}[1]{\lambda(#1)}
+\providecommand{\Extractor}{\mathsf{Ext}}
+\providecommand{\Markov}[1]{P_{#1}}
+\providecommand{\MinEntropy}{\mathrm{H}_\infty}
+\providecommand{\Mixing}{\tau_{\mathrm{mix}}}
+\providecommand{\RandomWalk}[2]{W_{#1}^{#2}}
 \providecommand{\SecondEigenvalue}{\lambda_2}
 \providecommand{\SpectralGap}{\gamma}
-\providecommand{\EdgeExpansion}{h}
-\providecommand{\VertexExpansion}{\phi}
-\providecommand{\Mixing}{\tau_{\mathrm{mix}}}
-\providecommand{\Markov}[1]{P_{#1}}
-\providecommand{\Stationary}{\pi}
-\providecommand{\RandomWalk}[2]{W_{#1}^{#2}}
-\providecommand{\Extractor}{\mathsf{Ext}}
-\providecommand{\Condenser}{\mathsf{Con}}
-\providecommand{\MinEntropy}{\mathrm{H}_\infty}
+\providecommand{\Spectral}[1]{\lambda(#1)}
 \providecommand{\StatDist}{\Delta}
-
-\let\BigO\bigO
+\providecommand{\Stationary}{\pi}
+\providecommand{\VertexExpansion}{\phi}
+\providecommand{\zzprod}{\mathbin{\mathop{\ooalign{$\circ$\cr\hfil$z$\hfil\cr}}}}
 \renewcommand{\EE}{\mathop{\mathbb{E}}}
-\newclass{\LOGSPACE}{LOGSPACE}
-\newcommand{\zzprod}{\mathbin{\mathop{\ooalign{$\circ$\cr\hfil$z$\hfil\cr}}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Author Comment Markers
@@ -195,7 +151,7 @@
 
 \begin{small}
     \bibliography{abbrev0,bibliography,crypto}
-    \bibliographystyle{alphaurl}
+    \bibliographystyle{aomalpha}
 \end{small}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
