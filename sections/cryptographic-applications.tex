@@ -8,24 +8,32 @@ We now survey the principal cryptographic applications of expander graphs, organ
 
 One of the most direct applications of expanders in cryptography is the construction of seeded randomness extractors. An extractor takes a weak random source with high min-entropy and a short uniform seed and produces a nearly uniform output. Expanders yield extractors via the following observation: a random walk on an expander mixes rapidly, so even if the starting vertex is chosen adversarially (subject to having enough entropy), after a few steps the walk distribution is close to uniform.
 
-\begin{theorem}[Expander Walk Extractor~\cite{HLW2006,Vad2012}]
+\begin{theorem}[Expander Walk Extractor Bound~\cite{HLW2006,Vad2012}]
     \label{thm:expander-extractor}
-    Let $G$ be an $(n, d, \lambda)$-expander and let $X$ be a distribution over $V$ with $\MinEntropy(X) \geq k$. Let $Y = (v_0, v_1, \ldots, v_t)$ be a $t$-step random walk starting from $v_0 \sample X$ and using fresh uniform randomness at each step. Then
+    Let \(G\) be an \((N,d,\lambda)\)-expander with vertex set \(V\), and let \(X\) be a distribution over \(V\) with \(\MinEntropy(X)\geq k\). Let \(v_t\) be the endpoint of a \(t\)-step random walk whose starting vertex is sampled from \(X\). Then
     \[
-        \StatDist\bigl((Y, v_t),\; (Y, \mathbf{U}_V)\bigr) \;\leq\; \lambda^t \cdot 2^{(k-n)/2}.
+        \StatDist(v_t,\vec{U}_V)\leq \frac{1}{2}\lambda^t\sqrt{\frac{N}{2^k}}.
     \]
 \end{theorem}
 
-The extractor interprets the walk as consuming only $\log d$ bits of fresh randomness per step (namely the choice of which neighbor to move to), while the mixing property ensures the output becomes nearly uniform after $O(k / \log(1/\lambda))$ steps. Concretely, for a good expander with $\lambda \leq 1 - c$, the walk mixes in $O(k)$ steps and the total seed length is $O(k \log d)$, which is optimal up to the $\log d$ factor.
+\begin{proof}
+    View \(X\) as a probability vector \(\mu\). Since \(\MinEntropy(X)\geq k\), we have \(\norm{\mu}_\infty\leq 2^{-k}\), and therefore \(\norm{\mu}_2\leq 2^{-k/2}\). Write \(\mu=\vec{u}+z\), where \(z\perp\vec{1}\). The walk endpoint has distribution \(\Markov{G}^t\mu=\vec{u}+\Markov{G}^t z\), and hence
+    \[
+        \norm{\Markov{G}^t\mu-\vec{u}}_2\leq \lambda^t\norm{z}_2\leq \lambda^t\norm{\mu}_2\leq \lambda^t2^{-k/2}.
+    \]
+    Applying \cref{lem:l2-tv} with \(N=\abs{V}\) gives the result.
+\end{proof}
+
+The extractor interpretation is as follows. The starting point contains \(k\) bits of min-entropy, and each step of the walk consumes only \(\log d\) fresh random bits. If \(\lambda\leq 1-c\), then \(O(\log N-k+\log(1/\epsilon))\) steps suffice to make the endpoint \(\epsilon\)-close to uniform. This is not the best seeded extractor known, but it is the cleanest illustration of the way spectral contraction turns weak randomness into nearly uniform randomness.
 
 \begin{remark}
-    Expander-based extractors achieve seed length $O(k)$ for sources with min-entropy $k$, which is information-theoretically optimal. The classical Goldreich-Levin hardcore bit can be viewed as an instance of this framework with the inner product as the extraction function~\cite{Vad2012}.
+    Modern extractor constructions go far beyond the basic expander-walk argument and achieve seed lengths close to the information-theoretic optimum. The expander walk remains important because it is conceptually transparent and because it composes well with other pseudorandom objects. For a systematic account, see Vadhan~\cite{Vad2012}.
 \end{remark}
 
 \subsection{Pseudorandom Generators from Random Walks}
 \label{subsec:prg-from-walks}
 
-Impagliazzo and Wigderson~\cite{IW1997} showed how to use expander graphs to construct pseudorandom generators under the assumption that $\mathsf{E} = \DTIME(2^{O(n)})$ requires exponential-size circuits. The construction proceeds by taking a long random walk on an expander, using the vertex labels as the output. The key lemma, sometimes called the expander Chernoff bound, says that the bits output along the walk are pseudorandom even against polynomial-time distinguishers, because the mixing of the walk ensures that any local information about the walk position is rapidly lost.
+Impagliazzo and Wigderson~\cite{IW1997} showed how hardness assumptions can be converted into pseudorandom generators. Expanders enter this story as a derandomization primitive. Instead of sampling many independent inputs to a hard function, one samples the first input uniformly and then follows a short random walk on an expander. The number of random bits falls from the number needed for independent samples to one vertex label plus \(\log d\) bits per step, while the expander's mixing keeps the sampled vertices sufficiently pseudorandom for the analysis.
 
 \begin{lemma}[Expander Chernoff Bound~\cite{HLW2006}]
     \label{lem:expander-chernoff}
@@ -47,12 +55,12 @@ Expander graphs give an elegant construction of collision-resistant hash functio
     Let $G = (V, E)$ be a $d$-regular expander on $n = 2^k$ vertices, so that vertices and edge labels can be encoded in $k$ and $\log d$ bits respectively. Define $\PRFFunction_{G} \colon (\bits^{\log d})^t \to \bits^k$ by $\PRFFunction_{G}(e_1, \ldots, e_t) = v_t$, where $v_0$ is a fixed starting vertex and $v_{i+1}$ is the neighbor of $v_i$ reached by following edge labeled $e_{i+1}$. This function compresses $t \log d$ bits to $k$ bits.
 \end{construction}
 
-The collision resistance of this construction is related to the difficulty of finding cycles in the expander, which is connected to the hardness of discrete logarithm and related problems when the expander is an algebraic Cayley graph. We stress that this connection is tight only for specific algebraic constructions; for general expanders the security reduction goes through the expansion property alone and yields a weaker guarantee.
+This construction by itself is a compression map, not automatically a cryptographic hash function. A collision is exactly a pair of distinct labeled walks from the fixed start vertex that end at the same vertex. For arbitrary expanders, expansion gives useful counting and mixing guarantees but does not by itself imply computational collision resistance. Stronger cryptographic statements require additional algebraic structure, for instance Cayley graphs in which finding a collision corresponds to finding a nontrivial relation among generators.
 
 \subsection{Expander Codes}
 \label{subsec:expander-codes}
 
-Sipser and Spielman~\cite{HLW2006} introduced expander codes, a family of linear error-correcting codes based on bipartite expander graphs, that achieve constant relative distance and constant rate simultaneously and admit linear-time encoding and decoding algorithms. The construction uses a bipartite expander $G = (L \cup R, E)$ with $\abs{L} = n$, $\abs{R} = m$, where each right vertex $r \in R$ defines a parity-check equation on the bits indexed by $L$ that are its left neighbors; the code is the set of $n$-bit strings $x$ such that every parity check is satisfied.
+Expander codes are linear error-correcting codes whose parity checks are arranged according to a sparse bipartite expander. They achieve constant rate and constant relative distance while admitting linear-time decoding algorithms. We recall only the basic Tanner-code picture, referring to~\cite{HLW2006} for the broader coding-theoretic treatment. Let \(G=(L\cup R,E)\) be a bipartite graph with \(\abs{L}=n\). Each \(r\in R\) imposes a local parity check on the bits indexed by its neighbors in \(L\). The code consists of all \(x\in\bits^n\) satisfying all these local checks.
 
 \begin{theorem}[Expander Code Parameters~\cite{HLW2006}]
     \label{thm:expander-code}
@@ -64,12 +72,12 @@ Concretely, the proof of the distance bound uses the lossless expansion property
 \subsection{Secure Multiparty Computation with Sublinear Communication}
 \label{subsec:mpc}
 
-A more recent and more sophisticated application of expanders is in the design of multiparty computation (MPC) protocols with sublinear communication complexity. In the information-theoretic setting with $n$ parties, a naive protocol for computing a function of $n$ inputs requires $\Omega(n^2)$ bits of communication, since every pair of parties must exchange information. Expanders allow one to design protocols where each party communicates only with its $d$ neighbors in an expander graph, reducing the per-party communication to $O(d) = O(1)$ times the circuit depth, while still guaranteeing that the computation is correct and private against a constant fraction of corrupted parties.
+A more recent and more sophisticated application of expanders is in the design and analysis of multiparty computation (MPC) protocols with sparse communication patterns. In many generic protocols, the complete communication graph is the default object. Every party may need to communicate with every other party, leading to quadratic communication in the number of parties. An expander suggests a different design principle. Each party communicates only with its neighbors in a sparse graph, and the expansion of that graph prevents a moderately large honest region from being isolated by the corrupted parties.
 
-The security argument uses the fact that the expander's connectivity ensures that even if a constant fraction of parties are corrupted, the remaining honest parties form a connected expanding subgraph, allowing them to collectively simulate the computation. Interestingly, this use of expanders in MPC is related to the parameter-substitution variant of complexity leveraging described in~\cite{EPRINT:BCGIKS22}: the sublinear communication is achieved by instantiating a pseudorandom correlation generator at a reduced security parameter inside the MPC protocol, and the expander structure ensures that the resulting correlations are spread pseudorandomly across the honest parties.
+The security argument is not merely that the honest parties remain connected. Connectivity alone is too weak. What one needs is that every large enough set of honest parties has many edges leaving it, so local consistency checks and local shares propagate through the system. This is the same no-bottleneck phenomenon that drives mixing. The exact cryptographic statement depends on the model, corruption threshold, setup assumptions, and correlation-generation mechanism, but the common role of the expander is to replace all-to-all communication by sparse communication without allowing the adversary to isolate a large part of the computation.
 
 \begin{remark}
-    The connection between expanders and MPC communication complexity was made explicit by Boyle et al.~\cite{EPRINT:BCGIKS22}, who showed that pseudorandom correlation generators based on Ring-LPN can be bootstrapped using expander-like connectivity patterns among the parties, reducing the communication to sublinear in the number of parties. We refer to the survey of Vipul Goyal and Yanyi Liu~\cite{Vad2012} for further pointers.
+    The literature on sparse-communication MPC is technically diverse, and not every use of a sparse graph is literally an expander argument. The useful heuristic is nevertheless stable. If a protocol replaces complete communication by local communication, then some expansion-like property must prevent local failures or corruptions from becoming global separations.
 \end{remark}
 
 \subsection{Derandomization and Hardness Amplification}
@@ -77,4 +85,4 @@ The security argument uses the fact that the expander's connectivity ensures tha
 
 Expanders play a central role in derandomization, which is the process of replacing random choices in a probabilistic algorithm by pseudorandom choices generated from a short seed. The key tool is a pseudorandom generator whose security is based on a worst-case hardness assumption rather than a concrete intractability assumption, and expanders are what makes such generators efficient.
 
-Concretely, given a Boolean function $f \colon \bits^n \to \bits$ that is hard on average, one constructs a pseudorandom generator by taking a random walk on an expander whose vertex labels are encoded versions of the input to $f$, and using the walk output as pseudorandom bits. The expander mixing lemma ensures that the walk bits are indistinguishable from random bits by any algorithm that cannot compute $f$, and the stretching follows from the slow mixing of the walk on the expander. Interestingly, this is precisely the Nisan-Wigderson generator construction~\cite{IW1997}, and the expander is what allows the generator to stretch a short seed to a long pseudorandom output while maintaining pseudorandomness against polynomial-time distinguishers.
+Concretely, given a Boolean function \(f\colon\bits^n\to\bits\) that is hard on average, one constructs a pseudorandom generator by evaluating \(f\) on many correlated inputs that are sampled using a short seed. Expander walks are one mechanism for producing such correlated inputs. The expander mixing lemma and its walk variants ensure that the correlations are weak enough for the hybrid argument, while the seed is much shorter than the randomness needed for independent samples. This is one of the recurring ideas behind the Nisan-Wigderson and Impagliazzo-Wigderson lines of derandomization~\cite{IW1997}.

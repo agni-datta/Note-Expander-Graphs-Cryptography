@@ -4,56 +4,107 @@
 \subsection{Notation}
 \label{subsec:notation}
 
-We denote the security parameter by $\secparam \in \NN$ and write $\unary{\secparam}$ for its unary encoding. All asymptotic statements are taken with respect to the limit $\secparam \to \infty$. For an integer $n \in \NN$ we write $[n] \coloneqq \{1, \ldots, n\}$. The binary alphabet is $\bits$, and $\bits^n$ and $\bits^*$ denote strings of length $n$ and all finite strings respectively. For a finite set $\calS$ we write $\abs{\calS}$ for its cardinality and $x \sample \calS$ to indicate that $x$ is drawn uniformly at random from $\calS$.
+We write \(\NN,\ZZ,\QQ,\RR,\CC\) for the natural numbers, integers, rationals, real numbers, and complex numbers. For \(n \in \NN\), we write \([n] \coloneqq \{1,\ldots,n\}\). The binary alphabet is \(\bits\), and \(\bits^n\) and \(\bits^*\) denote strings of length \(n\) and all finite strings. If \(\calS\) is finite, then \(x \sample \calS\) means that \(x\) is sampled uniformly from \(\calS\), and \(\vec{U}_{\calS}\) denotes the uniform distribution over \(\calS\). When \(\calS=\bits^m\), we also write \(\vec{U}_m\).
 
-For a real matrix $M \in \RR^{n \times n}$ we write $\norm{M}_2$ for the spectral norm, $\norm{M}_F$ for the Frobenius norm, and $\rho(M)$ for the spectral radius. For a vector $v \in \RR^n$ we write $\norm{v}_2$ for the Euclidean norm and $\norm{v}_1$ for the $\ell_1$ norm. The all-ones vector is $\mathbf{1}$ and the uniform distribution over $[n]$ corresponds to the vector $\mathbf{u} = \mathbf{1}/n$. For a symmetric matrix $M$ with eigenvalues $\mu_1 \geq \mu_2 \geq \cdots \geq \mu_n$ we write $\lambda_1(M) \geq \lambda_2(M) \geq \cdots \geq \lambda_n(M)$ for the ordered spectrum.
+All vectors are column vectors, and vectors and matrices are typeset in bold by writing \(\vec{x}\) and \(\vec{M}\). For \(\vec{x} \in \RR^n\), we write \(\norm{\vec{x}}_1,\norm{\vec{x}}_2,\norm{\vec{x}}_\infty\) for the usual norms. The all-ones vector is \(\vec{1}\). The normalized all-ones vector is \(\vec{e}_0 \coloneqq \vec{1}/\sqrt{n}\), while the probability vector of the uniform distribution is \(\vec{u}\coloneqq \vec{1}/n\). These two vectors play different roles. The former has Euclidean norm one and is used in spectral decompositions; the latter has total mass one and is used as a distribution.
+
+For a real symmetric matrix \(\vec{M}\), its eigenvalues are ordered as \(\mu_1(\vec{M})\geq \mu_2(\vec{M})\geq \cdots \geq \mu_n(\vec{M})\). We write \(\norm{\vec{M}}_2\) for the operator norm induced by the Euclidean norm and \(\rho(\vec{M})\) for the spectral radius. If \(\vec{M}\) preserves the subspace \(\vec{1}^{\perp}\), then \(\vec{M}|_{\vec{1}^{\perp}}\) denotes the restriction of \(\vec{M}\) to that subspace.
 
 \subsection{Graphs}
 \label{subsec:graphs}
 
-Throughout this note, $G = (V, E)$ denotes a finite undirected graph with vertex set $V$ and edge set $E \subseteq \binom{V}{2}$. We write $n = \abs{V}$ and $m = \abs{E}$. For a vertex $v \in V$ the degree is $\deg(v) = \abs{\{u \in V : \{u, v\} \in E\}}$. The graph is $d$-regular if $\deg(v) = d$ for all $v \in V$. A multigraph allows parallel edges and self-loops; in the context of random walks, self-loops count once toward the degree while parallel edges count with their multiplicity.
+Throughout the note, \(G=(V,E)\) is a finite undirected graph. Unless explicitly stated otherwise, \(G\) is \(d\)-regular, \(n=\abs{V}\), and \(d\) is independent of \(n\) when we discuss graph families. We allow multigraphs when discussing graph products and random walks. Parallel edges are counted with multiplicity, and a self-loop contributes one available step to the random walk.
 
-For a set $S \subseteq V$ we define the edge boundary $\partial S \coloneqq \{\{u,v\} \in E : u \in S, v \notin S\}$ and the vertex boundary $\delta S \coloneqq \{v \notin S : \{u,v\} \in E \text{ for some } u \in S\}$. The volume of $S$ in a $d$-regular graph is $\mathrm{vol}(S) = d \cdot \abs{S}$.
+For \(S,T\subseteq V\), let \(E(S,T)\) be the multiset of directed edge incidences from \(S\) to \(T\). Thus, in an undirected graph, an edge inside \(S\cap T\) is counted twice in \(E(S,T)\). We write \(e(S,T)=\abs{E(S,T)}\). The edge boundary of \(S\) is
+\[
+    \partial S \coloneqq E(S,V\setminus S),
+\]
+and the external vertex boundary of \(S\) is
+\[
+    \delta S \coloneqq \{v\in V\setminus S \mid \text{there exists }u\in S\text{ with }\{u,v\}\in E\}.
+\]
+For a \(d\)-regular graph, the volume of \(S\) is \(\vol(S)=d\abs{S}\). In a non-regular graph one would instead set \(\vol(S)=\sum_{v\in S}\deg(v)\), but the regular case is enough for the main body of this note.
+
+\begin{definition}[Neighbor Function]
+    \label{def:rotation-map}
+    A \(d\)-regular graph is explicitly represented by a rotation map
+    \[
+        \Rot_G \colon V\times[d]\to V\times[d].
+    \]
+    If \(\Rot_G(v,i)=(w,j)\), then the \(i\)-th edge incident to \(v\) leads to \(w\), and from the other endpoint the same edge is seen as the \(j\)-th edge incident to \(w\). The consistency condition is \(\Rot_G(\Rot_G(v,i))=(v,i)\).
+\end{definition}
+
+The rotation-map representation is the right one for explicit expanders. It makes the graph locally computable. Given a vertex and an edge label, one can compute the next vertex without writing down the entire adjacency matrix. This is the representation used by the zig-zag product and by random-walk constructions.
 
 \subsection{Markov Chains and Mixing}
 \label{subsec:markov-chains}
 
-A $d$-regular graph $G$ on $n$ vertices defines a natural random walk whose transition matrix is $\Markov{G} = A_G / d$, where $A_G$ is the adjacency matrix of $G$. This Markov chain is reversible and has stationary distribution $\Stationary = \mathbf{u}$, the uniform distribution over $V$.
+A \(d\)-regular graph \(G\) defines a random walk whose transition matrix is
+\[
+    \Markov{G} \coloneqq \frac{1}{d}\vec{A}_G,
+\]
+where \(\vec{A}_G\) is the adjacency matrix. We view distributions as column vectors, and after one step the distribution \(\mu\) becomes \(\Markov{G}\mu\). Since \(G\) is undirected and regular, \(\Markov{G}\) is symmetric and doubly stochastic. Hence the uniform distribution \(\vec{u}\) is stationary.
 
-The total variation distance between two distributions $\mu, \nu$ over $V$ is
+The total variation distance between distributions \(\mu,\nu\) over \(V\) is
 \[
-    \StatDist(\mu, \nu) \coloneqq \frac{1}{2} \sum_{v \in V} \abs{\mu(v) - \nu(v)} = \max_{S \subseteq V} \abs{\mu(S) - \nu(S)}.
+    \StatDist(\mu,\nu) \coloneqq \frac{1}{2}\sum_{v\in V}\abs{\mu(v)-\nu(v)}=\frac{1}{2}\norm{\mu-\nu}_1.
 \]
-The mixing time of the random walk starting from worst-case initial vertex $v_0$ at total variation distance $\epsilon$ is
+Equivalently,
 \[
-    \Mixing(\epsilon) \coloneqq \max_{v_0 \in V} \min \left\{ t \in \NN : \StatDist\bigl(\Markov{G}^t(v_0, \cdot),\, \Stationary\bigr) \leq \epsilon \right\}.
+    \StatDist(\mu,\nu)=\max_{S\subseteq V}\abs{\mu(S)-\nu(S)}.
 \]
-The mixing time governs how many steps are needed before the walk forgets its starting position and produces a sample that is nearly uniform, a fact that is central to the construction of pseudorandom generators from random walks on expanders.
+The mixing time at error \(\epsilon\) is
+\[
+    \tau_{\mathrm{mix},G}(\epsilon)\coloneqq \max_{v_0\in V}\min\{t\in\NN \mid \StatDist(\Markov{G}^t\vec{1}_{v_0},\vec{u})\leq \epsilon\}.
+\]
+Here \(\vec{1}_{v_0}\) denotes the point mass at \(v_0\). The purpose of expanders is to make \(\tau_{\mathrm{mix},G}(\epsilon)\) logarithmic in \(n\) and \(\epsilon^{-1}\).
+
+\begin{lemma}[From \(\ell_2\) to Total Variation]
+    \label{lem:l2-tv}
+    If \(\mu\) is a distribution over \(V\), then
+    \[
+        \StatDist(\mu,\vec{u})\leq \frac{\sqrt{n}}{2}\norm{\mu-\vec{u}}_2.
+    \]
+\end{lemma}
+
+\begin{proof}
+    By Cauchy-Schwarz,
+    \[
+        \norm{\mu-\vec{u}}_1\leq \sqrt{n}\norm{\mu-\vec{u}}_2.
+    \]
+    Dividing by \(2\) gives the claim.
+\end{proof}
 
 \subsection{Pseudorandomness}
 \label{subsec:pseudorandomness}
 
-We recall the standard definitions of min-entropy, extractors, and pseudorandom generators; the reader is referred to Vadhan~\cite{Vad2012} for a thorough treatment.
+We use standard cryptographic asymptotic notation. The security parameter is \(\secparam\in\NN\), and a function \(\negl(\secparam)\) is negligible if it is eventually smaller than \(\secparam^{-c}\) for every constant \(c>0\). We use \(\PPT\) for probabilistic polynomial time.
 
 \begin{definition}[Min-Entropy]
     \label{def:min-entropy}
-    The min-entropy of a random variable $X$ over a finite set $\calX$ is $\MinEntropy(X) \coloneqq -\log_2 \max_{x \in \calX} \Prob[X = x]$.
+    The min-entropy of a random variable \(X\) over a finite set \(\calX\) is
+    \[
+        \MinEntropy(X)\coloneqq -\log_2\max_{x\in\calX}\Prob[X=x].
+    \]
 \end{definition}
 
-\begin{definition}[Randomness Extractor]
+Thus \(\MinEntropy(X)\geq k\) means that no atom has probability larger than \(2^{-k}\). This is the right entropy notion for extractors, because an extractor must handle arbitrary weak sources and not merely sources with large Shannon entropy on average.
+
+\begin{definition}[Seeded Extractor]
     \label{def:extractor}
-    A function $\Extractor \colon \bits^n \times \bits^d \to \bits^m$ is a $(k, \epsilon)$-extractor if for every distribution $X$ over $\bits^n$ with $\MinEntropy(X) \geq k$ and every independent uniform seed $Y \sim \bits^d$,
+    A function \(\Extractor\colon \bits^n\times\bits^s\to\bits^m\) is a strong \((k,\epsilon)\)-extractor if for every distribution \(X\) over \(\bits^n\) satisfying \(\MinEntropy(X)\geq k\) and for an independent uniform seed \(Y\sample\bits^s\), one has
     \[
-        \StatDist\bigl((\Extractor(X, Y), Y),\; (\mathbf{U}_m, Y)\bigr) \leq \epsilon,
+        \StatDist\bigl((\Extractor(X,Y),Y),(\vec{U}_m,Y)\bigr)\leq \epsilon.
     \]
-    where $\mathbf{U}_m$ denotes the uniform distribution over $\bits^m$.
 \end{definition}
+
+The adjective strong means that the seed remains safe to reveal. This is the version most useful in cryptographic applications, where public randomness and reusable seeds must be tracked explicitly.
 
 \begin{definition}[Pseudorandom Generator]
     \label{def:prg}
-    A function $\PRGEval \colon \bits^\secparam \to \bits^{\ell(\secparam)}$ with $\ell(\secparam) > \secparam$ is a pseudorandom generator with stretch $\ell(\secparam) - \secparam$ if for every \PPT\ distinguisher $\advD$,
+    A function \(\PRGEval\colon\bits^\secparam\to\bits^{\ell(\secparam)}\) with \(\ell(\secparam)>\secparam\) is a pseudorandom generator if for every \(\PPT\) distinguisher \(\advD\),
     \[
-        \bigl|\Prob[\advD(\PRGEval(s)) = 1] - \Prob[\advD(r) = 1]\bigr| \leq \negl(\secparam),
+        \abs{\Prob[\advD(\PRGEval(S))=1]-\Prob[\advD(R)=1]}\leq \negl(\secparam),
     \]
-    where $s \sample \bits^\secparam$ and $r \sample \bits^{\ell(\secparam)}$.
+    where \(S\sample\bits^\secparam\) and \(R\sample\bits^{\ell(\secparam)}\).
 \end{definition}

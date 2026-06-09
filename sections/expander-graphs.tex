@@ -1,59 +1,120 @@
 \section{Expander Graphs}
 \label{sec:expander-graphs}
 
-An expander graph is a sparse graph in which every not-too-large set of vertices has many neighbors outside itself. This property can be formalized in several ways that turn out to be essentially equivalent, though quantitatively distinct, and the interplay between these formulations is one of the central themes of the theory.
+An expander graph is a sparse graph with no sparse cut. More precisely, every set of vertices that is not already a macroscopic part of the graph must have many edges leaving it, or many new neighbors outside it, depending on the chosen definition. The strength of the subject is that these definitions are robust. They differ in constants and degree factors, but for bounded-degree graph families they all capture the same phenomenon.
 
 \subsection{Edge Expansion}
 \label{subsec:edge-expansion}
 
 \begin{definition}[Edge Expansion]
     \label{def:edge-expansion}
-    The edge expansion, or Cheeger constant, of a $d$-regular graph $G = (V,E)$ on $n$ vertices is
+    Let \(G=(V,E)\) be a \(d\)-regular graph on \(n\) vertices. The edge expansion, also called the Cheeger constant, is
     \[
-        \EdgeExpansion(G) \coloneqq \min_{\substack{S \subseteq V \\ 0 < \abs{S} \leq n/2}} \frac{\abs{\partial S}}{d \cdot \abs{S}}.
+        \EdgeExpansion(G)\coloneqq \min_{\substack{S\subseteq V \\ 0<\abs{S}\leq n/2}}\frac{\abs{\partial S}}{d\abs{S}}.
     \]
-    A family $\{G_n\}_{n \geq 1}$ of $d$-regular graphs is an expander family if $\EdgeExpansion(G_n) \geq c > 0$ for all $n$ and some constant $c$ depending only on $d$.
+    A family \(\{G_i\}_{i\geq 1}\) of \(d\)-regular graphs with \(\abs{V(G_i)}\to\infty\) is an edge-expander family if there exists a constant \(c>0\) such that \(\EdgeExpansion(G_i)\geq c\) for every \(i\).
 \end{definition}
 
-Intuitively, $\EdgeExpansion(G) \geq c$ says that every not-too-large set $S$ sends at least a $c$-fraction of its edges to vertices outside $S$, so information flowing along edges cannot be bottlenecked inside $S$. We stress that the condition $\abs{S} \leq n/2$ is a normalization convention; since $\partial S = \partial(V \setminus S)$, one would otherwise always minimize over $S$ or $V \setminus S$.
+The normalization by \(d\abs{S}\) makes \(\EdgeExpansion(G)\) a number in \([0,1]\). It is the minimum fraction of edges leaving a set \(S\), where \(S\) is allowed to range over the smaller side of a cut. The restriction \(\abs{S}\leq n/2\) is not an extra assumption. Since \(\partial S=\partial(V\setminus S)\), every cut has a smaller side.
 
 \begin{example}[Complete Graph]
     \label{ex:complete-graph}
-    The complete graph $K_n$ has $\EdgeExpansion(K_n) = 1/2$, since every set $S$ with $\abs{S} \leq n/2$ satisfies $\abs{\partial S} = \abs{S} \cdot (n - \abs{S}) \geq \abs{S} \cdot n/2$, and the denominator is $\abs{S} \cdot (n-1)$. Concretely, $K_n$ is the best possible expander but has degree $n-1$, so it is not sparse. The central question is whether one can achieve $\EdgeExpansion(G) = \Omega(1)$ with $d = O(1)$.
+    The complete graph \(K_n\) satisfies
+    \[
+        \frac{\abs{\partial S}}{(n-1)\abs{S}}=\frac{n-\abs{S}}{n-1}
+    \]
+    for every nonempty \(S\subseteq V\). Hence \(\EdgeExpansion(K_n)\geq 1/2\). This is excellent expansion, but the graph is not sparse. Expanders ask for the same constant-order behavior while keeping the degree bounded independently of \(n\).
 \end{example}
 
 \begin{example}[Cycle]
     \label{ex:cycle}
-    The $n$-cycle $C_n$ is $2$-regular but has $\EdgeExpansion(C_n) = O(1/n)$, since the set $S$ of $n/2$ consecutive vertices satisfies $\abs{\partial S} = 2$ while $d \cdot \abs{S} = n$. This shows that regularity alone does not imply expansion.
+    The cycle \(C_n\) is \(2\)-regular, but if \(S\) is a path of \(\lfloor n/2\rfloor\) consecutive vertices, then \(\abs{\partial S}=2\). Thus
+    \[
+        \EdgeExpansion(C_n)\leq \frac{2}{2\lfloor n/2\rfloor}=O(1/n).
+    \]
+    This example shows that bounded degree alone is meaningless. Sparsity must be paired with a global no-bottleneck condition.
 \end{example}
 
-\subsection{Vertex Expansion}
+\begin{example}[Hypercube]
+    \label{ex:hypercube}
+    The \(m\)-dimensional hypercube has \(n=2^m\) vertices and degree \(m=\log_2 n\). Its expansion is much better than that of a cycle, but it is not a constant-degree expander family. The hypercube is a useful warning that good connectivity and logarithmic degree are not the same thing as constant-degree expansion.
+\end{example}
+
+\subsection{Vertex Expansion and Lossless Expansion}
 \label{subsec:vertex-expansion}
 
-A closely related but distinct notion measures the size of the neighborhood of small sets.
+Edge expansion measures escaping edges. Vertex expansion measures the number of distinct new vertices reached by those edges. These quantities are close for bounded-degree graphs, but they become meaningfully different when one cares about collisions among neighbors.
 
 \begin{definition}[Vertex Expansion]
     \label{def:vertex-expansion}
-    The vertex expansion of a $d$-regular graph $G = (V,E)$ is
+    Let \(G=(V,E)\) be a \(d\)-regular graph. The external vertex expansion is
     \[
-        \VertexExpansion(G) \coloneqq \min_{\substack{S \subseteq V \\ 0 < \abs{S} \leq n/2}} \frac{\abs{\delta S}}{\abs{S}}.
+        \VertexExpansion(G)\coloneqq \min_{\substack{S\subseteq V \\ 0<\abs{S}\leq n/2}}\frac{\abs{\delta S}}{\abs{S}}.
     \]
-    A bipartite graph $G = (L \cup R, E)$ with $\abs{L} = \abs{R} = n$ is a lossless expander with expansion $K$ if every set $S \subseteq L$ with $\abs{S} \leq n/K$ satisfies $\abs{\delta S} \geq (1 - \epsilon) \cdot d \cdot \abs{S}$ for a small constant $\epsilon > 0$; the term lossless reflects the fact that essentially all of the $d \abs{S}$ edges from $S$ reach distinct vertices in $R$.
 \end{definition}
 
-Lossless expanders are considerably stronger than edge expanders and their explicit construction is more demanding; the zig-zag product construction of Capalbo, Reingold, Vadhan, and Wigderson~\cite{CRVW2002} achieves them.
+\begin{proposition}[Edge and Vertex Expansion]
+    \label{prop:edge-vertex-expansion}
+    For every \(d\)-regular graph \(G\),
+    \[
+        \frac{\EdgeExpansion(G)}{1}\leq \VertexExpansion(G)\leq d\,\EdgeExpansion(G)
+    \]
+    after replacing the right-hand inequality by the statement that every minimizer \(S\) for edge expansion satisfies \(\abs{\delta S}\leq \abs{\partial S}\). More explicitly, for every \(S\subseteq V\) with \(0<\abs{S}\leq n/2\),
+    \[
+        \frac{\abs{\partial S}}{d\abs{S}}\leq \frac{\abs{\delta S}}{\abs{S}}\leq \frac{\abs{\partial S}}{\abs{S}}.
+    \]
+\end{proposition}
+
+\begin{proof}
+    Each vertex in \(\delta S\) is incident to at most \(d\) edges from \(S\), and every edge in \(\partial S\) ends in a vertex of \(\delta S\). Hence
+    \[
+        \abs{\delta S}\leq \abs{\partial S}\leq d\abs{\delta S}.
+    \]
+    Dividing by \(d\abs{S}\) or by \(\abs{S}\) gives the displayed inequalities.
+\end{proof}
+
+For ordinary bounded-degree expansion, these inequalities are enough. For extractors, codes, and data structures, one often needs a stronger condition saying that almost every edge leaving a small set lands at a distinct neighbor. This is lossless expansion.
+
+\begin{definition}[Lossless Bipartite Expander]
+    \label{def:lossless-expander}
+    Let \(G=(L\cup R,E)\) be a left \(d\)-regular bipartite graph. For parameters \(K\) and \(\epsilon\in(0,1)\), we say that \(G\) is a \((K,\epsilon)\)-lossless expander if every set \(S\subseteq L\) with \(\abs{S}\leq K\) satisfies
+    \[
+        \abs{\Gamma(S)}\geq (1-\epsilon)d\abs{S},
+    \]
+    where \(\Gamma(S)\subseteq R\) is the set of right-neighbors of \(S\).
+\end{definition}
+
+The adjective lossless refers to the \(d\abs{S}\) edges leaving \(S\). In the best possible case they reach \(d\abs{S}\) distinct right vertices. The definition allows only an \(\epsilon\)-fraction of these potential neighbors to be lost to collisions. This is much stronger than ordinary expansion and is the version that appears in expander codes and extractor constructions.
+
+\subsection{Spectral Expansion}
+\label{subsec:spectral-expansion-preview}
+
+Combinatorial expansion is often hard to prove directly. Spectral expansion gives a more algebraic certificate. If \(G\) is \(d\)-regular and \(\Markov{G}=\vec{A}_G/d\), then \(\Markov{G}\vec{e}_0=\vec{e}_0\). The graph is connected exactly when the eigenvalue \(1\) has multiplicity one, and it is aperiodic in the random-walk sense when there is no eigenvalue close to \(-1\). The relevant one-sided parameter is
+\[
+    \lambda(G)\coloneqq \max\{\abs{\mu_i(\Markov{G})} \mid i\geq 2\},
+\]
+and a smaller \(\lambda(G)\) means faster contraction away from the uniform direction.
+
+\begin{definition}[Spectral Expander]
+    \label{def:spectral-expander-preview}
+    A \(d\)-regular graph \(G\) on \(n\) vertices is an \((n,d,\lambda)\)-spectral expander if
+    \[
+        \lambda(G)\leq \lambda.
+    \]
+    A graph family is a spectral expander family if \(d\) is bounded by a constant and \(\lambda\leq 1-c\) for some constant \(c>0\).
+\end{definition}
 
 \subsection{The Cheeger Inequality}
 \label{subsec:cheeger}
 
-The discrete Cheeger inequality, named by analogy with the continuous Riemannian version due to Cheeger, relates edge expansion to the spectral gap of the normalized adjacency matrix. Its proof is the heart of the combinatorial-spectral correspondence and is given in full in \cref{sec:spectral-theory}.
+The discrete Cheeger inequality is the basic theorem saying that the combinatorial and spectral languages are equivalent up to a quadratic loss.
 
 \begin{theorem}[Discrete Cheeger Inequality]
     \label{thm:cheeger}
-    Let $G$ be a $d$-regular graph with second-largest eigenvalue $\SecondEigenvalue = \SecondEigenvalue(A_G/d)$ of the normalized adjacency matrix. Then
+    Let \(G\) be a connected \(d\)-regular graph, and let \(\mu_2\) be the second-largest eigenvalue of \(\Markov{G}=\vec{A}_G/d\). Then
     \[
-        \frac{1 - \SecondEigenvalue}{2} \;\leq\; \EdgeExpansion(G) \;\leq\; \sqrt{2(1 - \SecondEigenvalue)}.
+        \frac{1-\mu_2}{2}\leq \EdgeExpansion(G)\leq \sqrt{2(1-\mu_2)}.
     \]
 \end{theorem}
 
-Loosely speaking, the theorem says that expansion and spectral gap are within a quadratic factor of each other, so that one can freely pass between the combinatorial and spectral definitions up to polynomial factors. For the purposes of cryptographic applications, the spectral version is often more convenient since the spectral gap can be controlled explicitly in algebraic constructions.
+The left inequality says that a spectral gap forces every cut to have many escaping edges. The right inequality says that if the spectral gap is small, then a sparse cut can be found by sorting an eigenvector and sweeping over its level sets. The full proof is given in \cref{subsec:cheeger-proof}.

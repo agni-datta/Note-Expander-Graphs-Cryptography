@@ -6,11 +6,15 @@ The existence of expander families follows easily from the probabilistic method:
 \subsection{Algebraic Constructions: Ramanujan Graphs}
 \label{subsec:ramanujan}
 
-The first explicit constructions of Ramanujan graphs were given independently by Lubotzky, Phillips, and Sarnak~\cite{LPS1988} and by Margulis~\cite{Mar1973}. The LPS construction produces $(p+1)$-regular bipartite Ramanujan graphs for any prime $p \equiv 1 \pmod{4}$, achieving the optimal second eigenvalue $2\sqrt{p}/(p+1)$ predicted by the Alon-Boppana theorem.
+Margulis~\cite{Mar1973} gave one of the first explicit constructions of bounded-degree expander families. The later construction of Lubotzky, Phillips, and Sarnak~\cite{LPS1988} gave a striking algebraic family of Ramanujan graphs, meaning graphs whose nontrivial eigenvalues meet the Alon-Boppana barrier up to the optimal constant. In normalized form, a \((p+1)\)-regular Ramanujan graph has all nontrivial adjacency eigenvalues bounded in absolute value by \(2\sqrt{p}\), or equivalently all nontrivial eigenvalues of the random-walk matrix bounded by \(2\sqrt{p}/(p+1)\).
 
 \begin{construction}[LPS Ramanujan Graphs~\cite{LPS1988}]
     \label{con:lps}
-    Let $p, q$ be distinct primes with $p \equiv q \equiv 1 \pmod{4}$ and $p$ a quadratic residue modulo $q$. The LPS graph $X^{p,q}$ has vertex set $\mathrm{PGL}(2, \FF_q)$ or $\mathrm{PSL}(2, \FF_q)$ and edges defined by multiplication by a fixed set of $p+1$ generators derived from the integer solutions to $\alpha_0^2 + \alpha_1^2 + \alpha_2^2 + \alpha_3^2 = p$ with $\alpha_0 > 0$ odd and $\alpha_1, \alpha_2, \alpha_3$ even. The resulting graph is $(p+1)$-regular and Ramanujan, with $\abs{V} = q(q^2-1)/2$ for the $\mathrm{PSL}(2,\FF_q)$ version. Interestingly, the proof that this graph is Ramanujan relies on deep results in number theory, specifically the Ramanujan conjecture for holomorphic cusp forms proved by Deligne~\cite{LPS1988}.
+    Let \(p\) and \(q\) be distinct odd primes satisfying the congruence conditions required in the LPS construction. The graph \(X^{p,q}\) is a Cayley graph of either \(\mathrm{PGL}(2,\FF_q)\) or \(\mathrm{PSL}(2,\FF_q)\). Its \(p+1\) generators are obtained from integer solutions to
+    \[
+        \alpha_0^2+\alpha_1^2+\alpha_2^2+\alpha_3^2=p
+    \]
+    with prescribed parity conditions. Multiplication by these generators defines a \((p+1)\)-regular graph. The resulting graph is Ramanujan, and in the \(\mathrm{PSL}(2,\FF_q)\) case the number of vertices is \(q(q^2-1)/2\). The proof of the Ramanujan bound uses deep number theory, ultimately relying on Deligne's proof of the relevant Ramanujan conjecture for modular forms.
 \end{construction}
 
 \subsection{Combinatorial Constructions: The Zig-Zag Product}

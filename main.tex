@@ -1,36 +1,40 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Document Class
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\documentclass[
-    USenglish,
-    letterpaper,
-    11pt
-]{article}
+\documentclass[reqno]{amsart}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Mathematics, Fonts, and Typography
+%%% Packages
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{csamsmath}
-\usepackage{tcscrypto}
+\usepackage{eudoxus}
+\usepackage{cite}
+\usepackage{codelines}
+\usepackage[notoc,small]{tcscrypto}
+\usepackage{newfloat}
+\usepackage{xpatch}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Typography and Layout
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \geometry{margin=1in}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+\setstretch{1,075}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Bibliography and Table of Contents
+%%% Table of Contents
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\usepackage[nottoc]{tocbibind}
+\makeatletter
+\xpatchcmd{\@tocline}
+    {\hfil\hbox to\@pnumwidth{\@tocpagenum{#7}}\par}
+    {\ifnum#1<0\hfill\else\dotfill\fi\hbox to\@pnumwidth{\@tocpagenum{#7}}\par}
+    {}{}
+\def\l@section{\@tocline{1}{0pt}{0pc}{}{\normalfont\scshape\small}}
+\def\l@subsection{\@tocline{2}{0pt}{2pc}{4pc}{\normalfont\small}}
+\def\l@subsubsection{\@tocline{3}{0pt}{6pc}{8pc}{\normalfont\small}}
+\makeatother
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Graphics and Diagrams
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\usepackage{tikz}
 
 \usetikzlibrary{
     arrows.meta,
@@ -43,42 +47,36 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Abstract
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\renewenvironment{abstract}{
-    \small\noindent\textbf{\abstractname.}~~\ignorespaces
-}{\par}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Acknowledgements
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\renewenvironment{acknowledgements}{
-    \bigskip
-    \noindent\textbf{Acknowledgments.}~~\ignorespaces
-}{\par}
+\renewenvironment{acknowledgements}
+    {\vfill\clearpage\bigskip\noindent\textbf{Acknowledgments.}~~\ignorespaces}
+    {\par}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Additional Definitions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \let\BigO\bigO
+\renewcommand{\vec}[1]{\mathbf{#1}}
 \newclass{\LOGSPACE}{LOGSPACE}
 \providecommand{\Condenser}{\mathsf{Con}}
 \providecommand{\EdgeExpansion}{h}
 \providecommand{\Expander}{\mathsf{G}}
 \providecommand{\Extractor}{\mathsf{Ext}}
-\providecommand{\Markov}[1]{P_{#1}}
+\providecommand{\Markov}[1]{\vec{P}_{#1}}
 \providecommand{\MinEntropy}{\mathrm{H}_\infty}
 \providecommand{\Mixing}{\tau_{\mathrm{mix}}}
 \providecommand{\RandomWalk}[2]{W_{#1}^{#2}}
+\providecommand{\Rot}{\mathsf{Rot}}
 \providecommand{\SecondEigenvalue}{\lambda_2}
 \providecommand{\SpectralGap}{\gamma}
 \providecommand{\Spectral}[1]{\lambda(#1)}
 \providecommand{\StatDist}{\Delta}
 \providecommand{\Stationary}{\pi}
 \providecommand{\VertexExpansion}{\phi}
+\providecommand{\vol}{\operatorname{vol}}
 \providecommand{\zzprod}{\mathbin{\mathop{\ooalign{$\circ$\cr\hfil$z$\hfil\cr}}}}
 \renewcommand{\EE}{\mathop{\mathbb{E}}}
 
@@ -86,19 +84,22 @@
 %%% Author Comment Markers
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\NewDocumentCommand{\newguymarker}{m m m}{%
+    \expandafter\NewDocumentCommand\csname #1\endcsname{m}{%
+        \textcolor{#3}{##1~\textsc{#2}}%
+        \marginnote{\textcolor{#3}{\LARGE$\star$}}%
+    }%
+}
 \newguymarker{agni}{Agni}{RoyalBlue2}
+\let\cite\citep
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Title and Author Metadata
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{A Note on Expanders and Cryptography}
-
-\author[1]{Agni Datta}
-
-\affil[1]{University of Edinburgh, UK}
-
-\date{June, 2026}
+\author{Agni Datta}
+\address{University of Edinburgh, UK}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Document
@@ -107,24 +108,24 @@
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Abstract
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+    Expander graphs are sparse graphs that nevertheless behave, in several quantitative senses, like highly connected graphs. This note gives a self-contained introduction to the parts of expander theory that repeatedly appear in cryptography and pseudorandomness. We develop the combinatorial definitions of edge and vertex expansion, the spectral definition through the normalized adjacency operator, and the passage between these viewpoints through the discrete Cheeger inequality and the expander mixing lemma. We then discuss explicit constructions, including algebraic Ramanujan graphs and the zig-zag product, and explain how expansion enters randomness extraction, pseudorandom generators, expander codes, hash constructions, and communication-efficient cryptographic protocols. The guiding point is that expansion is a robust form of mixing, and that this mixing converts short random seeds, sparse communication patterns, or local constraints into global pseudorandomness and fault tolerance.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Title Block
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \maketitle
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Abstract
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{abstract}
-    Expander graphs are sparse yet highly connected graphs whose remarkable combinatorial and spectral properties make them indispensable throughout theoretical computer science and, in particular, throughout cryptography. In this note, we give a self-contained introduction to expander graphs and their role in cryptographic constructions. We define expansion through three equivalent lenses, namely combinatorial edge expansion, vertex expansion, and spectral gap, and trace the connections between them via the discrete Cheeger inequality. We then survey the main cryptographic applications, covering randomness extractors and condensers, pseudorandom generators from random walks, hash functions with provable collision resistance, error-correcting codes, and protocols for secure computation with sublinear communication. Throughout, we emphasize the structural intuition that expansion is essentially a quantitative form of mixing, and that constructions exploiting this mixing inherit strong pseudorandomness and fault-tolerance properties that would be difficult or impossible to achieve with arbitrary sparse graphs.
-\end{abstract}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Table of Contents
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-{\setstretch{1}\small\tableofcontents\vfill\clearpage}
+\tableofcontents\clearpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Main Sections
@@ -142,7 +143,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{acknowledgements}
-    The author thanks the anonymous readers for comments on earlier drafts.
+    These notes were written as a first systematic pass through expanders and their role in cryptography. I thank the readers who point out mistakes and missing references as the note develops.
 \end{acknowledgements}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -151,7 +152,7 @@
 
 \begin{small}
     \bibliography{abbrev0,bibliography,crypto}
-    \bibliographystyle{aomalpha}
+    \bibliographystyle{acm}
 \end{small}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
