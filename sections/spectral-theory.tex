@@ -3,7 +3,7 @@
 
 The spectral theory of expanders studies the random-walk operator
 \[
-    \Markov{G}=\frac{1}{d}\vec{A}_G
+	\Markov{G}=\frac{1}{d}\vec{A}_G
 \]
 as a linear operator on functions \(f\colon V\to\RR\). Since \(G\) is undirected and \(d\)-regular, this operator is real symmetric. Hence it has an orthonormal eigenbasis, and its action is completely described by its eigenvalues. Expansion is the statement that every component orthogonal to the constants is contracted.
 
@@ -12,33 +12,33 @@ as a linear operator on functions \(f\colon V\to\RR\). Since \(G\) is undirected
 
 Let \(G\) be a connected \(d\)-regular graph on \(n\) vertices. The normalized adjacency matrix \(\Markov{G}=\vec{A}_G/d\) is symmetric and stochastic. Its eigenvalues satisfy
 \[
-    1=\mu_1\geq \mu_2\geq \cdots\geq \mu_n\geq -1.
+	1=\mu_1\geq \mu_2\geq \cdots\geq \mu_n\geq -1.
 \]
 The eigenvalue \(1\) has eigenvector \(\vec{e}_0=\vec{1}/\sqrt{n}\). Connectedness is equivalent to the multiplicity of this eigenvalue being one. The one-sided spectral gap is
 \[
-    \SpectralGap(G)\coloneqq 1-\mu_2,
+	\SpectralGap(G)\coloneqq 1-\mu_2,
 \]
 and the two-sided spectral parameter is
 \[
-    \lambda(G)\coloneqq \max\{\abs{\mu_2},\abs{\mu_n}\}.
+	\lambda(G)\coloneqq \max\{\abs{\mu_2},\abs{\mu_n}\}.
 \]
 The one-sided gap controls expansion and convergence after lazifying the walk. The two-sided parameter controls direct convergence of the non-lazy walk to uniformity.
 
 \begin{definition}[\((n,d,\lambda)\)-Expander]
-    \label{def:spectral-expander}
-    A \(d\)-regular graph \(G\) on \(n\) vertices is an \((n,d,\lambda)\)-expander if
-    \[
-        \norm{\Markov{G}f}_2\leq \lambda\norm{f}_2
-    \]
-    for every \(f\perp\vec{1}\). Equivalently, \(\lambda(G)\leq\lambda\).
+	\label{def:spectral-expander}
+	A \(d\)-regular graph \(G\) on \(n\) vertices is an \((n,d,\lambda)\)-expander if
+	\[
+		\norm{\Markov{G}f}_2\leq \lambda\norm{f}_2
+	\]
+	for every \(f\perp\vec{1}\). Equivalently, \(\lambda(G)\leq\lambda\).
 \end{definition}
 
 \begin{theorem}[Alon-Boppana~\cite{Alo1986}]
-    \label{thm:alon-boppana}
-    For every infinite family \(\{G_i\}\) of connected \(d\)-regular graphs with \(\abs{V(G_i)}\to\infty\),
-    \[
-        \liminf_{i\to\infty}\mu_2(G_i)\geq \frac{2\sqrt{d-1}}{d}.
-    \]
+	\label{thm:alon-boppana}
+	For every infinite family \(\{G_i\}\) of connected \(d\)-regular graphs with \(\abs{V(G_i)}\to\infty\),
+	\[
+		\liminf_{i\to\infty}\mu_2(G_i)\geq \frac{2\sqrt{d-1}}{d}.
+	\]
 \end{theorem}
 
 Thus no infinite family of \(d\)-regular graphs can have normalized second eigenvalue asymptotically below \(2\sqrt{d-1}/d\). Ramanujan graphs are the families that meet this barrier up to the sign issue at the bottom of the spectrum.
@@ -48,28 +48,28 @@ Thus no infinite family of \(d\)-regular graphs can have normalized second eigen
 
 The bridge between cuts and eigenvalues is the Rayleigh quotient. For \(f\colon V\to\RR\), define
 \[
-    \mathcal{E}(f)\coloneqq \frac{1}{2d}\sum_{u,v\in V}\vec{A}_G(u,v)(f(u)-f(v))^2=\frac{1}{d}\sum_{\{u,v\}\in E}(f(u)-f(v))^2.
+	\mathcal{E}(f)\coloneqq \frac{1}{2d}\sum_{u,v\in V}\vec{A}_G(u,v)(f(u)-f(v))^2=\frac{1}{d}\sum_{\{u,v\}\in E}(f(u)-f(v))^2.
 \]
 This is the Dirichlet energy of \(f\).
 
 \begin{lemma}[Rayleigh Principle]
-    \label{lem:rayleigh}
-    For every \(f\perp\vec{1}\) with \(f\neq 0\),
-    \[
-        1-\mu_2\leq \frac{\mathcal{E}(f)}{\norm{f}_2^2}.
-    \]
-    Moreover,
-    \[
-        1-\mu_2=\min_{\substack{f\perp\vec{1}\\f\neq 0}}\frac{\mathcal{E}(f)}{\norm{f}_2^2}.
-    \]
+	\label{lem:rayleigh}
+	For every \(f\perp\vec{1}\) with \(f\neq 0\),
+	\[
+		1-\mu_2\leq \frac{\mathcal{E}(f)}{\norm{f}_2^2}.
+	\]
+	Moreover,
+	\[
+		1-\mu_2=\min_{\substack{f\perp\vec{1}\\f\neq 0}}\frac{\mathcal{E}(f)}{\norm{f}_2^2}.
+	\]
 \end{lemma}
 
 \begin{proof}
-    Since \(\Markov{G}\) is symmetric, it has an orthonormal eigenbasis \(e_1=\vec{e}_0,e_2,\ldots,e_n\) with eigenvalues \(1,\mu_2,\ldots,\mu_n\). Write \(f=\sum_{i=2}^n a_i e_i\). Then
-    \[
-        \langle f,(\vec{I}-\Markov{G})f\rangle=\sum_{i=2}^n a_i^2(1-\mu_i)\geq (1-\mu_2)\sum_{i=2}^n a_i^2.
-    \]
-    A direct expansion gives \(\langle f,(\vec{I}-\Markov{G})f\rangle=\mathcal{E}(f)\). Equality is achieved by an eigenvector for \(\mu_2\).
+	Since \(\Markov{G}\) is symmetric, it has an orthonormal eigenbasis \(e_1=\vec{e}_0,e_2,\ldots,e_n\) with eigenvalues \(1,\mu_2,\ldots,\mu_n\). Write \(f=\sum_{i=2}^n a_i e_i\). Then
+	\[
+		\langle f,(\vec{I}-\Markov{G})f\rangle=\sum_{i=2}^n a_i^2(1-\mu_i)\geq (1-\mu_2)\sum_{i=2}^n a_i^2.
+	\]
+	A direct expansion gives \(\langle f,(\vec{I}-\Markov{G})f\rangle=\mathcal{E}(f)\). Equality is achieved by an eigenvector for \(\mu_2\).
 \end{proof}
 
 \subsection{The Expander Mixing Lemma}
@@ -78,37 +78,37 @@ This is the Dirichlet energy of \(f\).
 The expander mixing lemma says that a spectral expander distributes edges between all pairs of sets almost as a random regular graph would.
 
 \begin{lemma}[Expander Mixing Lemma~\cite{HLW2006}]
-    \label{lem:expander-mixing}
-    Let \(G=(V,E)\) be a \(d\)-regular \((n,d,\lambda)\)-expander. For all \(S,T\subseteq V\),
-    \[
-        \abs{e(S,T)-\frac{d\abs{S}\abs{T}}{n}}\leq \lambda d\sqrt{\abs{S}\abs{T}}.
-    \]
+	\label{lem:expander-mixing}
+	Let \(G=(V,E)\) be a \(d\)-regular \((n,d,\lambda)\)-expander. For all \(S,T\subseteq V\),
+	\[
+		\abs{e(S,T)-\frac{d\abs{S}\abs{T}}{n}}\leq \lambda d\sqrt{\abs{S}\abs{T}}.
+	\]
 \end{lemma}
 
 \begin{proof}
-    Let \(\vec{1}_S\) and \(\vec{1}_T\) be the indicator vectors of \(S\) and \(T\). Decompose
-    \[
-        \vec{1}_S=\frac{\abs{S}}{n}\vec{1}+x
-        \quad\text{and}\quad
-        \vec{1}_T=\frac{\abs{T}}{n}\vec{1}+y,
-    \]
-    where \(x,y\perp\vec{1}\). Since \(\vec{A}_G=d\Markov{G}\),
-    \[
-        e(S,T)=\vec{1}_S^{\top}\vec{A}_G\vec{1}_T=d\vec{1}_S^{\top}\Markov{G}\vec{1}_T.
-    \]
-    The constant parts contribute \(d\abs{S}\abs{T}/n\), and the mixed terms vanish because \(\Markov{G}\vec{1}=\vec{1}\) and \(x,y\perp\vec{1}\). Hence
-    \[
-        e(S,T)-\frac{d\abs{S}\abs{T}}{n}=d\langle x,\Markov{G}y\rangle.
-    \]
-    By the spectral-expander assumption and Cauchy-Schwarz,
-    \[
-        \abs{\langle x,\Markov{G}y\rangle}\leq \lambda\norm{x}_2\norm{y}_2.
-    \]
-    Finally,
-    \[
-        \norm{x}_2^2=\abs{S}\left(1-\frac{\abs{S}}{n}\right)\leq \abs{S},
-    \]
-    and similarly \(\norm{y}_2^2\leq\abs{T}\). This proves the claim.
+	Let \(\vec{1}_S\) and \(\vec{1}_T\) be the indicator vectors of \(S\) and \(T\). Decompose
+	\[
+		\vec{1}_S=\frac{\abs{S}}{n}\vec{1}+x
+		\quad\text{and}\quad
+		\vec{1}_T=\frac{\abs{T}}{n}\vec{1}+y,
+	\]
+	where \(x,y\perp\vec{1}\). Since \(\vec{A}_G=d\Markov{G}\),
+	\[
+		e(S,T)=\vec{1}_S^{\top}\vec{A}_G\vec{1}_T=d\vec{1}_S^{\top}\Markov{G}\vec{1}_T.
+	\]
+	The constant parts contribute \(d\abs{S}\abs{T}/n\), and the mixed terms vanish because \(\Markov{G}\vec{1}=\vec{1}\) and \(x,y\perp\vec{1}\). Hence
+	\[
+		e(S,T)-\frac{d\abs{S}\abs{T}}{n}=d\langle x,\Markov{G}y\rangle.
+	\]
+	By the spectral-expander assumption and Cauchy-Schwarz,
+	\[
+		\abs{\langle x,\Markov{G}y\rangle}\leq \lambda\norm{x}_2\norm{y}_2.
+	\]
+	Finally,
+	\[
+		\norm{x}_2^2=\abs{S}\left(1-\frac{\abs{S}}{n}\right)\leq \abs{S},
+	\]
+	and similarly \(\norm{y}_2^2\leq\abs{T}\). This proves the claim.
 \end{proof}
 
 \subsection{Random Walk Mixing}
@@ -117,23 +117,23 @@ The expander mixing lemma says that a spectral expander distributes edges betwee
 Spectral expansion is exactly contraction of the nonuniform part of a distribution. This gives the standard logarithmic mixing bound.
 
 \begin{theorem}[Spectral Mixing Bound]
-    \label{thm:spectral-mixing}
-    Let \(G\) be a \(d\)-regular graph on \(n\) vertices with \(\lambda(G)\leq\lambda<1\). For every starting vertex \(v_0\) and every \(t\geq 0\),
-    \[
-        \StatDist(\Markov{G}^t\vec{1}_{v_0},\vec{u})\leq \frac{\sqrt{n}}{2}\lambda^t.
-    \]
-    Consequently,
-    \[
-        \tau_{\mathrm{mix},G}(\epsilon)\leq \frac{\log n+2\log(1/(2\epsilon))}{2\log(1/\lambda)}.
-    \]
+	\label{thm:spectral-mixing}
+	Let \(G\) be a \(d\)-regular graph on \(n\) vertices with \(\lambda(G)\leq\lambda<1\). For every starting vertex \(v_0\) and every \(t\geq 0\),
+	\[
+		\StatDist(\Markov{G}^t\vec{1}_{v_0},\vec{u})\leq \frac{\sqrt{n}}{2}\lambda^t.
+	\]
+	Consequently,
+	\[
+		\tau_{\mathrm{mix},G}(\epsilon)\leq \frac{\log n+2\log(1/(2\epsilon))}{2\log(1/\lambda)}.
+	\]
 \end{theorem}
 
 \begin{proof}
-    Write \(\vec{1}_{v_0}=\vec{u}+z\), where \(z\perp\vec{1}\). Since \(\Markov{G}\vec{u}=\vec{u}\) and \(\norm{\Markov{G}^t z}_2\leq \lambda^t\norm{z}_2\),
-    \[
-        \norm{\Markov{G}^t\vec{1}_{v_0}-\vec{u}}_2\leq \lambda^t\norm{\vec{1}_{v_0}-\vec{u}}_2\leq \lambda^t.
-    \]
-    Applying \cref{lem:l2-tv} gives the total-variation bound. Solving \((\sqrt{n}/2)\lambda^t\leq \epsilon\) gives the displayed mixing-time estimate.
+	Write \(\vec{1}_{v_0}=\vec{u}+z\), where \(z\perp\vec{1}\). Since \(\Markov{G}\vec{u}=\vec{u}\) and \(\norm{\Markov{G}^t z}_2\leq \lambda^t\norm{z}_2\),
+	\[
+		\norm{\Markov{G}^t\vec{1}_{v_0}-\vec{u}}_2\leq \lambda^t\norm{\vec{1}_{v_0}-\vec{u}}_2\leq \lambda^t.
+	\]
+	Applying \cref{lem:l2-tv} gives the total-variation bound. Solving \((\sqrt{n}/2)\lambda^t\leq \epsilon\) gives the displayed mixing-time estimate.
 \end{proof}
 
 For an expander family with \(\lambda\leq 1-c\), this is \(O(\log n+\log(1/\epsilon))\). This is the formal meaning of the phrase that a random walk on an expander rapidly forgets where it started.
@@ -144,78 +144,78 @@ For an expander family with \(\lambda\leq 1-c\), this is \(O(\log n+\log(1/\epsi
 We now prove \cref{thm:cheeger}. The lower bound is a direct Rayleigh quotient argument using an indicator vector. The upper bound uses the standard sweep argument. One sorts a nearly extremal eigenvector and proves that at least one threshold set has small boundary.
 
 \begin{proof}[Proof of the lower bound in \cref{thm:cheeger}]
-    Let \(S\subseteq V\) satisfy \(0<\abs{S}\leq n/2\), and set
-    \[
-        f=\vec{1}_S-\frac{\abs{S}}{n}\vec{1}.
-    \]
-    Then \(f\perp\vec{1}\), and
-    \[
-        \norm{f}_2^2=\abs{S}\left(1-\frac{\abs{S}}{n}\right).
-    \]
-    Since \(f\) is constant on \(S\) and on \(V\setminus S\), the only edges contributing to \(\mathcal{E}(f)\) are boundary edges, and each such edge contributes \(1\). Therefore
-    \[
-        \mathcal{E}(f)=\frac{\abs{\partial S}}{d}.
-    \]
-    By \cref{lem:rayleigh},
-    \[
-        1-\mu_2\leq \frac{\mathcal{E}(f)}{\norm{f}_2^2}
-        =\frac{\abs{\partial S}}{d\abs{S}(1-\abs{S}/n)}
-        \leq \frac{2\abs{\partial S}}{d\abs{S}}.
-    \]
-    Taking the minimum over all such \(S\) gives
-    \[
-        \frac{1-\mu_2}{2}\leq \EdgeExpansion(G).
-    \]
+	Let \(S\subseteq V\) satisfy \(0<\abs{S}\leq n/2\), and set
+	\[
+		f=\vec{1}_S-\frac{\abs{S}}{n}\vec{1}.
+	\]
+	Then \(f\perp\vec{1}\), and
+	\[
+		\norm{f}_2^2=\abs{S}\left(1-\frac{\abs{S}}{n}\right).
+	\]
+	Since \(f\) is constant on \(S\) and on \(V\setminus S\), the only edges contributing to \(\mathcal{E}(f)\) are boundary edges, and each such edge contributes \(1\). Therefore
+	\[
+		\mathcal{E}(f)=\frac{\abs{\partial S}}{d}.
+	\]
+	By \cref{lem:rayleigh},
+	\[
+		1-\mu_2\leq \frac{\mathcal{E}(f)}{\norm{f}_2^2}
+		=\frac{\abs{\partial S}}{d\abs{S}(1-\abs{S}/n)}
+		\leq \frac{2\abs{\partial S}}{d\abs{S}}.
+	\]
+	Taking the minimum over all such \(S\) gives
+	\[
+		\frac{1-\mu_2}{2}\leq \EdgeExpansion(G).
+	\]
 \end{proof}
 
 \begin{lemma}[Sweep Lemma]
-    \label{lem:sweep}
-    Let \(f\colon V\to\RR_{\geq 0}\) be nonzero and let
-    \[
-        R(f)\coloneqq \frac{\sum_{\{u,v\}\in E}(f(u)-f(v))^2}{d\sum_{v\in V}f(v)^2}.
-    \]
-    Then there exists a threshold set \(S_t=\{v\in V\mid f(v)>t\}\) with \(0<\abs{S_t}\leq n/2\) such that
-    \[
-        \EdgeExpansion(S_t)\leq \sqrt{2R(f)},
-    \]
-    provided all threshold sets of \(f\) have size at most \(n/2\).
+	\label{lem:sweep}
+	Let \(f\colon V\to\RR_{\geq 0}\) be nonzero and let
+	\[
+		R(f)\coloneqq \frac{\sum_{\{u,v\}\in E}(f(u)-f(v))^2}{d\sum_{v\in V}f(v)^2}.
+	\]
+	Then there exists a threshold set \(S_t=\{v\in V\mid f(v)>t\}\) with \(0<\abs{S_t}\leq n/2\) such that
+	\[
+		\EdgeExpansion(S_t)\leq \sqrt{2R(f)},
+	\]
+	provided all threshold sets of \(f\) have size at most \(n/2\).
 \end{lemma}
 
 \begin{proof}
-    Order the vertices so that \(f(v_1)\geq \cdots\geq f(v_n)\). The nonempty threshold sets are precisely prefixes of this ordering. Write \(S_i=\{v_1,\ldots,v_i\}\). A summation-by-parts identity gives
-    \[
-        \sum_{\{u,v\}\in E}\abs{f(u)^2-f(v)^2}=\int_0^\infty \abs{\partial S_{\sqrt{t}}}\,dt.
-    \]
-    If every threshold set had \(\abs{\partial S_t}>\alpha d\abs{S_t}\), then integration would imply
-    \[
-        \sum_{\{u,v\}\in E}\abs{f(u)^2-f(v)^2}>\alpha d\sum_{v\in V}f(v)^2.
-    \]
-    On the other hand,
-    \[
-        \sum_{\{u,v\}\in E}\abs{f(u)^2-f(v)^2}
-        \leq
-        \left(\sum_{\{u,v\}\in E}(f(u)-f(v))^2\right)^{1/2}
-        \left(\sum_{\{u,v\}\in E}(f(u)+f(v))^2\right)^{1/2}.
-    \]
-    The second factor is at most
-    \[
-        \sqrt{2d\sum_v f(v)^2+2\sum_{\{u,v\}\in E}f(u)f(v)}\leq \sqrt{2d\sum_v f(v)^2+2d\sum_v f(v)^2}=2\sqrt{d\sum_v f(v)^2}.
-    \]
-    A slightly sharper accounting yields the constant \(\sqrt{2}\). Thus some threshold satisfies \(\EdgeExpansion(S_t)\leq \sqrt{2R(f)}\).
+	Order the vertices so that \(f(v_1)\geq \cdots\geq f(v_n)\). The nonempty threshold sets are precisely prefixes of this ordering. Write \(S_i=\{v_1,\ldots,v_i\}\). A summation-by-parts identity gives
+	\[
+		\sum_{\{u,v\}\in E}\abs{f(u)^2-f(v)^2}=\int_0^\infty \abs{\partial S_{\sqrt{t}}}\,dt.
+	\]
+	If every threshold set had \(\abs{\partial S_t}>\alpha d\abs{S_t}\), then integration would imply
+	\[
+		\sum_{\{u,v\}\in E}\abs{f(u)^2-f(v)^2}>\alpha d\sum_{v\in V}f(v)^2.
+	\]
+	On the other hand,
+	\[
+		\sum_{\{u,v\}\in E}\abs{f(u)^2-f(v)^2}
+		\leq
+		\left(\sum_{\{u,v\}\in E}(f(u)-f(v))^2\right)^{1/2}
+		\left(\sum_{\{u,v\}\in E}(f(u)+f(v))^2\right)^{1/2}.
+	\]
+	The second factor is at most
+	\[
+		\sqrt{2d\sum_v f(v)^2+2\sum_{\{u,v\}\in E}f(u)f(v)}\leq \sqrt{2d\sum_v f(v)^2+2d\sum_v f(v)^2}=2\sqrt{d\sum_v f(v)^2}.
+	\]
+	A slightly sharper accounting yields the constant \(\sqrt{2}\). Thus some threshold satisfies \(\EdgeExpansion(S_t)\leq \sqrt{2R(f)}\).
 \end{proof}
 
 \begin{proof}[Proof of the upper bound in \cref{thm:cheeger}]
-    Let \(g\perp\vec{1}\) be an eigenvector for \(\mu_2\). Choose a median \(m\) of the coordinates of \(g\), and define
-    \[
-        f(v)=\max\{g(v)-m,0\}.
-    \]
-    Then every threshold set of \(f\) has size at most \(n/2\). A standard truncation argument shows that
-    \[
-        R(f)\leq 1-\mu_2.
-    \]
-    Applying \cref{lem:sweep} gives a set \(S\) with
-    \[
-        \EdgeExpansion(S)\leq \sqrt{2(1-\mu_2)}.
-    \]
-    Since \(\EdgeExpansion(G)\leq \EdgeExpansion(S)\), the theorem follows.
+	Let \(g\perp\vec{1}\) be an eigenvector for \(\mu_2\). Choose a median \(m\) of the coordinates of \(g\), and define
+	\[
+		f(v)=\max\{g(v)-m,0\}.
+	\]
+	Then every threshold set of \(f\) has size at most \(n/2\). A standard truncation argument shows that
+	\[
+		R(f)\leq 1-\mu_2.
+	\]
+	Applying \cref{lem:sweep} gives a set \(S\) with
+	\[
+		\EdgeExpansion(S)\leq \sqrt{2(1-\mu_2)}.
+	\]
+	Since \(\EdgeExpansion(G)\leq \EdgeExpansion(S)\), the theorem follows.
 \end{proof}

@@ -17,21 +17,21 @@ Throughout the note, \(G=(V,E)\) is a finite undirected graph. Unless explicitly
 
 For \(S,T\subseteq V\), let \(E(S,T)\) be the multiset of directed edge incidences from \(S\) to \(T\). Thus, in an undirected graph, an edge inside \(S\cap T\) is counted twice in \(E(S,T)\). We write \(e(S,T)=\abs{E(S,T)}\). The edge boundary of \(S\) is
 \[
-    \partial S \coloneqq E(S,V\setminus S),
+	\partial S \coloneqq E(S,V\setminus S),
 \]
 and the external vertex boundary of \(S\) is
 \[
-    \delta S \coloneqq \{v\in V\setminus S \mid \text{there exists }u\in S\text{ with }\{u,v\}\in E\}.
+	\delta S \coloneqq \{v\in V\setminus S \mid \text{there exists }u\in S\text{ with }\{u,v\}\in E\}.
 \]
 For a \(d\)-regular graph, the volume of \(S\) is \(\vol(S)=d\abs{S}\). In a non-regular graph one would instead set \(\vol(S)=\sum_{v\in S}\deg(v)\), but the regular case is enough for the main body of this note.
 
 \begin{definition}[Neighbor Function]
-    \label{def:rotation-map}
-    A \(d\)-regular graph is explicitly represented by a rotation map
-    \[
-        \Rot_G \colon V\times[d]\to V\times[d].
-    \]
-    If \(\Rot_G(v,i)=(w,j)\), then the \(i\)-th edge incident to \(v\) leads to \(w\), and from the other endpoint the same edge is seen as the \(j\)-th edge incident to \(w\). The consistency condition is \(\Rot_G(\Rot_G(v,i))=(v,i)\).
+	\label{def:rotation-map}
+	A \(d\)-regular graph is explicitly represented by a rotation map
+	\[
+		\Rot_G \colon V\times[d]\to V\times[d].
+	\]
+	If \(\Rot_G(v,i)=(w,j)\), then the \(i\)-th edge incident to \(v\) leads to \(w\), and from the other endpoint the same edge is seen as the \(j\)-th edge incident to \(w\). The consistency condition is \(\Rot_G(\Rot_G(v,i))=(v,i)\).
 \end{definition}
 
 The rotation-map representation is the right one for explicit expanders. It makes the graph locally computable. Given a vertex and an edge label, one can compute the next vertex without writing down the entire adjacency matrix. This is the representation used by the zig-zag product and by random-walk constructions.
@@ -41,38 +41,38 @@ The rotation-map representation is the right one for explicit expanders. It make
 
 A \(d\)-regular graph \(G\) defines a random walk whose transition matrix is
 \[
-    \Markov{G} \coloneqq \frac{1}{d}\vec{A}_G,
+	\Markov{G} \coloneqq \frac{1}{d}\vec{A}_G,
 \]
 where \(\vec{A}_G\) is the adjacency matrix. We view distributions as column vectors, and after one step the distribution \(\mu\) becomes \(\Markov{G}\mu\). Since \(G\) is undirected and regular, \(\Markov{G}\) is symmetric and doubly stochastic. Hence the uniform distribution \(\vec{u}\) is stationary.
 
 The total variation distance between distributions \(\mu,\nu\) over \(V\) is
 \[
-    \StatDist(\mu,\nu) \coloneqq \frac{1}{2}\sum_{v\in V}\abs{\mu(v)-\nu(v)}=\frac{1}{2}\norm{\mu-\nu}_1.
+	\StatDist(\mu,\nu) \coloneqq \frac{1}{2}\sum_{v\in V}\abs{\mu(v)-\nu(v)}=\frac{1}{2}\norm{\mu-\nu}_1.
 \]
 Equivalently,
 \[
-    \StatDist(\mu,\nu)=\max_{S\subseteq V}\abs{\mu(S)-\nu(S)}.
+	\StatDist(\mu,\nu)=\max_{S\subseteq V}\abs{\mu(S)-\nu(S)}.
 \]
 The mixing time at error \(\epsilon\) is
 \[
-    \tau_{\mathrm{mix},G}(\epsilon)\coloneqq \max_{v_0\in V}\min\{t\in\NN \mid \StatDist(\Markov{G}^t\vec{1}_{v_0},\vec{u})\leq \epsilon\}.
+	\tau_{\mathrm{mix},G}(\epsilon)\coloneqq \max_{v_0\in V}\min\{t\in\NN \mid \StatDist(\Markov{G}^t\vec{1}_{v_0},\vec{u})\leq \epsilon\}.
 \]
 Here \(\vec{1}_{v_0}\) denotes the point mass at \(v_0\). The purpose of expanders is to make \(\tau_{\mathrm{mix},G}(\epsilon)\) logarithmic in \(n\) and \(\epsilon^{-1}\).
 
 \begin{lemma}[From \(\ell_2\) to Total Variation]
-    \label{lem:l2-tv}
-    If \(\mu\) is a distribution over \(V\), then
-    \[
-        \StatDist(\mu,\vec{u})\leq \frac{\sqrt{n}}{2}\norm{\mu-\vec{u}}_2.
-    \]
+	\label{lem:l2-tv}
+	If \(\mu\) is a distribution over \(V\), then
+	\[
+		\StatDist(\mu,\vec{u})\leq \frac{\sqrt{n}}{2}\norm{\mu-\vec{u}}_2.
+	\]
 \end{lemma}
 
 \begin{proof}
-    By Cauchy-Schwarz,
-    \[
-        \norm{\mu-\vec{u}}_1\leq \sqrt{n}\norm{\mu-\vec{u}}_2.
-    \]
-    Dividing by \(2\) gives the claim.
+	By Cauchy-Schwarz,
+	\[
+		\norm{\mu-\vec{u}}_1\leq \sqrt{n}\norm{\mu-\vec{u}}_2.
+	\]
+	Dividing by \(2\) gives the claim.
 \end{proof}
 
 \subsection{Pseudorandomness}
@@ -81,30 +81,30 @@ Here \(\vec{1}_{v_0}\) denotes the point mass at \(v_0\). The purpose of expande
 We use standard cryptographic asymptotic notation. The security parameter is \(\secparam\in\NN\), and a function \(\negl(\secparam)\) is negligible if it is eventually smaller than \(\secparam^{-c}\) for every constant \(c>0\). We use \(\PPT\) for probabilistic polynomial time.
 
 \begin{definition}[Min-Entropy]
-    \label{def:min-entropy}
-    The min-entropy of a random variable \(X\) over a finite set \(\calX\) is
-    \[
-        \MinEntropy(X)\coloneqq -\log_2\max_{x\in\calX}\Prob[X=x].
-    \]
+	\label{def:min-entropy}
+	The min-entropy of a random variable \(X\) over a finite set \(\calX\) is
+	\[
+		\MinEntropy(X)\coloneqq -\log_2\max_{x\in\calX}\Prob[X=x].
+	\]
 \end{definition}
 
 Thus \(\MinEntropy(X)\geq k\) means that no atom has probability larger than \(2^{-k}\). This is the right entropy notion for extractors, because an extractor must handle arbitrary weak sources and not merely sources with large Shannon entropy on average.
 
 \begin{definition}[Seeded Extractor]
-    \label{def:extractor}
-    A function \(\Extractor\colon \bits^n\times\bits^s\to\bits^m\) is a strong \((k,\epsilon)\)-extractor if for every distribution \(X\) over \(\bits^n\) satisfying \(\MinEntropy(X)\geq k\) and for an independent uniform seed \(Y\sample\bits^s\), one has
-    \[
-        \StatDist\bigl((\Extractor(X,Y),Y),(\vec{U}_m,Y)\bigr)\leq \epsilon.
-    \]
+	\label{def:extractor}
+	A function \(\Extractor\colon \bits^n\times\bits^s\to\bits^m\) is a strong \((k,\epsilon)\)-extractor if for every distribution \(X\) over \(\bits^n\) satisfying \(\MinEntropy(X)\geq k\) and for an independent uniform seed \(Y\sample\bits^s\), one has
+	\[
+		\StatDist\bigl((\Extractor(X,Y),Y),(\vec{U}_m,Y)\bigr)\leq \epsilon.
+	\]
 \end{definition}
 
 The adjective strong means that the seed remains safe to reveal. This is the version most useful in cryptographic applications, where public randomness and reusable seeds must be tracked explicitly.
 
 \begin{definition}[Pseudorandom Generator]
-    \label{def:prg}
-    A function \(\PRGEval\colon\bits^\secparam\to\bits^{\ell(\secparam)}\) with \(\ell(\secparam)>\secparam\) is a pseudorandom generator if for every \(\PPT\) distinguisher \(\advD\),
-    \[
-        \abs{\Prob[\advD(\PRGEval(S))=1]-\Prob[\advD(R)=1]}\leq \negl(\secparam),
-    \]
-    where \(S\sample\bits^\secparam\) and \(R\sample\bits^{\ell(\secparam)}\).
+	\label{def:prg}
+	A function \(\PRGEval\colon\bits^\secparam\to\bits^{\ell(\secparam)}\) with \(\ell(\secparam)>\secparam\) is a pseudorandom generator if for every \(\PPT\) distinguisher \(\advD\),
+	\[
+		\abs{\Prob[\advD(\PRGEval(S))=1]-\Prob[\advD(R)=1]}\leq \negl(\secparam),
+	\]
+	where \(S\sample\bits^\secparam\) and \(R\sample\bits^{\ell(\secparam)}\).
 \end{definition}

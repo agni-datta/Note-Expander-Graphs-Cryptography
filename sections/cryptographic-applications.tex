@@ -9,25 +9,25 @@ We now survey the principal cryptographic applications of expander graphs, organ
 One of the most direct applications of expanders in cryptography is the construction of seeded randomness extractors. An extractor takes a weak random source with high min-entropy and a short uniform seed and produces a nearly uniform output. Expanders yield extractors via the following observation: a random walk on an expander mixes rapidly, so even if the starting vertex is chosen adversarially (subject to having enough entropy), after a few steps the walk distribution is close to uniform.
 
 \begin{theorem}[Expander Walk Extractor Bound~\cite{HLW2006,Vad2012}]
-    \label{thm:expander-extractor}
-    Let \(G\) be an \((N,d,\lambda)\)-expander with vertex set \(V\), and let \(X\) be a distribution over \(V\) with \(\MinEntropy(X)\geq k\). Let \(v_t\) be the endpoint of a \(t\)-step random walk whose starting vertex is sampled from \(X\). Then
-    \[
-        \StatDist(v_t,\vec{U}_V)\leq \frac{1}{2}\lambda^t\sqrt{\frac{N}{2^k}}.
-    \]
+	\label{thm:expander-extractor}
+	Let \(G\) be an \((N,d,\lambda)\)-expander with vertex set \(V\), and let \(X\) be a distribution over \(V\) with \(\MinEntropy(X)\geq k\). Let \(v_t\) be the endpoint of a \(t\)-step random walk whose starting vertex is sampled from \(X\). Then
+	\[
+		\StatDist(v_t,\vec{U}_V)\leq \frac{1}{2}\lambda^t\sqrt{\frac{N}{2^k}}.
+	\]
 \end{theorem}
 
 \begin{proof}
-    View \(X\) as a probability vector \(\mu\). Since \(\MinEntropy(X)\geq k\), we have \(\norm{\mu}_\infty\leq 2^{-k}\), and therefore \(\norm{\mu}_2\leq 2^{-k/2}\). Write \(\mu=\vec{u}+z\), where \(z\perp\vec{1}\). The walk endpoint has distribution \(\Markov{G}^t\mu=\vec{u}+\Markov{G}^t z\), and hence
-    \[
-        \norm{\Markov{G}^t\mu-\vec{u}}_2\leq \lambda^t\norm{z}_2\leq \lambda^t\norm{\mu}_2\leq \lambda^t2^{-k/2}.
-    \]
-    Applying \cref{lem:l2-tv} with \(N=\abs{V}\) gives the result.
+	View \(X\) as a probability vector \(\mu\). Since \(\MinEntropy(X)\geq k\), we have \(\norm{\mu}_\infty\leq 2^{-k}\), and therefore \(\norm{\mu}_2\leq 2^{-k/2}\). Write \(\mu=\vec{u}+z\), where \(z\perp\vec{1}\). The walk endpoint has distribution \(\Markov{G}^t\mu=\vec{u}+\Markov{G}^t z\), and hence
+	\[
+		\norm{\Markov{G}^t\mu-\vec{u}}_2\leq \lambda^t\norm{z}_2\leq \lambda^t\norm{\mu}_2\leq \lambda^t2^{-k/2}.
+	\]
+	Applying \cref{lem:l2-tv} with \(N=\abs{V}\) gives the result.
 \end{proof}
 
 The extractor interpretation is as follows. The starting point contains \(k\) bits of min-entropy, and each step of the walk consumes only \(\log d\) fresh random bits. If \(\lambda\leq 1-c\), then \(O(\log N-k+\log(1/\epsilon))\) steps suffice to make the endpoint \(\epsilon\)-close to uniform. This is not the best seeded extractor known, but it is the cleanest illustration of the way spectral contraction turns weak randomness into nearly uniform randomness.
 
 \begin{remark}
-    Modern extractor constructions go far beyond the basic expander-walk argument and achieve seed lengths close to the information-theoretic optimum. The expander walk remains important because it is conceptually transparent and because it composes well with other pseudorandom objects. For a systematic account, see Vadhan~\cite{Vad2012}.
+	Modern extractor constructions go far beyond the basic expander-walk argument and achieve seed lengths close to the information-theoretic optimum. The expander walk remains important because it is conceptually transparent and because it composes well with other pseudorandom objects. For a systematic account, see Vadhan~\cite{Vad2012}.
 \end{remark}
 
 \subsection{Pseudorandom Generators from Random Walks}
@@ -36,11 +36,11 @@ The extractor interpretation is as follows. The starting point contains \(k\) bi
 Impagliazzo and Wigderson~\cite{IW1997} showed how hardness assumptions can be converted into pseudorandom generators. Expanders enter this story as a derandomization primitive. Instead of sampling many independent inputs to a hard function, one samples the first input uniformly and then follows a short random walk on an expander. The number of random bits falls from the number needed for independent samples to one vertex label plus \(\log d\) bits per step, while the expander's mixing keeps the sampled vertices sufficiently pseudorandom for the analysis.
 
 \begin{lemma}[Expander Chernoff Bound~\cite{HLW2006}]
-    \label{lem:expander-chernoff}
-    Let $G$ be an $(n, d, \lambda)$-expander with vertex set $V$ and let $f \colon V \to [0,1]$. For a $t$-step walk $v_0, v_1, \ldots, v_t$ starting from $v_0 \sample V$ uniformly, and with $\mu = \EE_{v \sample V}[f(v)]$,
-    \[
-        \Prob\left[\frac{1}{t+1}\sum_{i=0}^t f(v_i) \geq \mu + \delta\right] \;\leq\; \exp\!\left(-\frac{(1-\lambda)^2 \delta^2 t}{2}\right).
-    \]
+	\label{lem:expander-chernoff}
+	Let $G$ be an $(n, d, \lambda)$-expander with vertex set $V$ and let $f \colon V \to [0,1]$. For a $t$-step walk $v_0, v_1, \ldots, v_t$ starting from $v_0 \sample V$ uniformly, and with $\mu = \EE_{v \sample V}[f(v)]$,
+	\[
+		\Prob\left[\frac{1}{t+1}\sum_{i=0}^t f(v_i) \geq \mu + \delta\right] \;\leq\; \exp\!\left(-\frac{(1-\lambda)^2 \delta^2 t}{2}\right).
+	\]
 \end{lemma}
 
 Loosely speaking, the time average of any bounded function along the walk concentrates around its space average exponentially fast in $t$, with concentration rate governed by the spectral gap. This is what makes walk-based pseudorandom generators secure: any statistical test that the output fails would imply that some function concentrates differently along the walk than along a truly random sequence, contradicting the expander Chernoff bound.
@@ -51,8 +51,8 @@ Loosely speaking, the time average of any bounded function along the walk concen
 Expander graphs give an elegant construction of collision-resistant hash function families~\cite{HLW2006}. The basic idea is to encode a message as a path in an expander and output the final vertex. Collisions correspond to two distinct paths ending at the same vertex, and the expansion property ensures that the number of such collisions is small.
 
 \begin{construction}[Expander Hash Function]
-    \label{con:expander-hash}
-    Let $G = (V, E)$ be a $d$-regular expander on $n = 2^k$ vertices, so that vertices and edge labels can be encoded in $k$ and $\log d$ bits respectively. Define $\PRFFunction_{G} \colon (\bits^{\log d})^t \to \bits^k$ by $\PRFFunction_{G}(e_1, \ldots, e_t) = v_t$, where $v_0$ is a fixed starting vertex and $v_{i+1}$ is the neighbor of $v_i$ reached by following edge labeled $e_{i+1}$. This function compresses $t \log d$ bits to $k$ bits.
+	\label{con:expander-hash}
+	Let $G = (V, E)$ be a $d$-regular expander on $n = 2^k$ vertices, so that vertices and edge labels can be encoded in $k$ and $\log d$ bits respectively. Define $\PRFFunction_{G} \colon (\bits^{\log d})^t \to \bits^k$ by $\PRFFunction_{G}(e_1, \ldots, e_t) = v_t$, where $v_0$ is a fixed starting vertex and $v_{i+1}$ is the neighbor of $v_i$ reached by following edge labeled $e_{i+1}$. This function compresses $t \log d$ bits to $k$ bits.
 \end{construction}
 
 This construction by itself is a compression map, not automatically a cryptographic hash function. A collision is exactly a pair of distinct labeled walks from the fixed start vertex that end at the same vertex. For arbitrary expanders, expansion gives useful counting and mixing guarantees but does not by itself imply computational collision resistance. Stronger cryptographic statements require additional algebraic structure, for instance Cayley graphs in which finding a collision corresponds to finding a nontrivial relation among generators.
@@ -63,8 +63,8 @@ This construction by itself is a compression map, not automatically a cryptograp
 Expander codes are linear error-correcting codes whose parity checks are arranged according to a sparse bipartite expander. They achieve constant rate and constant relative distance while admitting linear-time decoding algorithms. We recall only the basic Tanner-code picture, referring to~\cite{HLW2006} for the broader coding-theoretic treatment. Let \(G=(L\cup R,E)\) be a bipartite graph with \(\abs{L}=n\). Each \(r\in R\) imposes a local parity check on the bits indexed by its neighbors in \(L\). The code consists of all \(x\in\bits^n\) satisfying all these local checks.
 
 \begin{theorem}[Expander Code Parameters~\cite{HLW2006}]
-    \label{thm:expander-code}
-    If $G$ is a $(d, (1-\epsilon)d)$-lossless expander with $\abs{L} = n$ and $\abs{R} = n/2$, then the corresponding expander code has length $n$, dimension at least $n/2$, and minimum distance at least $\delta n$ for a constant $\delta > 0$ depending only on $d$ and $\epsilon$. Moreover, linear-time decoding of up to $\delta n/4$ errors is possible by a simple iterative flipping algorithm.
+	\label{thm:expander-code}
+	If $G$ is a $(d, (1-\epsilon)d)$-lossless expander with $\abs{L} = n$ and $\abs{R} = n/2$, then the corresponding expander code has length $n$, dimension at least $n/2$, and minimum distance at least $\delta n$ for a constant $\delta > 0$ depending only on $d$ and $\epsilon$. Moreover, linear-time decoding of up to $\delta n/4$ errors is possible by a simple iterative flipping algorithm.
 \end{theorem}
 
 Concretely, the proof of the distance bound uses the lossless expansion property directly: if a codeword $x$ has few nonzero positions, then every parity check involving those positions has at least one unsatisfied check, contradicting the code condition.
@@ -77,7 +77,7 @@ A more recent and more sophisticated application of expanders is in the design a
 The security argument is not merely that the honest parties remain connected. Connectivity alone is too weak. What one needs is that every large enough set of honest parties has many edges leaving it, so local consistency checks and local shares propagate through the system. This is the same no-bottleneck phenomenon that drives mixing. The exact cryptographic statement depends on the model, corruption threshold, setup assumptions, and correlation-generation mechanism, but the common role of the expander is to replace all-to-all communication by sparse communication without allowing the adversary to isolate a large part of the computation.
 
 \begin{remark}
-    The literature on sparse-communication MPC is technically diverse, and not every use of a sparse graph is literally an expander argument. The useful heuristic is nevertheless stable. If a protocol replaces complete communication by local communication, then some expansion-like property must prevent local failures or corruptions from becoming global separations.
+	The literature on sparse-communication MPC is technically diverse, and not every use of a sparse graph is literally an expander argument. The useful heuristic is nevertheless stable. If a protocol replaces complete communication by local communication, then some expansion-like property must prevent local failures or corruptions from becoming global separations.
 \end{remark}
 
 \subsection{Derandomization and Hardness Amplification}

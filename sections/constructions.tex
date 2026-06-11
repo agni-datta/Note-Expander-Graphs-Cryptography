@@ -9,12 +9,12 @@ The existence of expander families follows easily from the probabilistic method:
 Margulis~\cite{Mar1973} gave one of the first explicit constructions of bounded-degree expander families. The later construction of Lubotzky, Phillips, and Sarnak~\cite{LPS1988} gave a striking algebraic family of Ramanujan graphs, meaning graphs whose nontrivial eigenvalues meet the Alon-Boppana barrier up to the optimal constant. In normalized form, a \((p+1)\)-regular Ramanujan graph has all nontrivial adjacency eigenvalues bounded in absolute value by \(2\sqrt{p}\), or equivalently all nontrivial eigenvalues of the random-walk matrix bounded by \(2\sqrt{p}/(p+1)\).
 
 \begin{construction}[LPS Ramanujan Graphs~\cite{LPS1988}]
-    \label{con:lps}
-    Let \(p\) and \(q\) be distinct odd primes satisfying the congruence conditions required in the LPS construction. The graph \(X^{p,q}\) is a Cayley graph of either \(\mathrm{PGL}(2,\FF_q)\) or \(\mathrm{PSL}(2,\FF_q)\). Its \(p+1\) generators are obtained from integer solutions to
-    \[
-        \alpha_0^2+\alpha_1^2+\alpha_2^2+\alpha_3^2=p
-    \]
-    with prescribed parity conditions. Multiplication by these generators defines a \((p+1)\)-regular graph. The resulting graph is Ramanujan, and in the \(\mathrm{PSL}(2,\FF_q)\) case the number of vertices is \(q(q^2-1)/2\). The proof of the Ramanujan bound uses deep number theory, ultimately relying on Deligne's proof of the relevant Ramanujan conjecture for modular forms.
+	\label{con:lps}
+	Let \(p\) and \(q\) be distinct odd primes satisfying the congruence conditions required in the LPS construction. The graph \(X^{p,q}\) is a Cayley graph of either \(\mathrm{PGL}(2,\FF_q)\) or \(\mathrm{PSL}(2,\FF_q)\). Its \(p+1\) generators are obtained from integer solutions to
+	\[
+		\alpha_0^2+\alpha_1^2+\alpha_2^2+\alpha_3^2=p
+	\]
+	with prescribed parity conditions. Multiplication by these generators defines a \((p+1)\)-regular graph. The resulting graph is Ramanujan, and in the \(\mathrm{PSL}(2,\FF_q)\) case the number of vertices is \(q(q^2-1)/2\). The proof of the Ramanujan bound uses deep number theory, ultimately relying on Deligne's proof of the relevant Ramanujan conjecture for modular forms.
 \end{construction}
 
 \subsection{Combinatorial Constructions: The Zig-Zag Product}
@@ -23,19 +23,19 @@ Margulis~\cite{Mar1973} gave one of the first explicit constructions of bounded-
 The zig-zag product of Reingold, Vadhan, and Wigderson~\cite{RVW2002} gives an entirely combinatorial construction of expanders with optimal or near-optimal parameters and has the advantage of being simpler to analyze and more flexible to apply than the algebraic constructions.
 
 \begin{definition}[Zig-Zag Product~\cite{RVW2002}]
-    \label{def:zig-zag}
-    Let $G_1$ be an $(n_1, D_1, \lambda_1)$-expander and $G_2$ a $(D_1, D_2, \lambda_2)$-expander, where the vertex set of $G_2$ has size equal to the degree of $G_1$. The zig-zag product $G_1 \zzprod G_2$ is a graph on $n_1 \cdot D_1$ vertices with degree $D_2^2$, defined by a three-step walk: take a step in $G_2$, then a step in $G_1$, then another step in $G_2$. Concretely, each vertex of $G_1 \zzprod G_2$ is a pair $(v, c)$ where $v \in V(G_1)$ is a vertex and $c \in V(G_2)$ is a cloud vertex labeling a port of $v$ in $G_1$.
+	\label{def:zig-zag}
+	Let $G_1$ be an $(n_1, D_1, \lambda_1)$-expander and $G_2$ a $(D_1, D_2, \lambda_2)$-expander, where the vertex set of $G_2$ has size equal to the degree of $G_1$. The zig-zag product $G_1 \zzprod G_2$ is a graph on $n_1 \cdot D_1$ vertices with degree $D_2^2$, defined by a three-step walk: take a step in $G_2$, then a step in $G_1$, then another step in $G_2$. Concretely, each vertex of $G_1 \zzprod G_2$ is a pair $(v, c)$ where $v \in V(G_1)$ is a vertex and $c \in V(G_2)$ is a cloud vertex labeling a port of $v$ in $G_1$.
 \end{definition}
 
 \begin{theorem}[Zig-Zag Expansion~\cite{RVW2002}]
-    \label{thm:zig-zag}
-    The zig-zag product $G_1 \zzprod G_2$ is an $(n_1 D_1, D_2^2, \lambda)$-expander where $\lambda \leq \lambda_1 + \lambda_2 + \lambda_2^2 \leq \lambda_1 + 2\lambda_2$.
+	\label{thm:zig-zag}
+	The zig-zag product $G_1 \zzprod G_2$ is an $(n_1 D_1, D_2^2, \lambda)$-expander where $\lambda \leq \lambda_1 + \lambda_2 + \lambda_2^2 \leq \lambda_1 + 2\lambda_2$.
 \end{theorem}
 
 We stress that the key feature of this construction is that the degree of the product depends only on the degree of $G_2$, not on $n_1$. Starting with a constant-size expander $G_2$ and repeatedly taking zig-zag products with derandomized squarings of $G_1$, one obtains an explicit construction of constant-degree expanders on $n$ vertices for every $n$, with the expansion constant depending only on $D_2$.
 
 \begin{remark}
-    The zig-zag product is the combinatorial engine behind Reingold's proof~\cite{Rei2008} that undirected $s$-$t$ connectivity lies in $\LOGSPACE$. The idea is to replace a graph $G$ by $G \zzprod H$ for a small expander $H$, reducing the degree while maintaining expansion, and then iterate to produce a graph of constant degree without losing much expansion. The random walk on this constant-degree expander can be simulated in logarithmic space, giving a $\LOGSPACE$ algorithm for connectivity.
+	The zig-zag product is the combinatorial engine behind Reingold's proof~\cite{Rei2008} that undirected $s$-$t$ connectivity lies in $\LOGSPACE$. The idea is to replace a graph $G$ by $G \zzprod H$ for a small expander $H$, reducing the degree while maintaining expansion, and then iterate to produce a graph of constant degree without losing much expansion. The random walk on this constant-degree expander can be simulated in logarithmic space, giving a $\LOGSPACE$ algorithm for connectivity.
 \end{remark}
 
 \subsection{The Replacement Product and Tensor Product}
