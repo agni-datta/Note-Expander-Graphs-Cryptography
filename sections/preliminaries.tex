@@ -1,9 +1,6 @@
 \section{Preliminaries}
 \label{sec:preliminaries}
 
-\subsection{Notation}
-\label{subsec:notation}
-
 We write \(\NN,\ZZ,\QQ,\RR,\CC\) for the natural numbers, integers, rationals, real numbers, and complex numbers. For \(n \in \NN\), we write \([n] \coloneqq \{1,\ldots,n\}\). The binary alphabet is \(\bits\), and \(\bits^n\) and \(\bits^*\) denote strings of length \(n\) and all finite strings. If \(\calS\) is finite, then \(x \sample \calS\) means that \(x\) is sampled uniformly from \(\calS\), and \(\vec{U}_{\calS}\) denotes the uniform distribution over \(\calS\). When \(\calS=\bits^m\), we also write \(\vec{U}_m\).
 
 All vectors are column vectors, and vectors and matrices are typeset in bold by writing \(\vec{x}\) and \(\vec{M}\). For \(\vec{x} \in \RR^n\), we write \(\norm{\vec{x}}_1,\norm{\vec{x}}_2,\norm{\vec{x}}_\infty\) for the usual norms. The all-ones vector is \(\vec{1}\). The normalized all-ones vector is \(\vec{e}_0 \coloneqq \vec{1}/\sqrt{n}\), while the probability vector of the uniform distribution is \(\vec{u}\coloneqq \vec{1}/n\). These two vectors play different roles. The former has Euclidean norm one and is used in spectral decompositions; the latter has total mass one and is used as a distribution.
@@ -13,25 +10,25 @@ For a real symmetric matrix \(\vec{M}\), its eigenvalues are ordered as \(\mu_1(
 \subsection{Graphs}
 \label{subsec:graphs}
 
-Throughout the note, \(G=(V,E)\) is a finite undirected graph. Unless explicitly stated otherwise, \(G\) is \(d\)-regular, \(n=\abs{V}\), and \(d\) is independent of \(n\) when we discuss graph families. We allow multigraphs when discussing graph products and random walks. Parallel edges are counted with multiplicity, and a self-loop contributes one available step to the random walk.
+Throughout the note, \(\Graph=(\Vertices,\Edges)\) is a finite undirected graph. Unless explicitly stated otherwise, \(\Graph\) is \(d\)-regular, \(n=\abs{\Vertices}\), and \(d\) is independent of \(n\) when we discuss graph families. We allow multigraphs when discussing graph products and random walks. Parallel edges are counted with multiplicity, and a self-loop contributes one available step to the random walk.
 
-For \(S,T\subseteq V\), let \(E(S,T)\) be the multiset of directed edge incidences from \(S\) to \(T\). Thus, in an undirected graph, an edge inside \(S\cap T\) is counted twice in \(E(S,T)\). We write \(e(S,T)=\abs{E(S,T)}\). The edge boundary of \(S\) is
-\[
-	\partial S \coloneqq E(S,V\setminus S),
-\]
+For \(S,T\subseteq \Vertices\), let \(\Edges(S,T)\) be the multiset of directed edge incidences from \(S\) to \(T\). Thus, in an undirected graph, an edge inside \(S\cap T\) is counted twice in \(\Edges(S,T)\). We write \(e(S,T)=\abs{\Edges(S,T)}\). The edge boundary of \(S\) is
+\begin{equation}
+	\partial S \coloneqq \Edges(S,\Vertices\setminus S),
+\end{equation}
 and the external vertex boundary of \(S\) is
-\[
-	\delta S \coloneqq \{v\in V\setminus S \mid \text{there exists }u\in S\text{ with }\{u,v\}\in E\}.
-\]
+\begin{equation}
+	\delta S \coloneqq \{v\in \Vertices\setminus S \mid \exists u\in S \;:\; \{u,v\}\in\Edges\}.
+\end{equation}
 For a \(d\)-regular graph, the volume of \(S\) is \(\vol(S)=d\abs{S}\). In a non-regular graph one would instead set \(\vol(S)=\sum_{v\in S}\deg(v)\), but the regular case is enough for the main body of this note.
 
 \begin{definition}[Neighbor Function]
 	\label{def:rotation-map}
 	A \(d\)-regular graph is explicitly represented by a rotation map
-	\[
-		\Rot_G \colon V\times[d]\to V\times[d].
-	\]
-	If \(\Rot_G(v,i)=(w,j)\), then the \(i\)-th edge incident to \(v\) leads to \(w\), and from the other endpoint the same edge is seen as the \(j\)-th edge incident to \(w\). The consistency condition is \(\Rot_G(\Rot_G(v,i))=(v,i)\).
+	\begin{equation}
+		\Rot_\Graph \colon \Vertices\times[d]\to \Vertices\times[d].
+	\end{equation}
+	If \(\Rot_\Graph(v,i)=(w,j)\), then the \(i\)-th edge incident to \(v\) leads to \(w\), and from the other endpoint the same edge is seen as the \(j\)-th edge incident to \(w\). The consistency condition is \(\Rot_\Graph(\Rot_\Graph(v,i))=(v,i)\).
 \end{definition}
 
 The rotation-map representation is the right one for explicit expanders. It makes the graph locally computable. Given a vertex and an edge label, one can compute the next vertex without writing down the entire adjacency matrix. This is the representation used by the zig-zag product and by random-walk constructions.
@@ -39,39 +36,117 @@ The rotation-map representation is the right one for explicit expanders. It make
 \subsection{Markov Chains and Mixing}
 \label{subsec:markov-chains}
 
-A \(d\)-regular graph \(G\) defines a random walk whose transition matrix is
-\[
-	\Markov{G} \coloneqq \frac{1}{d}\vec{A}_G,
-\]
-where \(\vec{A}_G\) is the adjacency matrix. We view distributions as column vectors, and after one step the distribution \(\mu\) becomes \(\Markov{G}\mu\). Since \(G\) is undirected and regular, \(\Markov{G}\) is symmetric and doubly stochastic. Hence the uniform distribution \(\vec{u}\) is stationary.
+Before specializing to graph walks, we recall the finite-state Markov-chain convention used throughout the note. A Markov chain is a stochastic process in which the next state depends on the present state and not on the full history. This memoryless condition is exactly what makes powers of a single transition matrix describe many steps of the process, and it is the reason that spectral information about the transition matrix becomes information about convergence to equilibrium.
 
-The total variation distance between distributions \(\mu,\nu\) over \(V\) is
-\[
-	\StatDist(\mu,\nu) \coloneqq \frac{1}{2}\sum_{v\in V}\abs{\mu(v)-\nu(v)}=\frac{1}{2}\norm{\mu-\nu}_1.
-\]
+\begin{figure}[b]
+	\centering
+	\begin{mdframed}[linewidth=0.4pt, linecolor=expanderMutedColor!45, backgroundcolor=white, roundcorner=2pt, innerleftmargin=6pt, innerrightmargin=6pt, innertopmargin=6pt, innerbottommargin=6pt]
+		\centering
+		\adjustbox{max width=.92\textwidth}{%
+			\begin{tikzpicture}[
+					state/.style={circle, draw=expanderVertexColor, fill=expanderVertexColor!8, minimum size=11mm, inner sep=0pt, font=\small},
+					localTransition/.style={-Latex, draw=expanderVertexColor, line width=0.58pt, shorten <=2pt, shorten >=2pt},
+					longTransition/.style={-Latex, draw=expanderBoundaryColor!80, line width=0.62pt, shorten <=2pt, shorten >=2pt}
+				]
+				\node[state] (s1) at (0,0) {\(s_1\)};
+				\node[state] (s2) at (2.25,0) {\(s_2\)};
+				\node[state] (s3) at (4.5,0) {\(s_3\)};
+				\node[state] (s4) at (6.75,0) {\(s_4\)};
+				\node[state] (s5) at (9,0) {\(s_5\)};
+				\draw[localTransition] (s1) to[out=16,in=164] (s2);
+				\draw[localTransition] (s2) to[out=16,in=164] (s3);
+				\draw[localTransition] (s3) to[out=16,in=164] (s4);
+				\draw[localTransition] (s4) to[out=16,in=164] (s5);
+				\draw[longTransition] (s1) to[out=58,in=122,looseness=0.95] (s3);
+				\draw[longTransition] (s1) to[out=64,in=116,looseness=0.88] (s4);
+				\draw[longTransition] (s1) to[out=70,in=110,looseness=0.82] (s5);
+				\draw[longTransition] (s2) to[out=-55,in=-125,looseness=0.85] (s5);
+			\end{tikzpicture}%
+		}
+	\end{mdframed}
+	\caption{A finite-state Markov chain drawn as a directed state graph. The arrows indicate which one-step transitions have positive probability, while the actual transition probabilities and the stochastic-matrix identities are stated in the surrounding text rather than written into the diagram.}
+	\label{fig:markov-chain-transition}
+\end{figure}
+
+The convention in \cref{fig:markov-chain-transition} is the column-stochastic convention, which matches the rest of the manuscript. If the current distribution is a column vector, then the transition matrix multiplies it on the left. Thus, for states \(x,y\in\calX\), the entry \(\vec{P}(y,x)\) denotes the probability of moving from \(x\) to \(y\) in one step, the condition \(\sum_{y\in\calX}\vec{P}(y,x)=1\) says that every present state distributes one unit of probability mass among possible next states, and the distribution update is \(\mu_{t+1}=\vec{P}\mu_t\). This convention is immaterial for reversible regular graph walks, where the transition matrix is symmetric, but fixing it here prevents transposition errors later.
+
+\begin{definition}[Finite-State Markov Chain]
+	\label{def:finite-state-markov-chain}
+	Let \(\calX\) be a finite set. A column-stochastic matrix on \(\calX\) is a matrix \(\vec{P}\in\RR^{\calX\times\calX}\) satisfying
+	\begin{equation}
+		\label{eq:transition-nonnegative}
+		\vec{P}(y,x)\geq 0
+	\end{equation}
+	for all \(x,y\in\calX\), and
+	\begin{equation}
+		\label{eq:transition-column-sum}
+		\sum_{y\in\calX}\vec{P}(y,x)=1
+	\end{equation}
+	for every \(x\in\calX\). A stochastic process \((X_t)_{t\geq 0}\) taking values in \(\calX\) is a Markov chain with transition matrix \(\vec{P}\) if, for every \(t\geq 0\), every \(x_0,\ldots,x_t,y\in\calX\), and every conditioning event of positive probability, one has
+	\begin{equation}
+		\label{eq:markov-property}
+		\Prob[X_{t+1}=y\mid X_t=x_t,X_{t-1}=x_{t-1},\ldots,X_0=x_0]=\vec{P}(y,x_t).
+	\end{equation}
+\end{definition}
+
+The process in \cref{def:finite-state-markov-chain} is therefore governed by one-step transition probabilities. If \(\mu_t\in\RR^{\calX}\) is the distribution of \(X_t\), namely \(\mu_t(x)=\Prob[X_t=x]\), then for every \(y\in\calX\) we obtain
+\begin{align}
+	\mu_{t+1}(y)
+	 & =\Prob[X_{t+1}=y] \label{eq:markov-evolution-start}                                                   \\
+	 & =\sum_{x\in\calX}\Prob[X_{t+1}=y\mid X_t=x]\Prob[X_t=x] \label{eq:markov-evolution-total-probability} \\
+	 & =\sum_{x\in\calX}\vec{P}(y,x)\mu_t(x). \label{eq:markov-evolution-entrywise}
+\end{align}
+Equivalently, in vector notation,
+\begin{equation}
+	\label{eq:markov-evolution-vector}
+	\mu_{t+1}=\vec{P}\mu_t,
+\end{equation}
+and induction on \(t\) gives
+\begin{equation}
+	\label{eq:markov-evolution-powers}
+	\mu_t=\vec{P}^{\,t}\mu_0.
+\end{equation}
+Thus the qualitative behavior of the process is encoded in the powers of \(\vec{P}\). A distribution \(\pi\) is stationary if
+\begin{equation}
+	\label{eq:stationary-distribution}
+	\vec{P}\pi=\pi,
+\end{equation}
+which means that a chain started from \(\pi\) has the same distribution at every later time.
+
+A \(d\)-regular graph \(\Graph\) defines a Markov chain by taking the state space to be \(\Vertices\) and moving in one step to a uniformly chosen neighbor. Its transition matrix is
+\begin{equation}
+	\label{eq:graph-random-walk-transition}
+	\Markov{\Graph} \coloneqq \frac{1}{d}\Adjacency{\Graph},
+\end{equation}
+where \(\Adjacency{\Graph}\) is the adjacency matrix. In other words, \(\Markov{\Graph}(v,u)=1/d\) when \(u\) is adjacent to \(v\), counting parallel edges with multiplicity, and \(\Markov{\Graph}(v,u)=0\) otherwise. Since \(\Graph\) is undirected and regular, \(\Markov{\Graph}\) is symmetric and doubly stochastic. Hence the uniform distribution \(\vec{u}\) is stationary, and \cref{eq:markov-evolution-powers} says that after \(t\) steps from a starting distribution \(\mu\) the walk has distribution \(\Markov{\Graph}^{t}\mu\).
+
+The total variation distance between distributions \(\mu,\nu\) over \(\Vertices\) is
+\begin{equation}
+	\StatDist(\mu,\nu) \coloneqq \frac{1}{2}\sum_{v\in \Vertices}\abs{\mu(v)-\nu(v)}=\frac{1}{2}\norm{\mu-\nu}_1.
+\end{equation}
 Equivalently,
-\[
-	\StatDist(\mu,\nu)=\max_{S\subseteq V}\abs{\mu(S)-\nu(S)}.
-\]
+\begin{equation}
+	\StatDist(\mu,\nu)=\max_{S\subseteq \Vertices}\abs{\mu(S)-\nu(S)}.
+\end{equation}
 The mixing time at error \(\epsilon\) is
-\[
-	\tau_{\mathrm{mix},G}(\epsilon)\coloneqq \max_{v_0\in V}\min\{t\in\NN \mid \StatDist(\Markov{G}^t\vec{1}_{v_0},\vec{u})\leq \epsilon\}.
-\]
-Here \(\vec{1}_{v_0}\) denotes the point mass at \(v_0\). The purpose of expanders is to make \(\tau_{\mathrm{mix},G}(\epsilon)\) logarithmic in \(n\) and \(\epsilon^{-1}\).
+\begin{equation}
+	\tau_{\mathrm{mix},\Graph}(\epsilon)\coloneqq \max_{v_0\in \Vertices}\min\{t\in\NN \mid \StatDist(\Markov{\Graph}^t\vec{1}_{v_0},\vec{u})\leq \epsilon\}.
+\end{equation}
+Here \(\vec{1}_{v_0}\) denotes the point mass at \(v_0\). The purpose of expanders is to make \(\tau_{\mathrm{mix},\Graph}(\epsilon)\) logarithmic in \(n\) and \(\epsilon^{-1}\).
 
 \begin{lemma}[From \(\ell_2\) to Total Variation]
 	\label{lem:l2-tv}
-	If \(\mu\) is a distribution over \(V\), then
-	\[
+	If \(\mu\) is a distribution over \(\Vertices\), then
+	\begin{equation}
 		\StatDist(\mu,\vec{u})\leq \frac{\sqrt{n}}{2}\norm{\mu-\vec{u}}_2.
-	\]
+	\end{equation}
 \end{lemma}
 
 \begin{proof}
 	By Cauchy-Schwarz,
-	\[
+	\begin{equation}
 		\norm{\mu-\vec{u}}_1\leq \sqrt{n}\norm{\mu-\vec{u}}_2.
-	\]
+	\end{equation}
 	Dividing by \(2\) gives the claim.
 \end{proof}
 
@@ -83,9 +158,9 @@ We use standard cryptographic asymptotic notation. The security parameter is \(\
 \begin{definition}[Min-Entropy]
 	\label{def:min-entropy}
 	The min-entropy of a random variable \(X\) over a finite set \(\calX\) is
-	\[
+	\begin{equation}
 		\MinEntropy(X)\coloneqq -\log_2\max_{x\in\calX}\Prob[X=x].
-	\]
+	\end{equation}
 \end{definition}
 
 Thus \(\MinEntropy(X)\geq k\) means that no atom has probability larger than \(2^{-k}\). This is the right entropy notion for extractors, because an extractor must handle arbitrary weak sources and not merely sources with large Shannon entropy on average.
@@ -93,9 +168,9 @@ Thus \(\MinEntropy(X)\geq k\) means that no atom has probability larger than \(2
 \begin{definition}[Seeded Extractor]
 	\label{def:extractor}
 	A function \(\Extractor\colon \bits^n\times\bits^s\to\bits^m\) is a strong \((k,\epsilon)\)-extractor if for every distribution \(X\) over \(\bits^n\) satisfying \(\MinEntropy(X)\geq k\) and for an independent uniform seed \(Y\sample\bits^s\), one has
-	\[
+	\begin{equation}
 		\StatDist\bigl((\Extractor(X,Y),Y),(\vec{U}_m,Y)\bigr)\leq \epsilon.
-	\]
+	\end{equation}
 \end{definition}
 
 The adjective strong means that the seed remains safe to reveal. This is the version most useful in cryptographic applications, where public randomness and reusable seeds must be tracked explicitly.
@@ -103,8 +178,8 @@ The adjective strong means that the seed remains safe to reveal. This is the ver
 \begin{definition}[Pseudorandom Generator]
 	\label{def:prg}
 	A function \(\PRGEval\colon\bits^\secparam\to\bits^{\ell(\secparam)}\) with \(\ell(\secparam)>\secparam\) is a pseudorandom generator if for every \(\PPT\) distinguisher \(\advD\),
-	\[
+	\begin{equation}
 		\abs{\Prob[\advD(\PRGEval(S))=1]-\Prob[\advD(R)=1]}\leq \negl(\secparam),
-	\]
+	\end{equation}
 	where \(S\sample\bits^\secparam\) and \(R\sample\bits^{\ell(\secparam)}\).
 \end{definition}

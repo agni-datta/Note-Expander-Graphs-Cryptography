@@ -15,10 +15,11 @@ This repository contains the source files for the expository note 'A Note on Exp
 ### Collaborators
 
 - Agni Datta
+- Nilabha Saha
 
 ### Building
 
-The note is typeset with LuaLaTeX. With `latexmk` installed, run:
+The note is typeset with the standard `article` class and an arXiv-compatible PDFLaTeX workflow. With `latexmk` installed, run:
 
 ```
 latexmk
@@ -31,8 +32,8 @@ from the project root. A full BibTeX build is run automatically. The output is `
 If you use this work, please cite it as follows:
 
 ```bibtex
-@misc{Dat26,
-    author = {Agni Datta},
+@misc{DatSah26,
+    author = {Agni Datta and Nilabha Saha},
     title  = {A Note on Expander Graphs and Their Applications in Cryptography},
     year   = {2026},
     howpublished = {\url{https://github.com/agni-datta/Note-Expander-Graphs-Cryptography}}

@@ -1,30 +1,38 @@
 \section{Cryptographic Applications}
 \label{sec:cryptographic-applications}
 
-We now survey the principal cryptographic applications of expander graphs, organized by the property of expanders that drives each application. In each case the structural intuition is the same, namely that expansion is a quantitative form of pseudorandomness, and that constructions exploiting this pseudorandomness inherit provable security or efficiency guarantees.
+The preceding sections developed expansion as a graph-theoretic, spectral, and probabilistic phenomenon. We now turn to its cryptographic uses, where the same phenomenon appears in a slightly different language. A cryptographic construction often begins with a local resource constraint: a seed should be short, a code constraint should touch only a few coordinates, a party should communicate with only a few neighbors, or a reliability transformation should duplicate a circuit only modestly. Expansion is useful precisely because it converts such local constraints into global guarantees.
+
+We shall organize the applications by the property of expanders that drives them. In extractor and derandomization arguments, the relevant property is spectral contraction of the nonuniform part of a distribution. In coding and fault tolerance, the relevant property is that small erroneous sets cannot hide from many local checks. In sparse communication, the relevant property is the absence of separators that would let an adversary isolate a substantial region of the protocol. These are not different miracles; they are different manifestations of the same no-bottleneck principle.
 
 \subsection{Randomness Extractors from Expander Walks}
 \label{subsec:extractors}
 
-One of the most direct applications of expanders in cryptography is the construction of seeded randomness extractors. An extractor takes a weak random source with high min-entropy and a short uniform seed and produces a nearly uniform output. Expanders yield extractors via the following observation: a random walk on an expander mixes rapidly, so even if the starting vertex is chosen adversarially (subject to having enough entropy), after a few steps the walk distribution is close to uniform.
+One of the most direct applications of expanders in cryptography is the construction of seeded randomness extractors. An extractor takes a weak random source with high min-entropy and a short uniform seed and produces a nearly uniform output. The expander-walk idea is to interpret the weak source as a starting vertex and the seed as the sequence of edge labels followed by the walk. Since every additional step consumes only \(\log d\) fresh random bits, a constant-degree expander lets us spend randomness slowly while using spectral mixing to wash out the nonuniformity of the starting point.
+
+The next theorem is the cleanest quantitative form of this idea. It does not claim that every bit of the walk is extracted, and it does not try to optimize the seed length; instead, it isolates the fundamental \(\ell_2\)-contraction calculation that makes expander-walk extractors work.
 
 \begin{theorem}[Expander Walk Extractor Bound~\cite{HLW2006,Vad2012}]
 	\label{thm:expander-extractor}
-	Let \(G\) be an \((N,d,\lambda)\)-expander with vertex set \(V\), and let \(X\) be a distribution over \(V\) with \(\MinEntropy(X)\geq k\). Let \(v_t\) be the endpoint of a \(t\)-step random walk whose starting vertex is sampled from \(X\). Then
-	\[
-		\StatDist(v_t,\vec{U}_V)\leq \frac{1}{2}\lambda^t\sqrt{\frac{N}{2^k}}.
-	\]
+	Let \(\Graph\) be an \((N,d,\lambda)\)-expander with vertex set \(\Vertices\), and let \(X\) be a distribution over \(\Vertices\) with \(\MinEntropy(X)\geq k\). Let \(v_t\) be the endpoint of a \(t\)-step random walk whose starting vertex is sampled from \(X\). Then
+	\begin{equation}
+		\label{eq:expander-walk-extractor-bound}
+		\StatDist(v_t,\vec{U}_\Vertices)\leq \frac{1}{2}\lambda^t\sqrt{\frac{N}{2^k}}.
+	\end{equation}
 \end{theorem}
 
 \begin{proof}
-	View \(X\) as a probability vector \(\mu\). Since \(\MinEntropy(X)\geq k\), we have \(\norm{\mu}_\infty\leq 2^{-k}\), and therefore \(\norm{\mu}_2\leq 2^{-k/2}\). Write \(\mu=\vec{u}+z\), where \(z\perp\vec{1}\). The walk endpoint has distribution \(\Markov{G}^t\mu=\vec{u}+\Markov{G}^t z\), and hence
-	\[
-		\norm{\Markov{G}^t\mu-\vec{u}}_2\leq \lambda^t\norm{z}_2\leq \lambda^t\norm{\mu}_2\leq \lambda^t2^{-k/2}.
-	\]
-	Applying \cref{lem:l2-tv} with \(N=\abs{V}\) gives the result.
+	The argument is the same spectral contraction argument used for ordinary mixing, except that the initial distribution is not a point mass and need not be close to uniform. Min-entropy gives an \(\ell_2\) upper bound on the initial distribution, and expansion then contracts only the component orthogonal to the uniform distribution.
+
+	View \(X\) as a probability vector \(\mu\). Since \(\MinEntropy(X)\geq k\), we have \(\norm{\mu}_\infty\leq 2^{-k}\), and therefore \(\norm{\mu}_2\leq 2^{-k/2}\). Write \(\mu=\vec{u}+z\), where \(z\perp\vec{1}\). The walk endpoint has distribution \(\Markov{\Graph}^t\mu=\vec{u}+\Markov{\Graph}^t z\), and hence
+	\begin{equation}
+		\label{eq:expander-extractor-l2-contraction}
+		\norm{\Markov{\Graph}^t\mu-\vec{u}}_2\leq \lambda^t\norm{z}_2\leq \lambda^t\norm{\mu}_2\leq \lambda^t2^{-k/2}.
+	\end{equation}
+	Applying \cref{lem:l2-tv} with \(N=\abs{\Vertices}\), and then substituting \cref{eq:expander-extractor-l2-contraction}, gives \cref{eq:expander-walk-extractor-bound}.
 \end{proof}
 
-The extractor interpretation is as follows. The starting point contains \(k\) bits of min-entropy, and each step of the walk consumes only \(\log d\) fresh random bits. If \(\lambda\leq 1-c\), then \(O(\log N-k+\log(1/\epsilon))\) steps suffice to make the endpoint \(\epsilon\)-close to uniform. This is not the best seeded extractor known, but it is the cleanest illustration of the way spectral contraction turns weak randomness into nearly uniform randomness.
+The extractor interpretation is as follows. The starting point contains \(k\) bits of min-entropy, and each step of the walk consumes only \(\log d\) fresh random bits. If \(\lambda\leq 1-c\), then \(\bigO(\log N-k+\log(1/\epsilon))\) steps suffice to make the endpoint \(\epsilon\)-close to uniform. This is not the best seeded extractor known, but it is the cleanest illustration of the way spectral contraction turns weak randomness into nearly uniform randomness.
 
 \begin{remark}
 	Modern extractor constructions go far beyond the basic expander-walk argument and achieve seed lengths close to the information-theoretic optimum. The expander walk remains important because it is conceptually transparent and because it composes well with other pseudorandom objects. For a systematic account, see Vadhan~\cite{Vad2012}.
@@ -37,113 +45,121 @@ Impagliazzo and Wigderson~\cite{IW1997} showed how hardness assumptions can be c
 
 \begin{lemma}[Expander Chernoff Bound~\cite{HLW2006}]
 	\label{lem:expander-chernoff}
-	Let $G$ be an $(n, d, \lambda)$-expander with vertex set $V$ and let $f \colon V \to [0,1]$. For a $t$-step walk $v_0, v_1, \ldots, v_t$ starting from $v_0 \sample V$ uniformly, and with $\mu = \EE_{v \sample V}[f(v)]$,
-	\[
-		\Prob\left[\frac{1}{t+1}\sum_{i=0}^t f(v_i) \geq \mu + \delta\right] \;\leq\; \exp\!\left(-\frac{(1-\lambda)^2 \delta^2 t}{2}\right).
-	\]
+	Let \(\Graph\) be an \((n,d,\lambda)\)-expander with vertex set \(\Vertices\), and let \(f\colon \Vertices\to[0,1]\). For a \(t\)-step walk \(v_0,v_1,\ldots,v_t\) starting from \(v_0\sample\Vertices\) uniformly, and with \(\mu=\EE_{v\sample\Vertices}[f(v)]\),
+	\begin{equation}
+		\label{eq:expander-chernoff-bound}
+		\Prob\left[\frac{1}{t+1}\sum_{i=0}^t f(v_i) \geq \mu + \delta\right]\leq \exp\left(-\frac{(1-\lambda)^2\delta^2t}{2}\right).
+	\end{equation}
 \end{lemma}
 
-Loosely speaking, the time average of any bounded function along the walk concentrates around its space average exponentially fast in $t$, with concentration rate governed by the spectral gap. This is what makes walk-based pseudorandom generators secure: any statistical test that the output fails would imply that some function concentrates differently along the walk than along a truly random sequence, contradicting the expander Chernoff bound.
+Loosely speaking, \cref{lem:expander-chernoff} says that the time average of any bounded function along the walk concentrates around its space average exponentially fast in \(t\), with concentration rate governed by the spectral gap. This is what makes walk-based pseudorandom generators useful, because any statistical test that distinguishes the walk from truly independent samples must be detecting a function whose average behaves incorrectly along expander walks, contradicting \cref{eq:expander-chernoff-bound}.
+
+The following error-reduction theorem is the algorithmic version of that concentration statement. Independent repetition would sample \(t+1\) unrelated random strings and would therefore spend \((t+1)m\) random bits, whereas the expander walk keeps the first \(m\)-bit sample and pays only for the local edge labels used to move from one sample to the next.
 
 \begin{theorem}[Derandomized Error Reduction by an Expander Walk]
 	\label{thm:expander-walk-error-reduction}
-	Let \(A(x,r)\) be a randomized Boolean algorithm using \(m\) random bits, and suppose that, for every input \(x\), the set
-	\[
-		B_x\coloneqq \{r\in\bits^m\mid A(x,r)\text{ is incorrect}\}
-	\]
-	has size at most \(2^m/3\). Let \(G\) be an explicit \((2^m,d,\lambda)\)-expander with \(\lambda\leq 1/8\), whose vertices are identified with \(\bits^m\). If \(r_0,r_1,\ldots,r_t\) is a random walk on \(G\) started from a uniform vertex, and if \(A'(x)\) outputs the majority value among \(A(x,r_0),\ldots,A(x,r_t)\), then
-	\[
-		\Prob[A'(x)\text{ is incorrect}]\leq \exp\left(-\frac{49t}{4608}\right).
-	\]
-	Moreover, if \(d\) is a power of two and the neighbor function of \(G\) is computable from an edge label, then \(A'\) uses \(m+t\log d\) random bits.
+	Let \(A(x,r)\) be a randomized Boolean algorithm using \(m\) random bits. For each input \(x\), let \(b_x\in\bits\) denote the correct Boolean value, and suppose that the set
+	\begin{equation}
+		B_x\coloneqq \{r\in\bits^m\mid A(x,r)\neq b_x\}
+	\end{equation}
+	has size at most \(2^m/3\). Let \(\Graph\) be an explicit \((2^m,d,\lambda)\)-expander with \(\lambda\leq 1/8\), whose vertices are identified with \(\bits^m\). If \(r_0,r_1,\ldots,r_t\) is a random walk on \(\Graph\) started from a uniform vertex, and if \(A'(x)\) outputs the majority value among \(A(x,r_0),\ldots,A(x,r_t)\), then
+	\begin{equation}
+		\Prob[A'(x)\neq b_x]\leq \exp\left(-\frac{49t}{4608}\right).
+	\end{equation}
+	Moreover, if \(d\) is a power of two and the neighbor function of \(\Graph\) is computable from an edge label, then \(A'\) uses \(m+t\log d\) random bits.
 \end{theorem}
 
 \begin{proof}
 	The proof is the usual independent-repetition argument with independence replaced by expander-walk concentration. The bad random strings form a set of density at most \(1/3\), and the majority vote fails only if the walk visits this bad set on at least half of its steps. The expander Chernoff bound says that this event is exponentially unlikely in the walk length, even though consecutive samples are not independent.
 
-	Fix an input \(x\), and define \(f_x\colon V(G)\to[0,1]\) by \(f_x(r)=1\) if \(r\in B_x\), and \(f_x(r)=0\) otherwise. Since \(r\) is uniform on \(\bits^m\), the mean of \(f_x\) over \(V(G)\) is
-	\[
-		\mu_x=\EE_{r\sample V(G)}[f_x(r)]=\frac{\abs{B_x}}{2^m}\leq \frac{1}{3}.
-	\]
+	Fix an input \(x\), and define \(f_x\colon \Vertices(\Graph)\to[0,1]\) by \(f_x(r)=1\) if \(r\in B_x\), and \(f_x(r)=0\) otherwise. Since \(r\) is uniform on \(\bits^m\), the mean of \(f_x\) over \(\Vertices(\Graph)\) is
+	\begin{equation}
+		\mu_x=\EE_{r\sample \Vertices(\Graph)}[f_x(r)]=\frac{\abs{B_x}}{2^m}\leq \frac{1}{3}.
+	\end{equation}
 	The majority vote made by \(A'\) is incorrect only if at least half of the sampled random strings are bad, which is the event
-	\[
+	\begin{equation}
 		\frac{1}{t+1}\sum_{i=0}^t f_x(r_i)\geq \frac{1}{2}.
-	\]
+	\end{equation}
 	Since \(\mu_x\leq 1/3\), this event implies
-	\[
+	\begin{equation}
 		\frac{1}{t+1}\sum_{i=0}^t f_x(r_i)\geq \mu_x+\frac{1}{6}.
-	\]
+	\end{equation}
 	Applying \cref{lem:expander-chernoff} with \(\delta=1/6\) gives
-	\[
-		\Prob[A'(x)\text{ is incorrect}]
+	\begin{equation}
+		\Prob[A'(x)\neq b_x]
 		\leq
 		\exp\left(-\frac{(1-\lambda)^2t}{72}\right).
-	\]
+	\end{equation}
 	The assumption \(\lambda\leq 1/8\) implies \(1-\lambda\geq 7/8\), and hence
-	\[
+	\begin{equation}
 		\frac{(1-\lambda)^2t}{72}\geq \frac{(7/8)^2t}{72}=\frac{49t}{64\cdot 72}=\frac{49t}{4608}.
-	\]
+	\end{equation}
 	Substituting this lower bound in the exponent proves the stated error probability.
 
 	To sample the walk, the algorithm first chooses \(r_0\in\bits^m\), which costs \(m\) random bits. At each of the next \(t\) steps, it chooses one of the \(d\) outgoing edge labels, which costs exactly \(\log d\) random bits because \(d\) is a power of two. Therefore the total randomness is \(m+t\log d\), as claimed.
 \end{proof}
 
+The constants in \cref{thm:expander-walk-error-reduction} are not important; what matters is the shape of the guarantee. A constant spectral gap gives exponential decay in the number of samples, while constant degree makes the additional random cost linear in \(t\) with a constant coefficient, and this is precisely the tradeoff needed in many derandomization arguments.
+
 \subsection{Fault-Tolerant Computation by Majority Correction}
 \label{subsec:fault-tolerant-computation}
 
-The same pseudorandomness principle also appears in the classical problem of reliable computation from unreliable components, initiated by von Neumann~\cite{vN1956} and developed further by Dobrushin and Ortyukov~\cite{DO1977}, Pippenger~\cite{FOCS:Pippenger85}, and Spielman~\cite{FOCS:Spielman96}. The informal objective is to replace every gate of a circuit by a small cloud of copies and to connect consecutive layers by a sparse graph in such a way that local failures do not accumulate into a global error. Expanders are exactly the right graphs for this purpose, because a set of erroneous copies cannot easily convince many correct copies in the next layer that the wrong value has a majority.
+The same pseudorandomness principle also appears in the classical problem of reliable computation from unreliable components, initiated by von Neumann~\cite{vNeu1956} and developed further by Dobrushin and Ortyukov~\cite{DO1977}, Pippenger~\cite{FOCS:Pippenger85}, and Spielman~\cite{FOCS:Spielman96}. The informal objective is to replace every gate of a circuit by a small cloud of copies and to connect consecutive layers by a sparse graph in such a way that local failures do not accumulate into a global error. Expanders are exactly the right graphs for this purpose, because a set of erroneous copies cannot easily convince many correct copies in the next layer that the wrong value has a majority.
 
 \begin{figure}[t]
 	\centering
-	\adjustbox{max width=\textwidth}{%
-		\begin{tikzpicture}[
-			x=1cm,
-			y=1cm,
-			gate/.style={circle, draw, minimum size=7mm, inner sep=0pt},
-			maj/.style={rectangle, draw, rounded corners=1pt, minimum width=8mm, minimum height=6mm, inner sep=1pt},
-			wire/.style={-Latex, line width=0.35pt},
-			expwire/.style={line width=0.25pt}
-		]
-			\node[gate] (xone) at (0,1.2) {\(\wedge\)};
-			\node[gate] (xtwo) at (0,0) {\(\vee\)};
-			\node[gate] (xthree) at (0,-1.2) {\(\neg\)};
-			\node[gate] (gone) at (2.2,0.6) {\(\wedge\)};
-			\node[gate] (gtwo) at (2.2,-0.6) {\(\vee\)};
-			\node[gate] (out) at (4.1,0) {\(f\)};
-			\draw[wire] (xone) -- (gone);
-			\draw[wire] (xtwo) -- (gone);
-			\draw[wire] (xtwo) -- (gtwo);
-			\draw[wire] (xthree) -- (gtwo);
-			\draw[wire] (gone) -- (out);
-			\draw[wire] (gtwo) -- (out);
-			\node at (2.05,-2.0) {original circuit};
-			\foreach \i/\y in {1/1.2,2/0.4,3/-0.4,4/-1.2} {
-				\node[gate] (a\i) at (7,\y) {\(\wedge\)};
-				\node[maj] (m\i) at (8.35,\y) {\(\operatorname{Maj}\)};
-				\node[gate] (b\i) at (9.7,\y) {\(\vee\)};
-				\draw[wire] (a\i) -- (m\i);
-				\draw[wire] (m\i) -- (b\i);
-			}
-			\foreach \i in {1,2,3,4} {
-				\foreach \j in {1,2,3,4} {
-					\pgfmathtruncatemacro{\test}{mod(\i+2*\j,3)}
-					\ifnum\test=0
-						\draw[expwire] (a\i.east) -- (m\j.west);
-					\fi
-				}
-			}
-			\foreach \i in {1,2,3,4} {
-				\foreach \j in {1,2,3,4} {
-					\pgfmathtruncatemacro{\testb}{mod(2*\i+\j,3)}
-					\ifnum\testb=1
-						\draw[expwire] (m\i.east) -- (b\j.west);
-					\fi
-				}
-			}
-			\node at (8.35,-2.0) {replicated layers with majority gates};
-			\draw[-Latex, line width=0.45pt] (4.9,0) -- (6.1,0);
-		\end{tikzpicture}%
-	}
+	\begin{mdframed}[linewidth=0.4pt, linecolor=expanderMutedColor!45, backgroundcolor=white, roundcorner=2pt, innerleftmargin=6pt, innerrightmargin=6pt, innertopmargin=6pt, innerbottommargin=6pt]
+		\centering
+		\adjustbox{max width=\textwidth}{%
+			\begin{tikzpicture}[
+					x=1cm,
+					y=1cm,
+					gate/.style={circle, draw=expanderVertexColor, fill=expanderVertexColor!10, minimum size=7mm, inner sep=0pt},
+					maj/.style={rectangle, draw=expanderBoundaryColor, fill=expanderBoundaryColor!10, rounded corners=1pt, minimum width=8mm, minimum height=6mm, inner sep=1pt},
+					wire/.style={-Latex, line width=0.35pt, draw=expanderVertexColor},
+					expwire/.style={line width=0.25pt, draw=expanderBoundaryColor!80}
+				]
+				\node[gate] (xone) at (0,1.2) {\(\wedge\)};
+				\node[gate] (xtwo) at (0,0) {\(\vee\)};
+				\node[gate] (xthree) at (0,-1.2) {\(\neg\)};
+				\node[gate] (gone) at (2.2,0.6) {\(\wedge\)};
+				\node[gate] (gtwo) at (2.2,-0.6) {\(\vee\)};
+				\node[gate] (out) at (4.1,0) {\(f\)};
+				\draw[wire] (xone) -- (gone);
+				\draw[wire] (xtwo) -- (gone);
+				\draw[wire] (xtwo) -- (gtwo);
+				\draw[wire] (xthree) -- (gtwo);
+				\draw[wire] (gone) -- (out);
+				\draw[wire] (gtwo) -- (out);
+				\node at (2.05,-2.0) {original circuit};
+				\foreach \i/\y in {1/1.2,2/0.4,3/-0.4,4/-1.2} {
+						\node[gate] (a\i) at (7,\y) {\(\wedge\)};
+						\node[maj] (m\i) at (8.35,\y) {\(\operatorname{Maj}\)};
+						\node[gate] (b\i) at (9.7,\y) {\(\vee\)};
+						\draw[wire] (a\i) -- (m\i);
+						\draw[wire] (m\i) -- (b\i);
+					}
+				\foreach \i in {1,2,3,4} {
+						\foreach \j in {1,2,3,4} {
+								\pgfmathtruncatemacro{\test}{mod(\i+2*\j,3)}
+								\ifnum\test=0
+									\draw[expwire] (a\i.east) -- (m\j.west);
+								\fi
+							}
+					}
+				\foreach \i in {1,2,3,4} {
+						\foreach \j in {1,2,3,4} {
+								\pgfmathtruncatemacro{\testb}{mod(2*\i+\j,3)}
+								\ifnum\testb=1
+									\draw[expwire] (m\i.east) -- (b\j.west);
+								\fi
+							}
+					}
+				\node at (8.35,-2.0) {replicated layers with majority gates};
+				\draw[-Latex, line width=0.45pt, draw=expanderBoundaryColor] (4.9,0) -- (6.1,0);
+			\end{tikzpicture}%
+		}
+	\end{mdframed}
 	\caption{A schematic replacement of a circuit layer by several copies connected through sparse majority checks. The thin wires represent an expander-like interconnection pattern, whose role is to ensure that a small set of erroneous copies has too little local density to control the next layer.}
 	\label{fig:expander-majority-circuit}
 \end{figure}
@@ -152,60 +168,60 @@ The schematic in \cref{fig:expander-majority-circuit} should be read as a local 
 
 \begin{lemma}[Majority Containment in a Spectral Expander]
 	\label{lem:majority-containment}
-	Let \(G=(V,E)\) be an \((n,d,\lambda)\)-expander with \(\lambda\leq 1/8\). If \(S\subseteq V\) satisfies \(\abs{S}\leq n/8\), and if
-	\[
-		M(S)\coloneqq \left\{v\in V\mid \abs{N(v)\cap S}>\frac{d}{2}\right\},
-	\]
+	Let \(\Graph=(\Vertices,\Edges)\) be an \((n,d,\lambda)\)-expander with \(\lambda\leq 1/8\). If \(S\subseteq \Vertices\) satisfies \(\abs{S}\leq n/8\), and if
+	\begin{equation}
+		M(S)\coloneqq \left\{v\in \Vertices\mid \abs{N(v)\cap S}>\frac{d}{2}\right\},
+	\end{equation}
 	then
-	\[
+	\begin{equation}
 		\abs{M(S)}\leq \frac{\abs{S}}{9}.
-	\]
+	\end{equation}
 \end{lemma}
 
 \begin{proof}
 	The proof compares two counts of the edges between the suspected bad set and the vertices that see it as a majority. The definition of \(M(S)\) gives a lower bound on this edge count, while the expander mixing lemma gives an upper bound. If \(M(S)\) were not much smaller than \(S\), these two estimates would be incompatible.
 
 	Write \(m=\abs{M(S)}\) and \(s=\abs{S}\). Every vertex in \(M(S)\) has more than \(d/2\) neighbors in \(S\), and therefore
-	\[
+	\begin{equation}
 		e(M(S),S)>\frac{dm}{2}.
-	\]
+	\end{equation}
 	On the other hand, \cref{lem:expander-mixing}, applied with the two sets \(M(S)\) and \(S\), gives
-	\[
+	\begin{equation}
 		e(M(S),S)\leq \frac{dms}{n}+\lambda d\sqrt{ms}.
-	\]
+	\end{equation}
 	Combining the lower and upper bounds, and then dividing by \(d>0\), yields
-	\[
+	\begin{equation}
 		\frac{m}{2}<\frac{ms}{n}+\lambda\sqrt{ms}.
-	\]
+	\end{equation}
 	Since \(s\leq n/8\), we have \(s/n\leq 1/8\), and hence
-	\[
+	\begin{equation}
 		\frac{m}{2}<\frac{m}{8}+\lambda\sqrt{ms}.
-	\]
+	\end{equation}
 	Subtracting \(m/8\) from both sides gives
-	\[
+	\begin{equation}
 		\frac{3m}{8}<\lambda\sqrt{ms}.
-	\]
+	\end{equation}
 	Using \(\lambda\leq 1/8\), we obtain
-	\[
+	\begin{equation}
 		\frac{3m}{8}<\frac{1}{8}\sqrt{ms}.
-	\]
+	\end{equation}
 	Multiplying by \(8\) gives
-	\[
+	\begin{equation}
 		3m<\sqrt{ms}.
-	\]
+	\end{equation}
 	If \(m=0\), then the desired bound is immediate. If \(m>0\), squaring both sides gives
-	\[
+	\begin{equation}
 		9m^2<ms.
-	\]
+	\end{equation}
 	Dividing by \(m\) gives \(9m<s\), and hence \(m<s/9\). In particular, \(\abs{M(S)}\leq \abs{S}/9\), after weakening the strict inequality to a non-strict one.
 \end{proof}
 
 \begin{corollary}[Decay of Majority Infection]
 	\label{cor:majority-infection-decay}
-	Let \(G\) be as in \cref{lem:majority-containment}. If \(S_{t+1}=M(S_t)\) and \(\abs{S_0}\leq n/8\), then
-	\[
+	Let \(\Graph\) be as in \cref{lem:majority-containment}. If \(S_{t+1}=M(S_t)\) and \(\abs{S_0}\leq n/8\), then
+	\begin{equation}
 		\abs{S_t}\leq \frac{\abs{S_0}}{9^t}
-	\]
+	\end{equation}
 	for every \(t\geq 0\). In particular, \(S_t=\emptyset\) once \(t>\log_9 n\).
 \end{corollary}
 
@@ -213,39 +229,46 @@ The schematic in \cref{fig:expander-majority-circuit} should be read as a local 
 	The infection rule says that a vertex becomes bad only when a majority of its neighbors were bad in the previous round. The majority-containment lemma says that such vertices form a set smaller by a constant factor, as long as the current bad set is at most \(n/8\).
 
 	We prove the displayed bound by induction on \(t\). For \(t=0\), it is the identity \(\abs{S_0}\leq \abs{S_0}\). Suppose it holds for some \(t\geq 0\). Since \(\abs{S_t}\leq \abs{S_0}\leq n/8\), \cref{lem:majority-containment} applies to \(S_t\), and gives
-	\[
+	\begin{equation}
 		\abs{S_{t+1}}=\abs{M(S_t)}\leq \frac{\abs{S_t}}{9}.
-	\]
+	\end{equation}
 	Using the induction hypothesis, we get
-	\[
+	\begin{equation}
 		\abs{S_{t+1}}\leq \frac{1}{9}\cdot \frac{\abs{S_0}}{9^t}=\frac{\abs{S_0}}{9^{t+1}}.
-	\]
+	\end{equation}
 	This proves the induction. Since \(\abs{S_0}\leq n\), the bound gives \(\abs{S_t}<1\) whenever \(9^t>n\). The set size is an integer, and therefore \(\abs{S_t}=0\) in that case.
 \end{proof}
 
 \subsection{Hash Functions from Expander Graphs}
 \label{subsec:hash-functions}
 
-Expander graphs give an elegant construction of collision-resistant hash function families~\cite{HLW2006}. The basic idea is to encode a message as a path in an expander and output the final vertex. Collisions correspond to two distinct paths ending at the same vertex, and the expansion property ensures that the number of such collisions is small.
+Expander graphs also suggest a natural compression paradigm. One encodes a message as a sequence of edge labels, follows the corresponding walk from a fixed start vertex, and outputs the final vertex. The mechanism is appealing because a short local description of a path can reach a large state space in a highly mixing manner. Nevertheless, one must be careful about the cryptographic interpretation: expansion supplies counting and mixing properties, whereas collision resistance is a computational statement about the difficulty of finding two different paths with the same endpoint.
 
 \begin{construction}[Expander Hash Function]
 	\label{con:expander-hash}
-	Let $G = (V, E)$ be a $d$-regular expander on $n = 2^k$ vertices, so that vertices and edge labels can be encoded in $k$ and $\log d$ bits respectively. Define $\PRFFunction_{G} \colon (\bits^{\log d})^t \to \bits^k$ by $\PRFFunction_{G}(e_1, \ldots, e_t) = v_t$, where $v_0$ is a fixed starting vertex and $v_{i+1}$ is the neighbor of $v_i$ reached by following edge labeled $e_{i+1}$. This function compresses $t \log d$ bits to $k$ bits.
+	Let \(\Graph=(\Vertices,\Edges)\) be a \(d\)-regular expander on \(n=2^k\) vertices, so that vertices and edge labels can be encoded using \(k\) and \(\log d\) bits, respectively. Define
+	\begin{equation}
+		\label{eq:expander-hash-definition}
+		\PRFFunction_{\Graph}\colon(\bits^{\log d})^t\to\bits^k
+	\end{equation}
+	by setting \(\PRFFunction_{\Graph}(e_1,\ldots,e_t)=v_t\), where \(v_0\) is a fixed starting vertex and \(v_{i+1}\) is the neighbor of \(v_i\) reached by following edge label \(e_{i+1}\). This function compresses \(t\log d\) bits to \(k\) bits.
 \end{construction}
 
-This construction by itself is a compression map, not automatically a cryptographic hash function. A collision is exactly a pair of distinct labeled walks from the fixed start vertex that end at the same vertex. For arbitrary expanders, expansion gives useful counting and mixing guarantees but does not by itself imply computational collision resistance. Stronger cryptographic statements require additional algebraic structure, for instance Cayley graphs in which finding a collision corresponds to finding a nontrivial relation among generators.
+\cref{con:expander-hash} by itself defines a compression map, not automatically a cryptographic hash function. A collision is exactly a pair of distinct labeled walks from the fixed start vertex that end at the same vertex. For arbitrary expanders, expansion gives useful counting and mixing guarantees but does not by itself imply computational collision resistance. Stronger cryptographic statements require additional algebraic structure, for instance Cayley graphs in which finding a collision corresponds to finding a nontrivial relation among generators.
 
 \subsection{Expander Codes}
 \label{subsec:expander-codes}
 
-Expander codes are linear error-correcting codes whose parity checks are arranged according to a sparse bipartite expander. They achieve constant rate and constant relative distance while admitting linear-time decoding algorithms. We recall only the basic Tanner-code picture, referring to~\cite{HLW2006} for the broader coding-theoretic treatment. Let \(G=(L\cup R,E)\) be a bipartite graph with \(\abs{L}=n\). Each \(r\in R\) imposes a local parity check on the bits indexed by its neighbors in \(L\). The code consists of all \(x\in\bits^n\) satisfying all these local checks.
+Expander codes are linear error-correcting codes whose parity checks are arranged according to a sparse bipartite expander. They achieve constant rate and constant relative distance while admitting linear-time decoding algorithms. We recall only the basic Tanner-code picture, referring to~\cite{HLW2006} for the broader coding-theoretic treatment. Let \(\Graph=(\LeftSet\cup \RightSet,\Edges)\) be a bipartite graph with \(\abs{\LeftSet}=n\). Each \(r\in \RightSet\) imposes a local parity check on the bits indexed by its neighbors in \(\LeftSet\). The code consists of all \(x\in\bits^n\) satisfying all these local checks.
+
+The theorem below packages the standard Tanner-code consequence of lossless expansion. The rate comes from having fewer check nodes than variable nodes, while the distance comes from the fact that a small support must create a nearly unique neighboring check and therefore cannot satisfy all parity constraints.
 
 \begin{theorem}[Expander Code Parameters~\cite{HLW2006}]
 	\label{thm:expander-code}
-	If $G$ is a $(d, (1-\epsilon)d)$-lossless expander with $\abs{L} = n$ and $\abs{R} = n/2$, then the corresponding expander code has length $n$, dimension at least $n/2$, and minimum distance at least $\delta n$ for a constant $\delta > 0$ depending only on $d$ and $\epsilon$. Moreover, linear-time decoding of up to $\delta n/4$ errors is possible by a simple iterative flipping algorithm.
+	If \(\Graph\) is a \((d,(1-\epsilon)d)\)-lossless expander with \(\abs{\LeftSet}=n\) and \(\abs{\RightSet}=n/2\), then the corresponding expander code has length \(n\), dimension at least \(n/2\), and minimum distance at least \(\delta n\) for a constant \(\delta>0\) depending only on \(d\) and \(\epsilon\). Moreover, linear-time decoding of up to \(\delta n/4\) errors is possible by a simple iterative flipping algorithm.
 \end{theorem}
 
-Concretely, the proof of the distance bound uses the lossless expansion property directly: if a codeword $x$ has few nonzero positions, then every parity check involving those positions has at least one unsatisfied check, contradicting the code condition.
+Concretely, the proof of the distance bound uses the lossless expansion property directly. If a nonzero codeword \(x\) had few nonzero positions, then the support of \(x\) would have many nearly unique neighboring checks; at least one such check would see exactly one nonzero coordinate, and therefore would be violated. Thus local parity checks arranged on a lossless expander force global Hamming distance.
 
 \subsection{Secure Multiparty Computation with Sublinear Communication}
 \label{subsec:mpc}

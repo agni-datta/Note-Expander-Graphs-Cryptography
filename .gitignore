@@ -1,6 +1,6 @@
 ################################################################################
-# CUSTOM "LARGE ASS" GITIGNORE FOR RESEARCH & NOTES
-# Covers: LaTeX, OS Crap, Editors, Backups, and General Junk
+# Research notes ignore file
+# Covers LaTeX build outputs, editor state, OS metadata, and local caches.
 ################################################################################
 
 ## --- CORE LATEX / PDFLATEX AUXILIARY FILES ---
@@ -172,7 +172,7 @@ pythontex-files-*/
 svg-inkscape/
 sympy-plots-for-*.tex/
 
-## --- BACKUP BULLSHIT ---
+## --- BACKUP FILES ---
 *.backup
 *.bak
 *.bak[0-9]*
@@ -186,7 +186,7 @@ sympy-plots-for-*.tex/
 .*.swo
 .*.swp
 
-## --- OS SPECIFIC CRAP (macOS) ---
+## --- OS-SPECIFIC FILES (macOS) ---
 .AppleDouble
 .DS_Store
 .LSOverride
@@ -196,7 +196,7 @@ sympy-plots-for-*.tex/
 Icon
 __MACOSX
 
-## --- OS SPECIFIC CRAP (Windows) ---
+## --- OS-SPECIFIC FILES (Windows) ---
 $RECYCLE.BIN/
 *.cab
 *.lnk
@@ -207,13 +207,13 @@ Desktop.ini
 Thumbs.db
 ehthumbs.db
 
-## --- OS SPECIFIC CRAP (Linux) ---
+## --- OS-SPECIFIC FILES (Linux) ---
 .Trash-*
 .directory
 .fuse_hidden*
 .nfs*
 
-## --- EDITOR / IDE CRAP ---
+## --- EDITOR AND IDE FILES ---
 # VS Code
 !.vscode/extensions.json
 !.vscode/launch.json
@@ -253,7 +253,7 @@ env/
 htmlcov/
 venv/
 
-## --- MISC CRAP ---
+## --- MISCELLANEOUS BUILD OUTPUTS ---
 *.log
 .npm/
 build/

@@ -1,36 +1,33 @@
-\documentclass[reqno]{amsart}
+\documentclass[11pt]{article}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Packages
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{eudoxus}
-\usepackage{cite}
-\usepackage{codelines}
+\PassOptionsToPackage{hyperfootnotes=false}{hyperref}
+\usepackage[numbers,square,sort]{natbib}
+\usepackage{breakcites}
+\usepackage[latinmodern]{csamsmath}
 \usepackage[notoc,small]{tcscrypto}
+\usepackage[nottoc]{tocbibind}
 \usepackage{newfloat}
 \usepackage{xpatch}
+\usepackage{tikz}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Typography and Layout
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\geometry{margin=1in}
+\geometry{a4paper,margin=1in}
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{2}
-\setstretch{1,075}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Table of Contents
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\makeatletter
-\xpatchcmd{\@tocline}
-    {\hfil\hbox to\@pnumwidth{\@tocpagenum{#7}}\par}
-    {\ifnum#1<0\hfill\else\dotfill\fi\hbox to\@pnumwidth{\@tocpagenum{#7}}\par}
-    {}{}
-\def\l@section{\@tocline{1}{0pt}{0pc}{}{\normalfont\scshape\small}}
-\def\l@subsection{\@tocline{2}{0pt}{2pc}{4pc}{\normalfont\small}}
-\def\l@subsubsection{\@tocline{3}{0pt}{6pc}{8pc}{\normalfont\small}}
-\makeatother
+\setstretch{1.05}
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.82}
+\renewcommand{\textfraction}{0.06}
+\renewcommand{\floatpagefraction}{0.78}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Graphics and Diagrams
@@ -39,6 +36,7 @@
 \usetikzlibrary{
     arrows.meta,
     calc,
+    fit,
     positioning,
     shadows,
     shapes.geometric,
@@ -46,20 +44,42 @@
     trees
 }
 
+\colorlet{expanderLinkColor}{RoyalBlue4}
+\colorlet{expanderCiteColor}{Purple4}
+\colorlet{expanderUrlColor}{SeaGreen4}
+\colorlet{expanderVertexColor}{DodgerBlue4}
+\colorlet{expanderBoundaryColor}{Firebrick4}
+\colorlet{expanderAccentColor}{Firebrick4}
+\colorlet{expanderMutedColor}{DodgerBlue4}
+\hypersetup{
+    linkcolor = expanderLinkColor,
+    citecolor = expanderCiteColor,
+    urlcolor  = expanderUrlColor
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Abstract Environment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewenvironment{abstract}
+    {\small\noindent\textbf{Abstract.}~~\ignorespaces}
+    {\par}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Acknowledgements
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \renewenvironment{acknowledgements}
-    {\vfill\clearpage\bigskip\noindent\textbf{Acknowledgments.}~~\ignorespaces}
+    {%
+    \addcontentsline{toc}{section}{Acknowledgements}
+        \bigskip\parhead{Acknowledgements.}~~\ignorespaces
+    }
     {\par}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Additional Definitions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\let\BigO\bigO
-\renewcommand{\vec}[1]{\mathbf{#1}}
 \newclass{\LOGSPACE}{LOGSPACE}
 \providecommand{\Adjacency}[1]{\vec{A}_{#1}}
 \providecommand{\Ball}{B}
@@ -68,35 +88,54 @@
 \providecommand{\DegreeMatrix}[1]{\vec{D}_{#1}}
 \providecommand{\Dirichlet}{\mathcal{E}}
 \providecommand{\EdgeExpansion}{h}
+\providecommand{\Edges}{\ensuremath{E}}
+\providecommand{\EmbContraction}{\operatorname{con}}
+\providecommand{\EmbDistortion}{\operatorname{dist}}
+\providecommand{\EmbExpansion}{\operatorname{exp}}
 \providecommand{\Expander}{\mathsf{G}}
 \providecommand{\Extractor}{\mathsf{Ext}}
-\providecommand{\edgeBetween}{e}
-\providecommand{\extNbr}{N}
-\providecommand{\NormLaplacian}[1]{\mathcal{L}_{#1}}
+\providecommand{\GraphH}{\mathsf{H}}
+\providecommand{\GraphK}{\mathsf{K}}
+\providecommand{\GraphMean}[1]{\operatorname{mean}_{\Graph}(#1)}
+\providecommand{\Graph}{\mathsf{G}}
+\providecommand{\IdentityMatrix}{\vec{I}}
+\providecommand{\LeftSet}{\mathscr{L}}
 \providecommand{\Markov}[1]{\vec{P}_{#1}}
 \providecommand{\MinEntropy}{\mathrm{H}_\infty}
 \providecommand{\Mixing}{\tau_{\mathrm{mix}}}
-\providecommand{\Rayleigh}{\mathcal{R}}
+\providecommand{\NormLaplacian}[1]{\boldsymbol{\mathcal{L}}_{#1}}
+\providecommand{\PSD}{\mathsf{PSD}}
 \providecommand{\RandomWalk}[2]{W_{#1}^{#2}}
-\providecommand{\Rot}{\mathsf{Rot}}
+\providecommand{\Rayleigh}{\mathcal{R}}
+\providecommand{\RightSet}{\mathscr{R}}
+\providecommand{\Rot}{\mathrm{rot}}
 \providecommand{\SecondEigenvalue}{\lambda_2}
+\providecommand{\SetA}{\mathsf{A}}
+\providecommand{\SetB}{\mathsf{B}}
+\providecommand{\SetS}{\mathsf{S}}
+\providecommand{\SetT}{\mathsf{T}}
 \providecommand{\SpectralGap}{\gamma}
 \providecommand{\Spectral}[1]{\lambda(#1)}
 \providecommand{\StatDist}{\Delta}
 \providecommand{\Stationary}{\pi}
 \providecommand{\VertexExpansion}{\phi}
+\providecommand{\Vertices}{\ensuremath{V}}
+\providecommand{\authorEmail}[1]{\par{\normalfont\href{mailto:#1}{\texttt{#1}}}}
+\providecommand{\edgeBetween}{e}
+\providecommand{\extNbr}{N}
 \providecommand{\vol}{\operatorname{vol}}
-\providecommand{\zzprod}{\mathbin{\mathop{\ooalign{$\circ$\cr\hfil$z$\hfil\cr}}}}
+\providecommand{\zzprod}{\mathbin{\text{\ooalign{\(\circ\)\cr\hfil\(z\)\hfil\cr}}}}
 \renewcommand{\EE}{\mathop{\mathbb{E}}}
+\renewcommand{\vec}[1]{\mathbf{#1}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Author Comment Markers
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\NewDocumentCommand{\newguymarker}{m m m}{%
+\RenewDocumentCommand{\newguymarker}{m m m}{%
     \expandafter\NewDocumentCommand\csname #1\endcsname{m}{%
         \textcolor{#3}{##1~\textsc{#2}}%
-        \marginnote{\textcolor{#3}{\LARGE$\star$}}%
+        \marginnote{\textcolor{#3}{\LARGE\(\star\)}}%
     }%
 }
 \newguymarker{agni}{Agni}{RoyalBlue2}
@@ -106,9 +145,12 @@
 %%% Title and Author Metadata
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{A Note on Expanders and Cryptography}
-\author{Agni Datta}
-\address{University of Edinburgh, UK}
+\title{A Note on Expanders and Cryptography\thanks{Version of~\today. This manuscript is an unstable working draft, and several parts are still being reorganized, checked for normalization consistency, and expanded with additional proofs, examples, and historical context. Comments, corrections, missing references, and suggestions for improving the exposition are very welcome; readers should feel free to contact the authors, especially about inaccuracies, unclear arguments, notation conflicts, or places where a standard result has been stated with a nonstandard convention.}}
+\author[1]{Agni Datta}
+\author[2]{Nilabha Saha}
+\affil[1]{University of Edinburgh, UK\authorEmail{agnidatta.org@gmail.com}}
+\affil[2]{Hudson River Trading\authorEmail{nilabhasaha13@gmail.com}}
+\date{\today}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Document
@@ -117,24 +159,24 @@
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Abstract
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{abstract}
-	Expander graphs are sparse graphs that nevertheless behave, in several quantitative senses, like highly connected graphs. This note gives a self-contained introduction to the parts of expander theory that repeatedly appear in cryptography and pseudorandomness. We first take a spectral detour through the normalized Laplacian, Rayleigh quotients, and random walks, because these notions provide the analytic language in which expansion is most cleanly compared with mixing. We then develop the combinatorial definitions of edge and vertex expansion, the spectral definition through the normalized adjacency operator, and the passage between these viewpoints through the discrete Cheeger inequality and the expander mixing lemma. We finally discuss explicit constructions, including algebraic Ramanujan graphs and the zig-zag product, and explain how expansion enters randomness extraction, pseudorandom generators, expander codes, hash constructions, and communication-efficient cryptographic protocols. The guiding point is that expansion is a robust form of mixing, and that this mixing converts short random seeds, sparse communication patterns, or local constraints into global pseudorandomness and fault tolerance.
-\end{abstract}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Title Block
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \maketitle
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Abstract
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+    Expander graphs are sparse graphs that nevertheless behave, in several quantitative senses, like highly connected graphs. This note gives a self-contained introduction to the parts of expander theory that repeatedly appear in cryptography and pseudorandomness. We first take a spectral detour through the normalized Laplacian, Rayleigh quotients, and random walks, because these notions provide the analytic language in which expansion is most cleanly compared with mixing. We then develop the combinatorial definitions of edge and vertex expansion, the spectral definition through the normalized adjacency operator, and the passage between these viewpoints through the discrete Cheeger inequality and the expander mixing lemma. We finally discuss explicit constructions, positioning Ramanujan graphs as a landmark example and treating the zig-zag product as the main constructive mechanism, and explain how expansion enters randomness extraction, pseudorandom generators, expander codes, hash constructions, and communication-efficient cryptographic protocols. The guiding point is that expansion is a robust form of mixing, and that this mixing converts short random seeds, sparse communication patterns, or local constraints into global pseudorandomness and fault tolerance.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Table of Contents
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\tableofcontents\clearpage
+\clearpage\tableofcontents\clearpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Main Sections
@@ -142,6 +184,7 @@
 
 \input{sections/introduction}
 \input{sections/preliminaries}
+\input{sections/motivating-problems}
 \input{sections/spectral-graph-primer}
 \input{sections/expander-graphs}
 \input{sections/spectral-theory}
@@ -153,7 +196,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{acknowledgements}
-	These notes were written as a first systematic pass through expanders and their role in cryptography. I thank the readers who point out mistakes and missing references as the note develops.
+    We thank Prahladh Harsha of the Tata Institute of Fundamental Research for his course material and accompanying videos on expanders, which helped shape the entry point taken in these notes and made several first encounters with the subject much less mysterious. We thank Avi Wigderson for his many talks on expanders, pseudorandomness, and computational complexity, whose conceptual clarity is a model for how this material should be explained. We are grateful to Max Hopkins and Shachar Lovett for their course notes titled \textsc{CSE 291g: Expanders and HDX Course Notes}, which provided a useful perspective on the broader landscape surrounding expanders and high-dimensional expanders. We thank Damiano Abram of the University of Edinburgh and Lance Roy of IBM Research Zurich for pointers on expanders and low-depth cryptography; their suggestions helped us avoid several wrong turns. We also thank Rahul Santhanam of the University of Oxford for helpful discussions and pointers on several aspects of the material. Part of this work was done while Nilabha Saha was at COSIC, the Computer Security and Industrial Cryptography research group at KU Leuven.
 \end{acknowledgements}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -161,8 +204,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{small}
-	\bibliography{abbrev0,bibliography,crypto}
-	\bibliographystyle{aomalpha}
+    \vfill\clearpage
+    \bibliography{abbrev0,bibliography,crypto}
+    \bibliographystyle{aomalpha}
 \end{small}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

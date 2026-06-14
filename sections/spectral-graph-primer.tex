@@ -8,302 +8,336 @@ The presentation below follows the normalized viewpoint of Chung~\cite{Chu1997},
 \subsection{The Combinatorial and Normalized Laplacians}
 \label{subsec:laplacian-definitions}
 
-Let \(G=(V,E)\) be a finite undirected simple graph with \(n=\abs{V}\). For a vertex \(v\in V\), let \(d_v\) denote its degree, and let \(\Adjacency{G}\) denote the adjacency matrix of \(G\), where \(\Adjacency{G}(u,v)=1\) if \(\{u,v\}\in E\) and \(\Adjacency{G}(u,v)=0\) otherwise. The degree matrix is the diagonal matrix
-\[
-	\DegreeMatrix{G}\coloneqq \operatorname{diag}(d_v)_{v\in V}.
-\]
-We define the combinatorial Laplacian of \(G\) by
-\[
-	\CombLaplacian{G}\coloneqq \DegreeMatrix{G}-\Adjacency{G}.
-\]
+Let \(\Graph=(\Vertices,\Edges)\) be a finite undirected simple graph with \(n=\abs{\Vertices}\). For a vertex \(v\in \Vertices\), let \(d_v\) denote its degree, and let \(\Adjacency{\Graph}\) denote the adjacency matrix of \(\Graph\), where \(\Adjacency{\Graph}(u,v)=1\) if \(\{u,v\}\in\Edges\) and \(\Adjacency{\Graph}(u,v)=0\) otherwise. The degree matrix is the diagonal matrix
+\begin{equation}
+	\DegreeMatrix{\Graph}\coloneqq \operatorname{diag}(d_v)_{v\in \Vertices}.
+\end{equation}
+We define the combinatorial Laplacian of \(\Graph\) by
+\begin{equation}
+	\CombLaplacian{\Graph}\coloneqq \DegreeMatrix{\Graph}-\Adjacency{\Graph}.
+\end{equation}
 Equivalently, its entries are given by
-\[
-	\CombLaplacian{G}(u,v)=
+\begin{equation}
+	\CombLaplacian{\Graph}(u,v)=
 	\begin{cases}
-		d_v & \text{if }u=v,\\
-		-1 & \text{if }u\neq v\text{ and }\{u,v\}\in E,\\
-		0 & \text{otherwise.}
+		d_v & \text{if }u=v,                                 \\
+		-1  & \text{if }u\neq v\text{ and }\{u,v\}\in\Edges, \\
+		0   & \text{otherwise.}
 	\end{cases}
-\]
+\end{equation}
 
 The normalized Laplacian is the matrix
-\[
-	\NormLaplacian{G}\coloneqq \DegreeMatrix{G}^{-1/2}\CombLaplacian{G}\DegreeMatrix{G}^{-1/2},
-\]
+\begin{equation}
+	\NormLaplacian{\Graph}\coloneqq \DegreeMatrix{\Graph}^{-1/2}\CombLaplacian{\Graph}\DegreeMatrix{\Graph}^{-1/2},
+\end{equation}
 where we use the convention that \(d_v^{-1/2}=0\) when \(d_v=0\). Written entrywise, this says that
-\[
-	\NormLaplacian{G}(u,v)=
+\begin{equation}
+	\NormLaplacian{\Graph}(u,v)=
 	\begin{cases}
-		1 & \text{if }u=v\text{ and }d_v>0,\\
-		-\frac{1}{\sqrt{d_ud_v}} & \text{if }\{u,v\}\in E,\\
-		0 & \text{otherwise.}
+		1                        & \text{if }u=v\text{ and }d_v>0, \\
+		-\frac{1}{\sqrt{d_ud_v}} & \text{if }\{u,v\}\in\Edges,     \\
+		0                        & \text{otherwise.}
 	\end{cases}
-\]
+\end{equation}
 Thus the normalized Laplacian differs from the adjacency matrix in two ways. It first subtracts adjacency from degree, which makes constant functions invisible to the operator, and it then rescales by the square roots of degrees, which makes the definition behave well for non-regular graphs.
 
 \begin{proposition}[Dirichlet Form of the Combinatorial Laplacian]
 	\label{prop:combinatorial-laplacian-dirichlet}
-	For every function \(f\colon V\to\RR\), viewed as a column vector in \(\RR^V\), one has
-	\[
-		\langle f,\CombLaplacian{G}f\rangle=\sum_{\{u,v\}\in E}\left(f(u)-f(v)\right)^2.
-	\]
+	For every function \(f\colon \Vertices\to\RR\), viewed as a column vector in \(\RR^\Vertices\), one has
+	\begin{equation}
+		\langle f,\CombLaplacian{\Graph}f\rangle=\sum_{\{u,v\}\in\Edges}\left(f(u)-f(v)\right)^2.
+	\end{equation}
 \end{proposition}
 
 \begin{proof}
 	The key observation is that the diagonal part of the Laplacian counts the square of \(f(v)\) once for every edge incident to \(v\), whereas the adjacency part counts the cross-term \(f(u)f(v)\) once in each direction of an undirected edge. After these two contributions are placed in the same sum over unordered edges, the expression becomes exactly the expansion of a square.
 
-	By the definition \(\CombLaplacian{G}=\DegreeMatrix{G}-\Adjacency{G}\), we have
-	\[
-		\langle f,\CombLaplacian{G}f\rangle=\langle f,\DegreeMatrix{G}f\rangle-\langle f,\Adjacency{G}f\rangle.
-	\]
+	By the definition \(\CombLaplacian{\Graph}=\DegreeMatrix{\Graph}-\Adjacency{\Graph}\), we have
+	\begin{equation}
+		\langle f,\CombLaplacian{\Graph}f\rangle=\langle f,\DegreeMatrix{\Graph}f\rangle-\langle f,\Adjacency{\Graph}f\rangle.
+	\end{equation}
 	The first term is
-	\[
-		\langle f,\DegreeMatrix{G}f\rangle=\sum_{v\in V}d_v f(v)^2.
-	\]
-	Since each unordered edge \(\{u,v\}\in E\) contributes once to the degree of \(u\) and once to the degree of \(v\), the same quantity can be rewritten as
-	\[
-		\sum_{v\in V}d_v f(v)^2=\sum_{\{u,v\}\in E}\left(f(u)^2+f(v)^2\right).
-	\]
+	\begin{equation}
+		\langle f,\DegreeMatrix{\Graph}f\rangle=\sum_{v\in \Vertices}d_v f(v)^2.
+	\end{equation}
+	Since each unordered edge \(\{u,v\}\in\Edges\) contributes once to the degree of \(u\) and once to the degree of \(v\), the same quantity can be rewritten as
+	\begin{equation}
+		\sum_{v\in \Vertices}d_v f(v)^2=\sum_{\{u,v\}\in\Edges}\left(f(u)^2+f(v)^2\right).
+	\end{equation}
 	The second term is
-	\[
-		\langle f,\Adjacency{G}f\rangle=\sum_{u\in V}\sum_{v\in V}f(u)\Adjacency{G}(u,v)f(v).
-	\]
-	For an undirected simple graph, the two ordered pairs \((u,v)\) and \((v,u)\) both occur when \(\{u,v\}\in E\), and no other ordered pair contributes. Hence
-	\[
-		\langle f,\Adjacency{G}f\rangle=\sum_{\{u,v\}\in E}2f(u)f(v).
-	\]
+	\begin{equation}
+		\langle f,\Adjacency{\Graph}f\rangle=\sum_{u\in \Vertices}\sum_{v\in \Vertices}f(u)\Adjacency{\Graph}(u,v)f(v).
+	\end{equation}
+	For an undirected simple graph, the two ordered pairs \((u,v)\) and \((v,u)\) both occur when \(\{u,v\}\in\Edges\), and no other ordered pair contributes. Hence
+	\begin{equation}
+		\langle f,\Adjacency{\Graph}f\rangle=\sum_{\{u,v\}\in\Edges}2f(u)f(v).
+	\end{equation}
 	Combining the two displayed identities gives
-	\[
-		\langle f,\CombLaplacian{G}f\rangle=\sum_{\{u,v\}\in E}\left(f(u)^2+f(v)^2-2f(u)f(v)\right).
-	\]
+	\begin{equation}
+		\langle f,\CombLaplacian{\Graph}f\rangle=\sum_{\{u,v\}\in\Edges}\left(f(u)^2+f(v)^2-2f(u)f(v)\right).
+	\end{equation}
 	For each edge \(\{u,v\}\), the expression inside the parentheses equals \(\left(f(u)-f(v)\right)^2\). Substituting this identity for every edge proves the claim.
 \end{proof}
 
 \begin{proposition}[Dirichlet Form of the Normalized Laplacian]
 	\label{prop:normalized-laplacian-dirichlet}
-	For every function \(g\colon V\to\RR\), one has
-	\[
-		\langle g,\NormLaplacian{G}g\rangle=\sum_{\{u,v\}\in E}\left(\frac{g(u)}{\sqrt{d_u}}-\frac{g(v)}{\sqrt{d_v}}\right)^2,
-	\]
+	For every function \(g\colon \Vertices\to\RR\), one has
+	\begin{equation}
+		\langle g,\NormLaplacian{\Graph}g\rangle=\sum_{\{u,v\}\in\Edges}\left(\frac{g(u)}{\sqrt{d_u}}-\frac{g(v)}{\sqrt{d_v}}\right)^2,
+	\end{equation}
 	where vertices of degree zero do not occur in the displayed edge sum.
 \end{proposition}
 
 \begin{proof}
 	The normalized identity is the same Dirichlet identity after a change of variables. The only point that needs care is the convention at isolated vertices, but isolated vertices are incident to no edge and therefore make no contribution to the edge sum.
 
-	Define \(f=\DegreeMatrix{G}^{-1/2}g\), so that \(f(v)=g(v)/\sqrt{d_v}\) when \(d_v>0\), and \(f(v)=0\) when \(d_v=0\). Using the definition of the normalized Laplacian, we obtain
-	\[
-		\langle g,\NormLaplacian{G}g\rangle
+	Define \(f=\DegreeMatrix{\Graph}^{-1/2}g\), so that \(f(v)=g(v)/\sqrt{d_v}\) when \(d_v>0\), and \(f(v)=0\) when \(d_v=0\). Using the definition of the normalized Laplacian, we obtain
+	\begin{equation}
+		\langle g,\NormLaplacian{\Graph}g\rangle
 		=
-		\left\langle g,\DegreeMatrix{G}^{-1/2}\CombLaplacian{G}\DegreeMatrix{G}^{-1/2}g\right\rangle.
-	\]
-	Since \(\DegreeMatrix{G}^{-1/2}\) is diagonal and symmetric, this equals
-	\[
-		\left\langle \DegreeMatrix{G}^{-1/2}g,\CombLaplacian{G}\DegreeMatrix{G}^{-1/2}g\right\rangle
+		\left\langle g,\DegreeMatrix{\Graph}^{-1/2}\CombLaplacian{\Graph}\DegreeMatrix{\Graph}^{-1/2}g\right\rangle.
+	\end{equation}
+	Since \(\DegreeMatrix{\Graph}^{-1/2}\) is diagonal and symmetric, this equals
+	\begin{equation}
+		\left\langle \DegreeMatrix{\Graph}^{-1/2}g,\CombLaplacian{\Graph}\DegreeMatrix{\Graph}^{-1/2}g\right\rangle
 		=
-		\langle f,\CombLaplacian{G}f\rangle.
-	\]
+		\langle f,\CombLaplacian{\Graph}f\rangle.
+	\end{equation}
 	Applying \cref{prop:combinatorial-laplacian-dirichlet} to \(f\), we get
-	\[
-		\langle f,\CombLaplacian{G}f\rangle=\sum_{\{u,v\}\in E}\left(f(u)-f(v)\right)^2.
-	\]
-	Every endpoint of an edge has positive degree, and therefore \(f(u)=g(u)/\sqrt{d_u}\) and \(f(v)=g(v)/\sqrt{d_v}\) for every edge \(\{u,v\}\in E\). Substituting these two expressions into the last display gives the claimed formula.
+	\begin{equation}
+		\langle f,\CombLaplacian{\Graph}f\rangle=\sum_{\{u,v\}\in\Edges}\left(f(u)-f(v)\right)^2.
+	\end{equation}
+	Every endpoint of an edge has positive degree, and therefore \(f(u)=g(u)/\sqrt{d_u}\) and \(f(v)=g(v)/\sqrt{d_v}\) for every edge \(\{u,v\}\in\Edges\). Substituting these two expressions into the last display gives the claimed formula.
 \end{proof}
 
 \begin{corollary}[Non-Negativity of the Spectrum]
 	\label{cor:laplacian-spectrum-nonnegative}
-	All eigenvalues of \(\NormLaplacian{G}\) are real and nonnegative.
+	All eigenvalues of \(\NormLaplacian{\Graph}\) are real and nonnegative.
 \end{corollary}
 
 \begin{proof}
 	The point is that the normalized Laplacian is a real symmetric matrix whose quadratic form is a sum of squares. Symmetry gives real eigenvalues, and the sum-of-squares formula prevents any eigenvalue from being negative.
 
-	The matrix \(\NormLaplacian{G}\) is symmetric because both \(\CombLaplacian{G}\) and \(\DegreeMatrix{G}^{-1/2}\) are symmetric. Hence the finite-dimensional spectral theorem gives an orthonormal basis of real eigenvectors and real eigenvalues. Let \(g\neq 0\) be an eigenvector with eigenvalue \(\lambda\). Then
-	\[
-		\langle g,\NormLaplacian{G}g\rangle=\langle g,\lambda g\rangle=\lambda\langle g,g\rangle=\lambda\norm{g}_2^2.
-	\]
+	The matrix \(\NormLaplacian{\Graph}\) is symmetric because both \(\CombLaplacian{\Graph}\) and \(\DegreeMatrix{\Graph}^{-1/2}\) are symmetric. Hence the finite-dimensional spectral theorem gives an orthonormal basis of real eigenvectors and real eigenvalues. Let \(g\neq 0\) be an eigenvector with eigenvalue \(\lambda\). Then
+	\begin{equation}
+		\langle g,\NormLaplacian{\Graph}g\rangle=\langle g,\lambda g\rangle=\lambda\langle g,g\rangle=\lambda\norm{g}_2^2.
+	\end{equation}
 	On the other hand, \cref{prop:normalized-laplacian-dirichlet} gives
-	\[
-		\langle g,\NormLaplacian{G}g\rangle=\sum_{\{u,v\}\in E}\left(\frac{g(u)}{\sqrt{d_u}}-\frac{g(v)}{\sqrt{d_v}}\right)^2\geq 0.
-	\]
-	Since \(\norm{g}_2^2>0\), dividing the identity \(\lambda\norm{g}_2^2=\langle g,\NormLaplacian{G}g\rangle\) by \(\norm{g}_2^2\) yields \(\lambda\geq 0\).
+	\begin{equation}
+		\langle g,\NormLaplacian{\Graph}g\rangle=\sum_{\{u,v\}\in\Edges}\left(\frac{g(u)}{\sqrt{d_u}}-\frac{g(v)}{\sqrt{d_v}}\right)^2\geq 0.
+	\end{equation}
+	Since \(\norm{g}_2^2>0\), dividing the identity \(\lambda\norm{g}_2^2=\langle g,\NormLaplacian{\Graph}g\rangle\) by \(\norm{g}_2^2\) yields \(\lambda\geq 0\).
 \end{proof}
 
 \subsection{Rayleigh Quotients}
 \label{subsec:laplacian-rayleigh-quotients}
 
-We write the eigenvalues of \(\NormLaplacian{G}\) in nondecreasing order as
-\[
+We write the eigenvalues of \(\NormLaplacian{\Graph}\) in nondecreasing order as
+\begin{equation}
 	0=\lambda_0\leq \lambda_1\leq\cdots\leq \lambda_{n-1}.
-\]
-This ordering is opposite to the one used for adjacency matrices, but it is natural for Laplacians, because the first nonzero Laplacian eigenvalue measures the least possible nonconstant variation across edges. If \(G\) has no isolated vertices, then the vector \(\DegreeMatrix{G}^{1/2}\vec{1}\) is a zero eigenvector, since
-\[
-	\NormLaplacian{G}\DegreeMatrix{G}^{1/2}\vec{1}
+\end{equation}
+This ordering is opposite to the one used for adjacency matrices, but it is natural for Laplacians, because the first nonzero Laplacian eigenvalue measures the least possible nonconstant variation across edges. If \(\Graph\) has no isolated vertices, then the vector \(\DegreeMatrix{\Graph}^{1/2}\vec{1}\) is a zero eigenvector, since
+\begin{equation}
+	\NormLaplacian{\Graph}\DegreeMatrix{\Graph}^{1/2}\vec{1}
 	=
-	\DegreeMatrix{G}^{-1/2}\CombLaplacian{G}\DegreeMatrix{G}^{-1/2}\DegreeMatrix{G}^{1/2}\vec{1}
+	\DegreeMatrix{\Graph}^{-1/2}\CombLaplacian{\Graph}\DegreeMatrix{\Graph}^{-1/2}\DegreeMatrix{\Graph}^{1/2}\vec{1}
 	=
-	\DegreeMatrix{G}^{-1/2}\CombLaplacian{G}\vec{1}
+	\DegreeMatrix{\Graph}^{-1/2}\CombLaplacian{\Graph}\vec{1}
 	=
 	\vec{0}.
-\]
-The last equality holds because each row of \(\CombLaplacian{G}\) sums to zero.
+\end{equation}
+The last equality holds because each row of \(\CombLaplacian{\Graph}\) sums to zero.
 
-For \(U\subseteq V\), recall that \(\vol_G(U)=\sum_{v\in U}d_v\), and write \(\vol(G)=\vol_G(V)\). If \(f\colon V\to\RR\), define its degree-weighted mean by
-\[
-	\overline{f}\coloneqq \frac{\sum_{v\in V}d_v f(v)}{\vol(G)}.
-\]
+For \(U\subseteq \Vertices\), recall that \(\vol_\Graph(U)=\sum_{v\in U}d_v\), and write \(\vol(\Graph)=\vol_\Graph(\Vertices)\). If \(f\colon \Vertices\to\RR\), define its degree-weighted mean by
+\begin{equation}
+	\GraphMean{f}\coloneqq \frac{\sum_{v\in \Vertices}d_v f(v)}{\vol(\Graph)}.
+\end{equation}
 The normalized Laplacian Rayleigh quotient can then be written in the form
-\[
-	\Rayleigh_G(f)\coloneqq
-	\frac{\sum_{\{u,v\}\in E}\left(f(u)-f(v)\right)^2}{\sum_{v\in V}d_v f(v)^2},
-\]
+\begin{equation}
+	\Rayleigh_\Graph(f)\coloneqq
+	\frac{\sum_{\{u,v\}\in\Edges}\left(f(u)-f(v)\right)^2}{\sum_{v\in \Vertices}d_v f(v)^2},
+\end{equation}
 whenever the denominator is nonzero.
 
 \begin{proposition}[Rayleigh Characterization of \(\lambda_1\)]
 	\label{prop:lambda-one-rayleigh}
-	Let \(G\) be a graph with no isolated vertices and at least one edge. Then
-	\[
+	Let \(\Graph\) be a graph with no isolated vertices and at least one edge. Then
+	\begin{equation}
 		\lambda_1
 		=
-		\inf_{\substack{f\colon V\to\RR\\f\not\equiv 0,\ \sum_v d_v f(v)=0}}
-		\frac{\sum_{\{u,v\}\in E}\left(f(u)-f(v)\right)^2}{\sum_{v\in V}d_v f(v)^2}.
-	\]
+		\inf_{\substack{f\colon \Vertices\to\RR\\f\not\equiv 0,\ \sum_v d_v f(v)=0}}
+		\frac{\sum_{\{u,v\}\in\Edges}\left(f(u)-f(v)\right)^2}{\sum_{v\in \Vertices}d_v f(v)^2}.
+	\end{equation}
 	Equivalently,
-	\[
+	\begin{equation}
 		\lambda_1
 		=
-		\inf_{\substack{f\colon V\to\RR\\f\text{ not constant}}}
-		\frac{\sum_{\{u,v\}\in E}\left(f(u)-f(v)\right)^2}{\sum_{v\in V}d_v\left(f(v)-\overline{f}\right)^2}.
-	\]
+		\inf_{\substack{f\colon \Vertices\to\RR\\f\not\equiv \GraphMean{f}}}
+		\frac{\sum_{\{u,v\}\in\Edges}\left(f(u)-f(v)\right)^2}{\sum_{v\in \Vertices}d_v\left(f(v)-\GraphMean{f}\right)^2}.
+	\end{equation}
 \end{proposition}
 
 \begin{proof}
 	The proof is a change of variables from the ordinary variational characterization of the second eigenvalue of a symmetric matrix. Orthogonality to the zero eigenvector of the normalized Laplacian becomes the degree-weighted condition \(\sum_v d_v f(v)=0\), and the normalized quadratic form becomes the edge Dirichlet energy.
 
-	By the Courant--Fischer variational principle applied to the real symmetric matrix \(\NormLaplacian{G}\), and using the zero eigenvector \(\DegreeMatrix{G}^{1/2}\vec{1}\), we have
-	\[
+	By the Courant--Fischer variational principle applied to the real symmetric matrix \(\NormLaplacian{\Graph}\), and using the zero eigenvector \(\DegreeMatrix{\Graph}^{1/2}\vec{1}\), we have
+	\begin{equation}
 		\lambda_1
 		=
-		\inf_{\substack{g\neq 0\\g\perp \DegreeMatrix{G}^{1/2}\vec{1}}}
-		\frac{\langle g,\NormLaplacian{G}g\rangle}{\langle g,g\rangle},
-	\]
-	where the formula remains valid when \(G\) is disconnected, because then the infimum is \(0\), which agrees with \(\lambda_1=0\) whenever the zero eigenspace has dimension at least two. Put \(g=\DegreeMatrix{G}^{1/2}f\). Since \(G\) has no isolated vertices, this substitution is bijective between functions \(f\colon V\to\RR\) and vectors \(g\in\RR^V\). The orthogonality condition becomes
-	\[
-		0=\left\langle g,\DegreeMatrix{G}^{1/2}\vec{1}\right\rangle
+		\inf_{\substack{g\neq 0\\g\perp \DegreeMatrix{\Graph}^{1/2}\vec{1}}}
+		\frac{\langle g,\NormLaplacian{\Graph}g\rangle}{\langle g,g\rangle},
+	\end{equation}
+	where the formula remains valid when \(\Graph\) is disconnected, because then the infimum is \(0\), which agrees with \(\lambda_1=0\) whenever the zero eigenspace has dimension at least two. Put \(g=\DegreeMatrix{\Graph}^{1/2}f\). Since \(\Graph\) has no isolated vertices, this substitution is bijective between functions \(f\colon \Vertices\to\RR\) and vectors \(g\in\RR^\Vertices\). The orthogonality condition becomes
+	\begin{equation}
+		0=\left\langle g,\DegreeMatrix{\Graph}^{1/2}\vec{1}\right\rangle
 		=
-		\left\langle \DegreeMatrix{G}^{1/2}f,\DegreeMatrix{G}^{1/2}\vec{1}\right\rangle
+		\left\langle \DegreeMatrix{\Graph}^{1/2}f,\DegreeMatrix{\Graph}^{1/2}\vec{1}\right\rangle
 		=
-		\sum_{v\in V}d_v f(v).
-	\]
+		\sum_{v\in \Vertices}d_v f(v).
+	\end{equation}
 	The denominator becomes
-	\[
+	\begin{equation}
 		\langle g,g\rangle
 		=
-		\left\langle \DegreeMatrix{G}^{1/2}f,\DegreeMatrix{G}^{1/2}f\right\rangle
+		\left\langle \DegreeMatrix{\Graph}^{1/2}f,\DegreeMatrix{\Graph}^{1/2}f\right\rangle
 		=
-		\sum_{v\in V}d_v f(v)^2.
-	\]
+		\sum_{v\in \Vertices}d_v f(v)^2.
+	\end{equation}
 	For the numerator, we compute
-	\[
-		\langle g,\NormLaplacian{G}g\rangle
+	\begin{equation}
+		\langle g,\NormLaplacian{\Graph}g\rangle
 		=
-		\left\langle \DegreeMatrix{G}^{1/2}f,\DegreeMatrix{G}^{-1/2}\CombLaplacian{G}\DegreeMatrix{G}^{-1/2}\DegreeMatrix{G}^{1/2}f\right\rangle.
-	\]
-	The middle factors satisfy \(\DegreeMatrix{G}^{-1/2}\DegreeMatrix{G}^{1/2}=\vec{I}\), and the symmetry of \(\DegreeMatrix{G}^{1/2}\DegreeMatrix{G}^{-1/2}\) gives
-	\[
-		\langle g,\NormLaplacian{G}g\rangle=\langle f,\CombLaplacian{G}f\rangle.
-	\]
+		\left\langle \DegreeMatrix{\Graph}^{1/2}f,\DegreeMatrix{\Graph}^{-1/2}\CombLaplacian{\Graph}\DegreeMatrix{\Graph}^{-1/2}\DegreeMatrix{\Graph}^{1/2}f\right\rangle.
+	\end{equation}
+	The middle factors satisfy \(\DegreeMatrix{\Graph}^{-1/2}\DegreeMatrix{\Graph}^{1/2}=\IdentityMatrix\), and the symmetry of \(\DegreeMatrix{\Graph}^{1/2}\DegreeMatrix{\Graph}^{-1/2}\) gives
+	\begin{equation}
+		\langle g,\NormLaplacian{\Graph}g\rangle=\langle f,\CombLaplacian{\Graph}f\rangle.
+	\end{equation}
 	By \cref{prop:combinatorial-laplacian-dirichlet}, this equals
-	\[
-		\sum_{\{u,v\}\in E}\left(f(u)-f(v)\right)^2.
-	\]
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}\left(f(u)-f(v)\right)^2.
+	\end{equation}
 	Substituting the numerator, denominator, and orthogonality condition into the Courant--Fischer formula proves the first displayed characterization.
 
-	To obtain the second form, let \(f\) be any nonconstant function and define \(f_0(v)=f(v)-\overline{f}\). Then
-	\[
-		\sum_{v\in V}d_v f_0(v)
+	To obtain the second form, let \(f\) be any nonconstant function and define \(f_0(v)=f(v)-\GraphMean{f}\). Then
+	\begin{equation}
+		\sum_{v\in \Vertices}d_v f_0(v)
 		=
-		\sum_{v\in V}d_v f(v)-\overline{f}\sum_{v\in V}d_v
+		\sum_{v\in \Vertices}d_v f(v)-\GraphMean{f}\sum_{v\in \Vertices}d_v
 		=
-		\sum_{v\in V}d_v f(v)-\frac{\sum_{x\in V}d_x f(x)}{\vol(G)}\vol(G)
+		\sum_{v\in \Vertices}d_v f(v)-\frac{\sum_{x\in \Vertices}d_x f(x)}{\vol(\Graph)}\vol(\Graph)
 		=
 		0.
-	\]
-	Furthermore, for every edge \(\{u,v\}\in E\), we have
-	\[
-		f_0(u)-f_0(v)=\left(f(u)-\overline{f}\right)-\left(f(v)-\overline{f}\right)=f(u)-f(v).
-	\]
-	Thus subtracting the weighted mean leaves the numerator unchanged and turns the denominator into \(\sum_v d_v(f(v)-\overline{f})^2\). Applying the first characterization to \(f_0\), and observing that every weighted-mean-zero function arises in this way from itself, proves the second characterization.
+	\end{equation}
+	Furthermore, for every edge \(\{u,v\}\in\Edges\), we have
+	\begin{equation}
+		f_0(u)-f_0(v)=\left(f(u)-\GraphMean{f}\right)-\left(f(v)-\GraphMean{f}\right)=f(u)-f(v).
+	\end{equation}
+	Thus subtracting the weighted mean leaves the numerator unchanged and turns the denominator into \(\sum_v d_v(f(v)-\GraphMean{f})^2\). Applying the first characterization to \(f_0\), and observing that every weighted-mean-zero function arises in this way from itself, proves the second characterization.
 \end{proof}
+
+\subsection{Conductance and Spectral Partitioning}
+\label{subsec:conductance-spectral-partitioning}
+
+The Rayleigh characterization in \cref{prop:lambda-one-rayleigh} explains why the normalized Laplacian is the matrix that appears in graph partitioning. A partition should have few edges crossing the cut relative to the amount of graph mass on the smaller side, and the denominator in the normalized Rayleigh quotient is exactly the degree-weighted mass against which edge variation is measured. Thus the second eigenvector is not merely a certificate that the graph has a sparse cut; it is also a real-valued relaxation of the problem of finding such a cut.
+
+For a graph with edge weights \(w_{uv}=w_{vu}\geq 0\), write
+\begin{equation}
+	\label{eq:weighted-degree-definition}
+	d_w(v)\coloneqq \sum_{u\in \Vertices}w_{uv}
+\end{equation}
+and, for \(S,T\subseteq \Vertices\), write
+\begin{equation}
+	\label{eq:weighted-crossing-weight}
+	w(S,T)\coloneqq \sum_{\substack{u\in S\\v\in T}}w_{uv}.
+\end{equation}
+The weighted volume of \(S\) is
+\begin{equation}
+	\label{eq:weighted-volume-definition}
+	\vol_w(S)\coloneqq \sum_{v\in S}d_w(v),
+\end{equation}
+and the conductance of a nonempty proper set \(S\) is
+\begin{equation}
+	\label{eq:weighted-conductance-set}
+	\Phi_w(S)\coloneqq \frac{w(S,\Vertices\setminus S)}{\min\{\vol_w(S),\vol_w(\Vertices\setminus S)\}}.
+\end{equation}
+For unweighted \(d\)-regular graphs, \cref{eq:weighted-conductance-set} reduces, up to the harmless convention of always choosing the smaller side, to the edge-expansion quantity used later in \cref{def:edge-expansion}. This normalization is the right one for algorithms, because a cut isolating one high-degree vertex should not be judged in the same way as a balanced cut crossing the same number of edges.
+
+The normalized Laplacian turns the discrete partitioning problem into a continuous one. If \(f\) is nearly constant on two regions and changes mainly across the boundary between them, then the numerator in \cref{prop:lambda-one-rayleigh} is small, whereas the denominator is large when both regions have substantial volume. Conversely, if an eigenvector for \(\lambda_1\) has small Rayleigh quotient, then sorting vertices by the rescaled values
+\begin{equation}
+	\label{eq:sweep-order-normalized-laplacian}
+	\frac{g(v)}{\sqrt{d_v}},
+\end{equation}
+where \(g\) is an eigenvector of \(\NormLaplacian{\Graph}\), produces threshold cuts among which one has small conductance. This is the conceptual content of the spectral sweep algorithm stated later in \cref{def:spectral-sweep-partitioning}, and the formal guarantee is precisely the constructive direction of the Cheeger inequality in \cref{thm:cheeger}.
 
 \begin{lemma}[Weighted Variance Identity]
 	\label{lem:weighted-variance-identity}
-	For every \(f\colon V\to\RR\), one has
-	\[
-		\sum_{v\in V}d_v\left(f(v)-\overline{f}\right)^2
+	For every \(f\colon \Vertices\to\RR\), one has
+	\begin{equation}
+		\sum_{v\in \Vertices}d_v\left(f(v)-\GraphMean{f}\right)^2
 		=
-		\frac{1}{\vol(G)}\sum_{\{u,v\}\subseteq V}d_ud_v\left(f(u)-f(v)\right)^2,
-	\]
+		\frac{1}{\vol(\Graph)}\sum_{\{u,v\}\subseteq \Vertices}d_ud_v\left(f(u)-f(v)\right)^2,
+	\end{equation}
 	where the sum on the right is over unordered pairs of distinct vertices.
 \end{lemma}
 
 \begin{proof}
 	The identity says that variance around the weighted mean can be computed by averaging all pairwise squared differences. This is the weighted analogue of the familiar formula for the variance of finitely many real numbers.
 
-	Let \(W=\vol(G)=\sum_{v\in V}d_v\). Expanding the left-hand side gives
-	\[
-		\sum_{v\in V}d_v\left(f(v)-\overline{f}\right)^2
+	Let \(W=\vol(\Graph)=\sum_{v\in \Vertices}d_v\). Expanding the left-hand side gives
+	\begin{equation}
+		\sum_{v\in \Vertices}d_v\left(f(v)-\GraphMean{f}\right)^2
 		=
-		\sum_{v\in V}d_v f(v)^2-2\overline{f}\sum_{v\in V}d_v f(v)+\overline{f}^{\,2}\sum_{v\in V}d_v.
-	\]
-	Using \(\overline{f}=\left(\sum_v d_v f(v)\right)/W\), the last display becomes
-	\[
-		\sum_{v\in V}d_v f(v)^2-\frac{2}{W}\left(\sum_{v\in V}d_v f(v)\right)^2+\frac{1}{W}\left(\sum_{v\in V}d_v f(v)\right)^2.
-	\]
+		\sum_{v\in \Vertices}d_v f(v)^2-2\GraphMean{f}\sum_{v\in \Vertices}d_v f(v)+\GraphMean{f}^{\,2}\sum_{v\in \Vertices}d_v.
+	\end{equation}
+	Using \(\GraphMean{f}=\left(\sum_v d_v f(v)\right)/W\), the last display becomes
+	\begin{equation}
+		\sum_{v\in \Vertices}d_v f(v)^2-\frac{2}{W}\left(\sum_{v\in \Vertices}d_v f(v)\right)^2+\frac{1}{W}\left(\sum_{v\in \Vertices}d_v f(v)\right)^2.
+	\end{equation}
 	Therefore
-	\[
-		\sum_{v\in V}d_v\left(f(v)-\overline{f}\right)^2
+	\begin{equation}
+		\sum_{v\in \Vertices}d_v\left(f(v)-\GraphMean{f}\right)^2
 		=
-		\sum_{v\in V}d_v f(v)^2-\frac{1}{W}\left(\sum_{v\in V}d_v f(v)\right)^2.
-	\]
+		\sum_{v\in \Vertices}d_v f(v)^2-\frac{1}{W}\left(\sum_{v\in \Vertices}d_v f(v)\right)^2.
+	\end{equation}
 	We now expand the ordered-pair sum
-	\[
-		\sum_{u\in V}\sum_{v\in V}d_ud_v\left(f(u)-f(v)\right)^2.
-	\]
+	\begin{equation}
+		\sum_{u\in \Vertices}\sum_{v\in \Vertices}d_ud_v\left(f(u)-f(v)\right)^2.
+	\end{equation}
 	This equals
-	\[
+	\begin{equation}
 		\sum_{u,v}d_ud_v f(u)^2+\sum_{u,v}d_ud_v f(v)^2-2\sum_{u,v}d_ud_v f(u)f(v).
-	\]
+	\end{equation}
 	The first term satisfies
-	\[
-		\sum_{u,v}d_ud_v f(u)^2=\sum_{u\in V}d_u f(u)^2\sum_{v\in V}d_v=W\sum_{u\in V}d_u f(u)^2.
-	\]
+	\begin{equation}
+		\sum_{u,v}d_ud_v f(u)^2=\sum_{u\in \Vertices}d_u f(u)^2\sum_{v\in \Vertices}d_v=W\sum_{u\in \Vertices}d_u f(u)^2.
+	\end{equation}
 	The second term is the same quantity with the names of \(u\) and \(v\) interchanged, and hence
-	\[
-		\sum_{u,v}d_ud_v f(v)^2=W\sum_{v\in V}d_v f(v)^2.
-	\]
+	\begin{equation}
+		\sum_{u,v}d_ud_v f(v)^2=W\sum_{v\in \Vertices}d_v f(v)^2.
+	\end{equation}
 	The cross-term factors as
-	\[
-		\sum_{u,v}d_ud_v f(u)f(v)=\left(\sum_{u\in V}d_u f(u)\right)\left(\sum_{v\in V}d_v f(v)\right)=\left(\sum_{v\in V}d_v f(v)\right)^2.
-	\]
+	\begin{equation}
+		\sum_{u,v}d_ud_v f(u)f(v)=\left(\sum_{u\in \Vertices}d_u f(u)\right)\left(\sum_{v\in \Vertices}d_v f(v)\right)=\left(\sum_{v\in \Vertices}d_v f(v)\right)^2.
+	\end{equation}
 	Combining the three expressions yields
-	\[
+	\begin{equation}
 		\sum_{u,v}d_ud_v\left(f(u)-f(v)\right)^2
 		=
-		2W\sum_{v\in V}d_v f(v)^2-2\left(\sum_{v\in V}d_v f(v)\right)^2.
-	\]
+		2W\sum_{v\in \Vertices}d_v f(v)^2-2\left(\sum_{v\in \Vertices}d_v f(v)\right)^2.
+	\end{equation}
 	Dividing by \(2W\), we obtain
-	\[
+	\begin{equation}
 		\frac{1}{2W}\sum_{u,v}d_ud_v\left(f(u)-f(v)\right)^2
 		=
-		\sum_{v\in V}d_v f(v)^2-\frac{1}{W}\left(\sum_{v\in V}d_v f(v)\right)^2.
-	\]
+		\sum_{v\in \Vertices}d_v f(v)^2-\frac{1}{W}\left(\sum_{v\in \Vertices}d_v f(v)\right)^2.
+	\end{equation}
 	The ordered-pair sum counts each unordered pair \(\{u,v\}\) with \(u\neq v\) exactly twice, and it gives zero when \(u=v\). Hence
-	\[
+	\begin{equation}
 		\frac{1}{2W}\sum_{u,v}d_ud_v\left(f(u)-f(v)\right)^2
 		=
-		\frac{1}{W}\sum_{\{u,v\}\subseteq V}d_ud_v\left(f(u)-f(v)\right)^2.
-	\]
+		\frac{1}{W}\sum_{\{u,v\}\subseteq \Vertices}d_ud_v\left(f(u)-f(v)\right)^2.
+	\end{equation}
 	Comparing this expression with the earlier expansion of the weighted variance proves the lemma.
 \end{proof}
 
@@ -312,255 +346,257 @@ whenever the denominator is nonzero.
 
 The normalized Laplacian is the most stable object for non-regular graphs, but the adjacency matrix is often the more economical object for regular graphs, and much of the expander literature moves between these two languages without warning. We spell out this passage explicitly, because it is the point at which the spectral gap of a random walk, the second adjacency eigenvalue, and the first nonzero Laplacian eigenvalue become the same quantitative phenomenon written in three normalizations.
 
-Let \(G\) be a \(d\)-regular graph, and let the eigenvalues of \(\Adjacency{G}\) be written in nonincreasing order as
-\[
+Let \(\Graph\) be a \(d\)-regular graph, and let the eigenvalues of \(\Adjacency{\Graph}\) be written in nonincreasing order as
+\begin{equation}
 	\theta_1\geq\theta_2\geq\cdots\geq\theta_n.
-\]
-Since \(\DegreeMatrix{G}=dI\), the random-walk operator is \(\Markov{G}=\Adjacency{G}/d\), and the normalized Laplacian is
-\[
-	\NormLaplacian{G}=I-\frac{1}{d}\Adjacency{G}.
-\]
-Thus every adjacency eigenvector is simultaneously an eigenvector of \(\Markov{G}\) and \(\NormLaplacian{G}\), with corresponding eigenvalues \(\theta_i/d\) and \(1-\theta_i/d\), respectively. In particular, when \(G\) is connected, the spectral gap of the normalized random walk is \(1-\theta_2/d\), while the first nonzero eigenvalue of the normalized Laplacian is the same number.
+\end{equation}
+Since \(\DegreeMatrix{\Graph}=d\IdentityMatrix\), the random-walk operator is \(\Markov{\Graph}=\Adjacency{\Graph}/d\), and the normalized Laplacian is
+\begin{equation}
+	\NormLaplacian{\Graph}=\IdentityMatrix-\frac{1}{d}\Adjacency{\Graph}.
+\end{equation}
+Thus every adjacency eigenvector is simultaneously an eigenvector of \(\Markov{\Graph}\) and \(\NormLaplacian{\Graph}\), with corresponding eigenvalues \(\theta_i/d\) and \(1-\theta_i/d\), respectively. In particular, when \(\Graph\) is connected, the spectral gap of the normalized random walk is \(1-\theta_2/d\), while the first nonzero eigenvalue of the normalized Laplacian is the same number.
 
 \begin{lemma}[Adjacency Rayleigh Principle]
 	\label{lem:adjacency-rayleigh-principle}
-	Let \(A\) be a real symmetric \(n\times n\) matrix with orthonormal eigenvectors \(v_1,\ldots,v_n\) and corresponding eigenvalues \(\theta_1\geq\cdots\geq\theta_n\). For every nonzero vector \(x\in\RR^n\), one has
-	\[
-		\frac{x^T A x}{x^T x}
+	Let \(\vec{M}\) be a real symmetric \(n\times n\) matrix with orthonormal eigenvectors \(v_1,\ldots,v_n\) and corresponding eigenvalues \(\theta_1\geq\cdots\geq\theta_n\). For every nonzero vector \(x\in\RR^n\), one has
+	\begin{equation}
+		\frac{x^T\vec{M}x}{x^T x}
 		=
 		\frac{\sum_{i=1}^n\theta_i a_i^2}{\sum_{i=1}^n a_i^2},
-	\]
+	\end{equation}
 	where \(x=\sum_{i=1}^n a_i v_i\). Consequently,
-	\[
+	\begin{equation}
 		\theta_n\leq \frac{x^T A x}{x^T x}\leq \theta_1,
-	\]
+	\end{equation}
 	and if \(x\perp v_1\), then
-	\[
+	\begin{equation}
 		\frac{x^T A x}{x^T x}\leq \theta_2.
-	\]
+	\end{equation}
 \end{lemma}
 
 \begin{proof}
 	The proof is the spectral theorem written in coordinates. Once the vector is expanded in an orthonormal eigenbasis, the numerator becomes a weighted sum of eigenvalues, and the denominator becomes the corresponding weighted sum of squared coordinates.
 
-	Write \(x=\sum_{i=1}^n a_i v_i\). Since \(Av_i=\theta_i v_i\), linearity gives
-	\[
-		Ax=A\left(\sum_{i=1}^n a_i v_i\right)=\sum_{i=1}^n a_i Av_i=\sum_{i=1}^n a_i\theta_i v_i.
-	\]
+	Write \(x=\sum_{i=1}^n a_i v_i\). Since \(\vec{M}v_i=\theta_i v_i\), linearity gives
+	\begin{equation}
+		\vec{M}x=\vec{M}\left(\sum_{i=1}^n a_i v_i\right)=\sum_{i=1}^n a_i\vec{M}v_i=\sum_{i=1}^n a_i\theta_i v_i.
+	\end{equation}
 	Using orthonormality, we compute the numerator as
-	\[
-		x^T A x
+	\begin{equation}
+		x^T\vec{M}x
 		=
 		\left\langle \sum_{i=1}^n a_i v_i,\sum_{j=1}^n a_j\theta_j v_j\right\rangle
 		=
 		\sum_{i=1}^n\sum_{j=1}^n a_i a_j\theta_j\langle v_i,v_j\rangle.
-	\]
+	\end{equation}
 	Because \(\langle v_i,v_j\rangle=0\) when \(i\neq j\) and \(\langle v_i,v_i\rangle=1\), the double sum reduces to
-	\[
-		x^T A x=\sum_{i=1}^n\theta_i a_i^2.
-	\]
+	\begin{equation}
+		x^T\vec{M}x=\sum_{i=1}^n\theta_i a_i^2.
+	\end{equation}
 	The same orthonormality calculation gives
-	\[
+	\begin{equation}
 		x^T x
 		=
 		\left\langle \sum_{i=1}^n a_i v_i,\sum_{j=1}^n a_j v_j\right\rangle
 		=
 		\sum_{i=1}^n a_i^2.
-	\]
+	\end{equation}
 	Dividing the two displayed identities proves the formula for the Rayleigh quotient.
 
 	Since \(x\neq 0\), at least one \(a_i\) is nonzero, and therefore \(\sum_i a_i^2>0\). The inequalities \(\theta_n\leq \theta_i\leq \theta_1\) for every \(i\) imply
-	\[
+	\begin{equation}
 		\theta_n\sum_{i=1}^n a_i^2\leq \sum_{i=1}^n\theta_i a_i^2\leq \theta_1\sum_{i=1}^n a_i^2.
-	\]
+	\end{equation}
 	Dividing by \(\sum_i a_i^2\) proves the two-sided bound. If \(x\perp v_1\), then \(a_1=\langle x,v_1\rangle=0\), and the numerator becomes \(\sum_{i=2}^n\theta_i a_i^2\). Since \(\theta_i\leq\theta_2\) for every \(i\geq 2\), we get
-	\[
+	\begin{equation}
 		\sum_{i=2}^n\theta_i a_i^2\leq \theta_2\sum_{i=2}^n a_i^2=\theta_2\sum_{i=1}^n a_i^2.
-	\]
+	\end{equation}
 	Dividing by the positive denominator gives the asserted upper bound under the orthogonality condition.
 \end{proof}
 
 \begin{proposition}[The Trivial Regular Eigenvalue]
 	\label{prop:regular-trivial-adjacency-eigenvalue}
-	Let \(G\) be a \(d\)-regular graph. Then \(d\) is an eigenvalue of \(\Adjacency{G}\), with eigenvector \(\vec{1}\), and the multiplicity of the eigenvalue \(d\) is equal to the number of connected components of \(G\).
+	Let \(\Graph\) be a \(d\)-regular graph. Then \(d\) is an eigenvalue of \(\Adjacency{\Graph}\), with eigenvector \(\vec{1}\), and the multiplicity of the eigenvalue \(d\) is equal to the number of connected components of \(\Graph\).
 \end{proposition}
 
 \begin{proof}
 	The all-ones vector is an eigenvector because every row of the adjacency matrix has exactly \(d\) ones. The only additional point is that, inside a connected component, an eigenvector with eigenvalue \(d\) cannot vary, since each vertex value must equal the average of its neighbors' values.
 
-	For every vertex \(v\), the \(v\)-th coordinate of \(\Adjacency{G}\vec{1}\) is
-	\[
-		\left(\Adjacency{G}\vec{1}\right)(v)=\sum_{u\in V}\Adjacency{G}(v,u)=d.
-	\]
-	Hence \(\Adjacency{G}\vec{1}=d\vec{1}\), and \(d\) is an eigenvalue.
+	For every vertex \(v\), the \(v\)-th coordinate of \(\Adjacency{\Graph}\vec{1}\) is
+	\begin{equation}
+		\left(\Adjacency{\Graph}\vec{1}\right)(v)=\sum_{u\in \Vertices}\Adjacency{\Graph}(v,u)=d.
+	\end{equation}
+	Hence \(\Adjacency{\Graph}\vec{1}=d\vec{1}\), and \(d\) is an eigenvalue.
 
-	If \(C\) is a connected component of \(G\), then its indicator vector \(\vec{1}_C\) also satisfies \(\Adjacency{G}\vec{1}_C=d\vec{1}_C\), because vertices in \(C\) have all their \(d\) neighbors inside \(C\), while vertices outside \(C\) have no neighbors inside \(C\). The indicator vectors of distinct components have disjoint support and are linearly independent, so the multiplicity of \(d\) is at least the number of connected components.
+	If \(C\) is a connected component of \(\Graph\), then its indicator vector \(\vec{1}_C\) also satisfies \(\Adjacency{\Graph}\vec{1}_C=d\vec{1}_C\), because vertices in \(C\) have all their \(d\) neighbors inside \(C\), while vertices outside \(C\) have no neighbors inside \(C\). The indicator vectors of distinct components have disjoint support and are linearly independent, so the multiplicity of \(d\) is at least the number of connected components.
 
-	Conversely, let \(x\) satisfy \(\Adjacency{G}x=dx\), and fix a connected component \(C\). Choose a vertex \(v_0\in C\) at which \(x\) attains its maximum value on \(C\), denoted \(M\). The eigenvector equation at \(v_0\) gives
-	\[
+	Conversely, let \(x\) satisfy \(\Adjacency{\Graph}x=dx\), and fix a connected component \(C\). Choose a vertex \(v_0\in C\) at which \(x\) attains its maximum value on \(C\), denoted \(M\). The eigenvector equation at \(v_0\) gives
+	\begin{equation}
 		dM=d\,x(v_0)=\sum_{u\sim v_0}x(u).
-	\]
+	\end{equation}
 	Every neighbor \(u\) of \(v_0\) lies in \(C\), and by the definition of \(M\) we have \(x(u)\leq M\). If one neighbor had \(x(u)<M\), then the sum of the \(d\) neighbor values would be strictly less than \(dM\), contradicting the displayed equality. Thus every neighbor of \(v_0\) also has value \(M\). Repeating the same argument along paths from \(v_0\) shows that every vertex in \(C\) has value \(M\). Therefore \(x\) is constant on each connected component, and hence \(x\) is a linear combination of the component indicator vectors. This proves that the eigenspace for \(d\) has exactly one dimension per connected component.
 \end{proof}
 
 \begin{lemma}[Adjacency Trace Identities]
 	\label{lem:adjacency-trace-identities}
-	Let \(G\) be a finite simple graph with adjacency eigenvalues \(\theta_1,\ldots,\theta_n\). Then
-	\[
+	Let \(\Graph\) be a finite simple graph with adjacency eigenvalues \(\theta_1,\ldots,\theta_n\). Then
+	\begin{equation}
 		\sum_{i=1}^n\theta_i=0
-	\]
+	\end{equation}
 	and
-	\[
-		\sum_{i=1}^n\theta_i^2=2\abs{E}.
-	\]
-	In particular, if \(G\) is \(d\)-regular on \(n\) vertices, then \(\sum_i\theta_i^2=nd\).
+	\begin{equation}
+		\sum_{i=1}^n\theta_i^2=2\abs{\Edges}.
+	\end{equation}
+	In particular, if \(\Graph\) is \(d\)-regular on \(n\) vertices, then \(\sum_i\theta_i^2=nd\).
 \end{lemma}
 
 \begin{proof}
 	The trace of a matrix is the sum of its eigenvalues, counted with algebraic multiplicity, and the trace of its square is the sum of the squares of its eigenvalues. For an adjacency matrix, these two traces have direct graph-theoretic meanings, because diagonal entries count loops and diagonal entries of the square count length-two closed walks.
 
-	Since \(G\) is simple, \(\Adjacency{G}(v,v)=0\) for every \(v\in V\). Therefore
-	\[
-		\operatorname{tr}\left(\Adjacency{G}\right)=\sum_{v\in V}\Adjacency{G}(v,v)=0.
-	\]
-	As \(\Adjacency{G}\) is real symmetric, it is diagonalizable over \(\RR\), and the trace equals the sum of its eigenvalues. Hence \(\sum_i\theta_i=0\).
+	Since \(\Graph\) is simple, \(\Adjacency{\Graph}(v,v)=0\) for every \(v\in \Vertices\). Therefore
+	\begin{equation}
+		\operatorname{tr}\left(\Adjacency{\Graph}\right)=\sum_{v\in \Vertices}\Adjacency{\Graph}(v,v)=0.
+	\end{equation}
+	As \(\Adjacency{\Graph}\) is real symmetric, it is diagonalizable over \(\RR\), and the trace equals the sum of its eigenvalues. Hence \(\sum_i\theta_i=0\).
 
 	For the square, we first compute
-	\[
-		\operatorname{tr}\left(\Adjacency{G}^2\right)=\sum_{v\in V}\left(\Adjacency{G}^2\right)(v,v).
-	\]
+	\begin{equation}
+		\operatorname{tr}\left(\Adjacency{\Graph}^2\right)=\sum_{v\in \Vertices}\left(\Adjacency{\Graph}^2\right)(v,v).
+	\end{equation}
 	For each vertex \(v\), the diagonal entry is
-	\[
-		\left(\Adjacency{G}^2\right)(v,v)=\sum_{u\in V}\Adjacency{G}(v,u)\Adjacency{G}(u,v).
-	\]
-	Because \(\Adjacency{G}\) is symmetric and has entries in \(\{0,1\}\), the product \(\Adjacency{G}(v,u)\Adjacency{G}(u,v)\) equals \(1\) exactly when \(u\) is adjacent to \(v\), and equals \(0\) otherwise. Thus
-	\[
-		\left(\Adjacency{G}^2\right)(v,v)=d_v.
-	\]
+	\begin{equation}
+		\left(\Adjacency{\Graph}^2\right)(v,v)=\sum_{u\in \Vertices}\Adjacency{\Graph}(v,u)\Adjacency{\Graph}(u,v).
+	\end{equation}
+	Because \(\Adjacency{\Graph}\) is symmetric and has entries in \(\{0,1\}\), the product \(\Adjacency{\Graph}(v,u)\Adjacency{\Graph}(u,v)\) equals \(1\) exactly when \(u\) is adjacent to \(v\), and equals \(0\) otherwise. Thus
+	\begin{equation}
+		\left(\Adjacency{\Graph}^2\right)(v,v)=d_v.
+	\end{equation}
 	Summing over \(v\) gives
-	\[
-		\operatorname{tr}\left(\Adjacency{G}^2\right)=\sum_{v\in V}d_v=2\abs{E}.
-	\]
-	Again using diagonalizability, the trace of \(\Adjacency{G}^2\) is \(\sum_i\theta_i^2\), which proves the second identity. If \(G\) is \(d\)-regular, then \(\sum_v d_v=nd\), and the final claim follows.
+	\begin{equation}
+		\operatorname{tr}\left(\Adjacency{\Graph}^2\right)=\sum_{v\in \Vertices}d_v=2\abs{\Edges}.
+	\end{equation}
+	Again using diagonalizability, the trace of \(\Adjacency{\Graph}^2\) is \(\sum_i\theta_i^2\), which proves the second identity. If \(\Graph\) is \(d\)-regular, then \(\sum_v d_v=nd\), and the final claim follows.
 \end{proof}
 
 \begin{lemma}[Bipartite Symmetry of the Adjacency Spectrum]
 	\label{lem:bipartite-adjacency-symmetry}
-	If \(G\) is bipartite, then the adjacency spectrum of \(G\) is symmetric about \(0\), in the sense that every eigenvalue \(\theta\) occurs with the same multiplicity as \(-\theta\). Moreover, if \(G\) is connected and \(d\)-regular, then \(G\) is bipartite if and only if the smallest adjacency eigenvalue is \(-d\).
+	If \(\Graph\) is bipartite, then the adjacency spectrum of \(\Graph\) is symmetric about \(0\), in the sense that every eigenvalue \(\theta\) occurs with the same multiplicity as \(-\theta\). Moreover, if \(\Graph\) is connected and \(d\)-regular, then \(\Graph\) is bipartite if and only if the smallest adjacency eigenvalue is \(-d\).
 \end{lemma}
 
 \begin{proof}
 	The sign change across the two sides of a bipartition conjugates the adjacency action into its negative. This is the algebraic form of the fact that every step of the graph moves from one side of the bipartition to the other.
 
-	Let \(V=L\cup R\) be a bipartition of \(G\). Suppose that \(\Adjacency{G}x=\theta x\), and define \(y\) by \(y(v)=x(v)\) for \(v\in L\) and \(y(v)=-x(v)\) for \(v\in R\). If \(v\in L\), then all neighbors of \(v\) lie in \(R\), and hence
-	\[
-		\left(\Adjacency{G}y\right)(v)=\sum_{u\sim v}y(u)=\sum_{u\sim v}(-x(u))=-\left(\Adjacency{G}x\right)(v)=-\theta x(v)=-\theta y(v).
-	\]
-	If \(v\in R\), then all neighbors of \(v\) lie in \(L\), and similarly
-	\[
-		\left(\Adjacency{G}y\right)(v)=\sum_{u\sim v}y(u)=\sum_{u\sim v}x(u)=\left(\Adjacency{G}x\right)(v)=\theta x(v)=-\theta y(v),
-	\]
-	because \(y(v)=-x(v)\) on \(R\). Thus \(y\) is an eigenvector with eigenvalue \(-\theta\). The map \(x\mapsto y\) is an invertible linear map, and it sends the \(\theta\)-eigenspace to the \(-\theta\)-eigenspace and back again, so the two eigenspaces have the same dimension.
+	Let \(\Vertices=\LeftSet\cup \RightSet\) be a bipartition of \(\Graph\). Suppose that \(\Adjacency{\Graph}x=\theta x\), and define \(y\) by \(y(v)=x(v)\) for \(v\in \LeftSet\) and \(y(v)=-x(v)\) for \(v\in \RightSet\). If \(v\in \LeftSet\), then all neighbors of \(v\) lie in \(\RightSet\), and hence
+	\begin{equation}
+		\left(\Adjacency{\Graph}y\right)(v)=\sum_{u\sim v}y(u)=\sum_{u\sim v}(-x(u))=-\left(\Adjacency{\Graph}x\right)(v)=-\theta x(v)=-\theta y(v).
+	\end{equation}
+	If \(v\in \RightSet\), then all neighbors of \(v\) lie in \(\LeftSet\), and similarly
+	\begin{equation}
+		\left(\Adjacency{\Graph}y\right)(v)=\sum_{u\sim v}y(u)=\sum_{u\sim v}x(u)=\left(\Adjacency{\Graph}x\right)(v)=\theta x(v)=-\theta y(v),
+	\end{equation}
+	because \(y(v)=-x(v)\) on \(\RightSet\). Thus \(y\) is an eigenvector with eigenvalue \(-\theta\). The map \(x\mapsto y\) is an invertible linear map, and it sends the \(\theta\)-eigenspace to the \(-\theta\)-eigenspace and back again, so the two eigenspaces have the same dimension.
 
-	Assume now that \(G\) is connected and \(d\)-regular. If \(G\) is bipartite, then \(\theta_1=d\) by \cref{prop:regular-trivial-adjacency-eigenvalue}, and the spectral symmetry just proved implies that \(-d\) is also an adjacency eigenvalue. Since \(\NormLaplacian{G}=I-\Adjacency{G}/d\), \cref{lem:laplacian-spectrum-interval} implies that every adjacency eigenvalue \(\theta\) satisfies \(1-\theta/d\leq 2\), and hence \(\theta\geq -d\). Therefore \(-d\) is the smallest adjacency eigenvalue.
+	Assume now that \(\Graph\) is connected and \(d\)-regular. If \(\Graph\) is bipartite, then \(\theta_1=d\) by \cref{prop:regular-trivial-adjacency-eigenvalue}, and the spectral symmetry just proved implies that \(-d\) is also an adjacency eigenvalue. Since \(\NormLaplacian{\Graph}=\IdentityMatrix-\Adjacency{\Graph}/d\), \cref{lem:laplacian-spectrum-interval} implies that every adjacency eigenvalue \(\theta\) satisfies \(1-\theta/d\leq 2\), and hence \(\theta\geq -d\). Therefore \(-d\) is the smallest adjacency eigenvalue.
 
-	Conversely, suppose that \(-d\) is an adjacency eigenvalue. Then \(2=1-(-d)/d\) is an eigenvalue of \(\NormLaplacian{G}\). By \cref{lem:top-eigenvalue-bipartite}, the graph \(G\) has a nontrivial bipartite connected component. Since \(G\) is connected, this component is all of \(G\), and \(G\) is bipartite.
+	Conversely, suppose that \(-d\) is an adjacency eigenvalue. Then \(2=1-(-d)/d\) is an eigenvalue of \(\NormLaplacian{\Graph}\). By \cref{lem:top-eigenvalue-bipartite}, the graph \(\Graph\) has a nontrivial bipartite connected component. Since \(\Graph\) is connected, this component is all of \(\Graph\), and \(\Graph\) is bipartite.
 \end{proof}
+
+We next record a typical use of the extreme end of the adjacency spectrum. The result is not an expansion theorem in itself, but it illustrates the general spectral method that will recur throughout the note, in which a forbidden combinatorial configuration is encoded as a vector and an eigenvalue bound prevents that vector from having the required Rayleigh quotient.
 
 \begin{theorem}[Hoffman Bound~\cite{Hof1970}]
 	\label{thm:hoffman-bound}
-	Let \(G\) be a \(d\)-regular graph on \(n\) vertices with \(d>0\), and let \(\theta_{\min}\) denote the smallest eigenvalue of \(\Adjacency{G}\). If \(S\subseteq V(G)\) is an independent set, then
-	\[
+	Let \(\Graph\) be a \(d\)-regular graph on \(n\) vertices with \(d>0\), and let \(\theta_{\min}\) denote the smallest eigenvalue of \(\Adjacency{\Graph}\). If \(S\subseteq \Vertices(\Graph)\) is an independent set, then
+	\begin{equation}
 		\abs{S}\leq \frac{-n\theta_{\min}}{d-\theta_{\min}}.
-	\]
+	\end{equation}
 \end{theorem}
 
 \begin{proof}
 	The proof turns an independent set into a vector orthogonal to the trivial eigenvector and then reads the absence of edges inside the set as a negative Rayleigh quotient. The smallest eigenvalue gives a universal lower bound on this quotient, and solving the resulting inequality gives the size bound.
 
-	Let \(s=\abs{S}\), and define \(x\in\RR^V\) by
-	\[
+	Let \(s=\abs{S}\), and define \(x\in\RR^\Vertices\) by
+	\begin{equation}
 		x(v)=
 		\begin{cases}
-			n-s & \text{if }v\in S,\\
-			-s & \text{if }v\notin S.
+			n-s & \text{if }v\in S,    \\
+			-s  & \text{if }v\notin S.
 		\end{cases}
-	\]
-	If \(s=0\), then the claimed inequality is immediate, since its left-hand side is \(0\). We therefore assume \(s>0\). Since \(d>0\), the graph has no independent set equal to all of \(V\), and hence \(s<n\). Thus the vector \(x\) is nonzero and the quantity \(ns(n-s)\) that appears below is positive.
+	\end{equation}
+	If \(s=0\), then the claimed inequality is immediate, since its left-hand side is \(0\). We therefore assume \(s>0\). Since \(d>0\), the graph has no independent set equal to all of \(\Vertices\), and hence \(s<n\). Thus the vector \(x\) is nonzero and the quantity \(ns(n-s)\) that appears below is positive.
 	Then
-	\[
+	\begin{equation}
 		\langle x,\vec{1}\rangle=s(n-s)+(n-s)(-s)=s(n-s)-s(n-s)=0.
-	\]
+	\end{equation}
 	The denominator of the Rayleigh quotient is
-	\[
+	\begin{equation}
 		x^T x=s(n-s)^2+(n-s)s^2=s(n-s)\left((n-s)+s\right)=ns(n-s).
-	\]
+	\end{equation}
 
-	We next compute \(x^T\Adjacency{G}x\). Let \(T=V\setminus S\), let \(b\) be the number of edges between \(S\) and \(T\), and let \(m_T\) be the number of edges with both endpoints in \(T\). Since \(S\) is independent and \(G\) is \(d\)-regular, every edge incident to a vertex of \(S\) crosses from \(S\) to \(T\), and therefore
-	\[
+	We next compute \(x^T\Adjacency{\Graph}x\). Let \(T=\Vertices\setminus S\), let \(b\) be the number of edges between \(S\) and \(T\), and let \(m_T\) be the number of edges with both endpoints in \(T\). Since \(S\) is independent and \(\Graph\) is \(d\)-regular, every edge incident to a vertex of \(S\) crosses from \(S\) to \(T\), and therefore
+	\begin{equation}
 		b=ds.
-	\]
+	\end{equation}
 	The total number of edges is \(dn/2\), and so
-	\[
+	\begin{equation}
 		m_T=\frac{dn}{2}-b=\frac{dn}{2}-ds.
-	\]
+	\end{equation}
 	Using the ordered-pair expansion of the quadratic form, each edge inside \(T\) contributes \(2s^2\), because both endpoint values are \(-s\), and each edge crossing from \(S\) to \(T\) contributes \(-2s(n-s)\), because the two ordered directions have product \((n-s)(-s)\). Thus
-	\[
-		x^T\Adjacency{G}x=2s^2m_T-2s(n-s)b.
-	\]
+	\begin{equation}
+		x^T\Adjacency{\Graph}x=2s^2m_T-2s(n-s)b.
+	\end{equation}
 	Substituting the two expressions for \(m_T\) and \(b\) gives
-	\[
-		x^T\Adjacency{G}x
+	\begin{equation}
+		x^T\Adjacency{\Graph}x
 		=
 		2s^2\left(\frac{dn}{2}-ds\right)-2s(n-s)ds.
-	\]
+	\end{equation}
 	Expanding every term, we obtain
-	\[
-		x^T\Adjacency{G}x
+	\begin{equation}
+		x^T\Adjacency{\Graph}x
 		=
 		dns^2-2ds^3-2ds^2(n-s).
-	\]
+	\end{equation}
 	Since
-	\[
+	\begin{equation}
 		-2ds^2(n-s)=-2dns^2+2ds^3,
-	\]
+	\end{equation}
 	the expression simplifies to
-	\[
-		x^T\Adjacency{G}x=dns^2-2ds^3-2dns^2+2ds^3=-dns^2.
-	\]
+	\begin{equation}
+		x^T\Adjacency{\Graph}x=dns^2-2ds^3-2dns^2+2ds^3=-dns^2.
+	\end{equation}
 	Hence
-	\[
-		\frac{x^T\Adjacency{G}x}{x^T x}
+	\begin{equation}
+		\frac{x^T\Adjacency{\Graph}x}{x^T x}
 		=
 		\frac{-dns^2}{ns(n-s)}
 		=
 		-\frac{ds}{n-s}.
-	\]
+	\end{equation}
 
-	By \cref{lem:adjacency-rayleigh-principle}, applied to the symmetric matrix \(\Adjacency{G}\), every Rayleigh quotient is at least \(\theta_{\min}\). Therefore
-	\[
+	By \cref{lem:adjacency-rayleigh-principle}, applied to the symmetric matrix \(\Adjacency{\Graph}\), every Rayleigh quotient is at least \(\theta_{\min}\). Therefore
+	\begin{equation}
 		\theta_{\min}\leq -\frac{ds}{n-s}.
-	\]
+	\end{equation}
 	Multiplying by the positive number \(n-s\), we get
-	\[
+	\begin{equation}
 		\theta_{\min}(n-s)\leq -ds.
-	\]
+	\end{equation}
 	Expanding the left-hand side gives
-	\[
+	\begin{equation}
 		\theta_{\min}n-\theta_{\min}s\leq -ds.
-	\]
+	\end{equation}
 	Moving the \(s\)-terms to the right gives
-	\[
+	\begin{equation}
 		\theta_{\min}n\leq \theta_{\min}s-ds=-(d-\theta_{\min})s.
-	\]
+	\end{equation}
 	Since \(d>0\) and \(\theta_{\min}\leq 0\) by \cref{lem:adjacency-trace-identities}, we have \(d-\theta_{\min}>0\). Multiplying by \(-1\) reverses the inequality and yields
-	\[
+	\begin{equation}
 		-\theta_{\min}n\geq (d-\theta_{\min})s.
-	\]
+	\end{equation}
 	Dividing by \(d-\theta_{\min}\) proves
-	\[
+	\begin{equation}
 		s\leq \frac{-n\theta_{\min}}{d-\theta_{\min}},
-	\]
+	\end{equation}
 	which is the desired bound.
 \end{proof}
 
@@ -573,106 +609,106 @@ The next facts explain why the normalized Laplacian spectrum is naturally confin
 
 \begin{lemma}[Zero Eigenvalues and Connected Components]
 	\label{lem:zero-eigenvalues-components}
-	The multiplicity of the eigenvalue \(0\) of \(\NormLaplacian{G}\) is equal to the number of connected components of \(G\).
+	The multiplicity of the eigenvalue \(0\) of \(\NormLaplacian{\Graph}\) is equal to the number of connected components of \(\Graph\).
 \end{lemma}
 
 \begin{proof}
-	The quadratic form of \(\NormLaplacian{G}\) is a sum of squares over edges. Hence a vector lies in the zero eigenspace exactly when all these squares vanish, which means that the rescaled value \(g(v)/\sqrt{d_v}\) is constant on each nontrivial connected component, while isolated vertices contribute their own independent zero vectors.
+	The quadratic form of \(\NormLaplacian{\Graph}\) is a sum of squares over edges. Hence a vector lies in the zero eigenspace exactly when all these squares vanish, which means that the rescaled value \(g(v)/\sqrt{d_v}\) is constant on each nontrivial connected component, while isolated vertices contribute their own independent zero vectors.
 
-	Let \(g\in\RR^V\). Since \(\NormLaplacian{G}\) is positive semidefinite by \cref{cor:laplacian-spectrum-nonnegative}, the condition \(\NormLaplacian{G}g=\vec{0}\) is equivalent to
-	\[
-		\langle g,\NormLaplacian{G}g\rangle=0.
-	\]
+	Let \(g\in\RR^\Vertices\). Since \(\NormLaplacian{\Graph}\) is positive semidefinite by \cref{cor:laplacian-spectrum-nonnegative}, the condition \(\NormLaplacian{\Graph}g=\vec{0}\) is equivalent to
+	\begin{equation}
+		\langle g,\NormLaplacian{\Graph}g\rangle=0.
+	\end{equation}
 	By \cref{prop:normalized-laplacian-dirichlet}, this condition is
-	\[
-		\sum_{\{u,v\}\in E}\left(\frac{g(u)}{\sqrt{d_u}}-\frac{g(v)}{\sqrt{d_v}}\right)^2=0.
-	\]
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}\left(\frac{g(u)}{\sqrt{d_u}}-\frac{g(v)}{\sqrt{d_v}}\right)^2=0.
+	\end{equation}
 	A sum of nonnegative real numbers is zero if and only if each summand is zero, and therefore
-	\[
+	\begin{equation}
 		\frac{g(u)}{\sqrt{d_u}}=\frac{g(v)}{\sqrt{d_v}}
-	\]
-	for every edge \(\{u,v\}\in E\). If \(C\) is a connected component containing at least one edge, then every two vertices in \(C\) are joined by a path. Applying the preceding equality along the edges of such a path shows that \(g(v)/\sqrt{d_v}\) is constant over all vertices \(v\in C\). Thus the restriction of \(g\) to \(C\) is a scalar multiple of the vector \(\DegreeMatrix{G}^{1/2}\vec{1}_C\).
+	\end{equation}
+	for every edge \(\{u,v\}\in\Edges\). If \(C\) is a connected component containing at least one edge, then every two vertices in \(C\) are joined by a path. Applying the preceding equality along the edges of such a path shows that \(g(v)/\sqrt{d_v}\) is constant over all vertices \(v\in C\). Thus the restriction of \(g\) to \(C\) is a scalar multiple of the vector \(\DegreeMatrix{\Graph}^{1/2}\vec{1}_C\).
 
-	If \(v\) is an isolated vertex, then the \(v\)-th row and column of \(\NormLaplacian{G}\) are zero by convention, and the vector \(\vec{1}_{\{v\}}\) is an independent zero eigenvector. We have therefore found exactly one independent zero eigenvector for each connected component, whether the component is isolated or nontrivial. Since the same argument shows that every zero eigenvector is a linear combination of these component vectors, the dimension of the zero eigenspace is exactly the number of connected components.
+	If \(v\) is an isolated vertex, then the \(v\)-th row and column of \(\NormLaplacian{\Graph}\) are zero by convention, and the vector \(\vec{1}_{\{v\}}\) is an independent zero eigenvector. We have therefore found exactly one independent zero eigenvector for each connected component, whether the component is isolated or nontrivial. Since the same argument shows that every zero eigenvector is a linear combination of these component vectors, the dimension of the zero eigenspace is exactly the number of connected components.
 \end{proof}
 
 \begin{lemma}[The Spectrum Lies between Zero and Two]
 	\label{lem:laplacian-spectrum-interval}
-	Every eigenvalue \(\lambda_i\) of \(\NormLaplacian{G}\) satisfies \(0\leq \lambda_i\leq 2\).
+	Every eigenvalue \(\lambda_i\) of \(\NormLaplacian{\Graph}\) satisfies \(0\leq \lambda_i\leq 2\).
 \end{lemma}
 
 \begin{proof}
 	The lower bound is the non-negativity already proved above. For the upper bound, the elementary inequality \((a-b)^2\leq 2a^2+2b^2\) bounds the energy across all edges by twice the degree-weighted mass of the function.
 
-	By \cref{cor:laplacian-spectrum-nonnegative}, every eigenvalue is at least zero. To prove the upper bound, let \(g\colon V\to\RR\) be nonzero, and put \(f=\DegreeMatrix{G}^{-1/2}g\). We have
-	\[
-		\sum_{\{u,v\}\in E}\left(f(u)-f(v)\right)^2
+	By \cref{cor:laplacian-spectrum-nonnegative}, every eigenvalue is at least zero. To prove the upper bound, let \(g\colon \Vertices\to\RR\) be nonzero, and put \(f=\DegreeMatrix{\Graph}^{-1/2}g\). We have
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}\left(f(u)-f(v)\right)^2
 		\leq
-		\sum_{\{u,v\}\in E}2\left(f(u)^2+f(v)^2\right),
-	\]
+		\sum_{\{u,v\}\in\Edges}2\left(f(u)^2+f(v)^2\right),
+	\end{equation}
 	because \((a-b)^2=a^2-2ab+b^2\leq a^2+2\abs{ab}+b^2\leq 2a^2+2b^2\). Since each \(f(v)^2\) appears once for every edge incident to \(v\), the right-hand side equals
-	\[
-		2\sum_{\{u,v\}\in E}\left(f(u)^2+f(v)^2\right)=2\sum_{v\in V}d_v f(v)^2.
-	\]
+	\begin{equation}
+		2\sum_{\{u,v\}\in\Edges}\left(f(u)^2+f(v)^2\right)=2\sum_{v\in \Vertices}d_v f(v)^2.
+	\end{equation}
 	By the definition of \(f\), the last expression is at most
-	\[
-		2\sum_{v\in V}g(v)^2=2\norm{g}_2^2,
-	\]
-	where isolated vertices contribute to the right-hand side but not to the edge sum. By \cref{prop:normalized-laplacian-dirichlet}, the left-hand side is \(\langle g,\NormLaplacian{G}g\rangle\). Hence every nonzero \(g\) satisfies
-	\[
-		\frac{\langle g,\NormLaplacian{G}g\rangle}{\langle g,g\rangle}\leq 2.
-	\]
-	Since the largest eigenvalue of a real symmetric matrix is the maximum of its Rayleigh quotient over nonzero vectors, every eigenvalue of \(\NormLaplacian{G}\) is at most \(2\).
+	\begin{equation}
+		2\sum_{v\in \Vertices}g(v)^2=2\norm{g}_2^2,
+	\end{equation}
+	where isolated vertices contribute to the right-hand side but not to the edge sum. By \cref{prop:normalized-laplacian-dirichlet}, the left-hand side is \(\langle g,\NormLaplacian{\Graph}g\rangle\). Hence every nonzero \(g\) satisfies
+	\begin{equation}
+		\frac{\langle g,\NormLaplacian{\Graph}g\rangle}{\langle g,g\rangle}\leq 2.
+	\end{equation}
+	Since the largest eigenvalue of a real symmetric matrix is the maximum of its Rayleigh quotient over nonzero vectors, every eigenvalue of \(\NormLaplacian{\Graph}\) is at most \(2\).
 \end{proof}
 
 \begin{lemma}[The Top Eigenvalue and Bipartiteness]
 	\label{lem:top-eigenvalue-bipartite}
-	A graph \(G\) has \(\lambda_{n-1}=2\) if and only if \(G\) has a nontrivial bipartite connected component.
+	A graph \(\Graph\) has \(\lambda_{n-1}=2\) if and only if \(\Graph\) has a nontrivial bipartite connected component.
 \end{lemma}
 
 \begin{proof}
 	The value \(2\) is attained exactly when every edge sees equality in the inequality \((a-b)^2\leq 2a^2+2b^2\). Equality forces the two endpoint values to be negatives of each other, and this sign alternation is possible around all cycles precisely when the relevant component is bipartite.
 
-	Assume first that \(\lambda_{n-1}=2\). Then there is a nonzero function \(f\colon V\to\RR\) whose Rayleigh quotient is \(2\), and hence
-	\[
-		\sum_{\{u,v\}\in E}\left(f(u)-f(v)\right)^2=2\sum_{v\in V}d_v f(v)^2.
-	\]
+	Assume first that \(\lambda_{n-1}=2\). Then there is a nonzero function \(f\colon \Vertices\to\RR\) whose Rayleigh quotient is \(2\), and hence
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}\left(f(u)-f(v)\right)^2=2\sum_{v\in \Vertices}d_v f(v)^2.
+	\end{equation}
 	In the proof of \cref{lem:laplacian-spectrum-interval}, we obtained the inequality
-	\[
-		\sum_{\{u,v\}\in E}\left(f(u)-f(v)\right)^2
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}\left(f(u)-f(v)\right)^2
 		\leq
-		2\sum_{\{u,v\}\in E}\left(f(u)^2+f(v)^2\right)
+		2\sum_{\{u,v\}\in\Edges}\left(f(u)^2+f(v)^2\right)
 		=
-		2\sum_{v\in V}d_v f(v)^2
-	\]
+		2\sum_{v\in \Vertices}d_v f(v)^2
+	\end{equation}
 	by applying \((a-b)^2\leq 2a^2+2b^2\) on each edge. Since the sum of the edgewise deficits is zero and each deficit is nonnegative, equality must hold on every edge \(\{u,v\}\) for which at least one of the endpoint values is nonzero. Equality in \((a-b)^2\leq 2a^2+2b^2\) is equivalent to
-	\[
+	\begin{equation}
 		a^2-2ab+b^2=2a^2+2b^2,
-	\]
+	\end{equation}
 	which is equivalent to
-	\[
+	\begin{equation}
 		0=a^2+2ab+b^2=(a+b)^2.
-	\]
+	\end{equation}
 	Thus equality holds exactly when \(a=-b\). Applying this to \(a=f(u)\) and \(b=f(v)\), we get \(f(u)=-f(v)\) on every edge touched by the support of \(f\).
 
 	Choose a vertex \(x\) with \(f(x)\neq 0\), and let \(C\) be its connected component. Along any path starting from \(x\), the value of \(f\) alternates sign at every step and never becomes zero. Therefore every edge of \(C\) joins a vertex at even distance from \(x\) to a vertex at odd distance from \(x\). If there were an edge joining two vertices of the same parity, the sign alternation along paths from \(x\) would force the two endpoint values to have the same sign, while the edge condition would require them to have opposite signs. Hence no such edge exists, and \(C\) is bipartite. Since \(f(x)\neq 0\), the component \(C\) contains an edge and is nontrivial.
 
-	Conversely, suppose \(C\) is a nontrivial bipartite connected component with bipartition \(C=A\cup B\). Define \(f\colon V\to\RR\) by setting \(f(v)=1\) for \(v\in A\), \(f(v)=-1\) for \(v\in B\), and \(f(v)=0\) for \(v\notin C\). For every edge \(\{u,v\}\) inside \(C\), the endpoints lie on opposite sides of the bipartition, and hence
-	\[
+	Conversely, suppose \(C\) is a nontrivial bipartite connected component with bipartition \(C=A\cup B\). Define \(f\colon \Vertices\to\RR\) by setting \(f(v)=1\) for \(v\in A\), \(f(v)=-1\) for \(v\in B\), and \(f(v)=0\) for \(v\notin C\). For every edge \(\{u,v\}\) inside \(C\), the endpoints lie on opposite sides of the bipartition, and hence
+	\begin{equation}
 		\left(f(u)-f(v)\right)^2=(1-(-1))^2=4.
-	\]
-	There are no edges between \(C\) and \(V\setminus C\), and edges outside \(C\) contribute zero. Therefore
-	\[
-		\sum_{\{u,v\}\in E}\left(f(u)-f(v)\right)^2=4\abs{E(C)}.
-	\]
+	\end{equation}
+	There are no edges between \(C\) and \(\Vertices\setminus C\), and edges outside \(C\) contribute zero. Therefore
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}\left(f(u)-f(v)\right)^2=4\abs{\Edges(C)}.
+	\end{equation}
 	The denominator is
-	\[
-		\sum_{v\in V}d_v f(v)^2=\sum_{v\in C}d_v=2\abs{E(C)}.
-	\]
+	\begin{equation}
+		\sum_{v\in \Vertices}d_v f(v)^2=\sum_{v\in C}d_v=2\abs{\Edges(C)}.
+	\end{equation}
 	The Rayleigh quotient of \(f\) is therefore
-	\[
-		\frac{4\abs{E(C)}}{2\abs{E(C)}}=2.
-	\]
+	\begin{equation}
+		\frac{4\abs{\Edges(C)}}{2\abs{\Edges(C)}}=2.
+	\end{equation}
 	By \cref{lem:laplacian-spectrum-interval}, no eigenvalue is larger than \(2\), and so the largest eigenvalue must equal \(2\).
 \end{proof}
 
@@ -684,170 +720,172 @@ The following computations give useful checks on the normalization. They also ex
 \begin{example}[Complete Graph]
 	\label{ex:laplacian-complete-graph}
 	For the complete graph \(K_n\), every vertex has degree \(n-1\), and hence
-	\[
-		\NormLaplacian{K_n}=I-\frac{1}{n-1}\Adjacency{K_n}.
-	\]
-	The adjacency matrix of \(K_n\) is \(J-I\), where \(J\) is the all-ones matrix. The vector \(\vec{1}\) is an eigenvector of \(J-I\) with eigenvalue \(n-1\), because \(J\vec{1}=n\vec{1}\) and \((J-I)\vec{1}=(n-1)\vec{1}\). Every vector \(x\perp \vec{1}\) satisfies \(Jx=\vec{0}\), and hence \((J-I)x=-x\). Therefore the normalized Laplacian eigenvalues are
-	\[
+	\begin{equation}
+		\NormLaplacian{K_n}=\IdentityMatrix-\frac{1}{n-1}\Adjacency{K_n}.
+	\end{equation}
+	The adjacency matrix of \(K_n\) is \(\vec{J}-\IdentityMatrix\), where \(\vec{J}\) is the all-ones matrix. The vector \(\vec{1}\) is an eigenvector of \(\vec{J}-\IdentityMatrix\) with eigenvalue \(n-1\), because \(\vec{J}\vec{1}=n\vec{1}\) and \((\vec{J}-\IdentityMatrix)\vec{1}=(n-1)\vec{1}\). Every vector \(x\perp \vec{1}\) satisfies \(\vec{J}x=\vec{0}\), and hence \((\vec{J}-\IdentityMatrix)x=-x\). Therefore the normalized Laplacian eigenvalues are
+	\begin{equation}
 		1-\frac{n-1}{n-1}=0
 		\quad\text{and}\quad
 		1-\frac{-1}{n-1}=\frac{n}{n-1},
-	\]
+	\end{equation}
 	where the latter eigenvalue has multiplicity \(n-1\).
 \end{example}
 
 \begin{example}[Complete Bipartite Graphs and Stars]
 	\label{ex:laplacian-complete-bipartite}
-	For the complete bipartite graph \(K_{m,n}\), the normalized Laplacian has eigenvalues \(0\), \(1\) with multiplicity \(m+n-2\), and \(2\). To see this, write the bipartition as \(A\cup B\), where \(\abs{A}=m\) and \(\abs{B}=n\). A vector supported on \(A\) whose coordinates sum to zero is annihilated by the normalized adjacency operator \(I-\NormLaplacian{K_{m,n}}\), because every vertex in \(B\) sees the same normalized sum over \(A\), namely zero, and every vertex in \(A\) has no neighbor in \(A\). The same reasoning applies to vectors supported on \(B\) whose coordinates sum to zero. These two subspaces have total dimension \((m-1)+(n-1)=m+n-2\), and on them the normalized Laplacian acts as the identity.
+	For the complete bipartite graph \(K_{m,n}\), the normalized Laplacian has eigenvalues \(0\), \(1\) with multiplicity \(m+n-2\), and \(2\). To see this, write the bipartition as \(A\cup B\), where \(\abs{A}=m\) and \(\abs{B}=n\). A vector supported on \(A\) whose coordinates sum to zero is annihilated by the normalized adjacency operator \(\IdentityMatrix-\NormLaplacian{K_{m,n}}\), because every vertex in \(B\) sees the same normalized sum over \(A\), namely zero, and every vertex in \(A\) has no neighbor in \(A\). The same reasoning applies to vectors supported on \(B\) whose coordinates sum to zero. These two subspaces have total dimension \((m-1)+(n-1)=m+n-2\), and on them the normalized Laplacian acts as the identity.
 
-	It remains to diagonalize the two-dimensional space of vectors that are constant on each side after degree normalization. The vector \(\DegreeMatrix{G}^{1/2}\vec{1}\), which equals \(\sqrt{n}\) on vertices of \(A\) and \(\sqrt{m}\) on vertices of \(B\), gives eigenvalue \(0\). The vector that equals \(\sqrt{n}\) on vertices of \(A\) and equals \(-\sqrt{m}\) on vertices of \(B\) alternates sign across every edge in the normalized sense and therefore gives eigenvalue \(2\), as in the proof of \cref{lem:top-eigenvalue-bipartite}. Since the dimensions add to \(m+n\), this accounts for the full spectrum. A star is the special case \(K_{1,n-1}\), and hence it has the same spectral pattern with \(m+n\) replaced by the number of vertices.
+	It remains to diagonalize the two-dimensional space of vectors that are constant on each side after degree normalization. The vector \(\DegreeMatrix{\Graph}^{1/2}\vec{1}\), which equals \(\sqrt{n}\) on vertices of \(A\) and \(\sqrt{m}\) on vertices of \(B\), gives eigenvalue \(0\). The vector that equals \(\sqrt{n}\) on vertices of \(A\) and equals \(-\sqrt{m}\) on vertices of \(B\) alternates sign across every edge in the normalized sense and therefore gives eigenvalue \(2\), as in the proof of \cref{lem:top-eigenvalue-bipartite}. Since the dimensions add to \(m+n\), this accounts for the full spectrum. A star is the special case \(K_{1,n-1}\), and hence it has the same spectral pattern with \(m+n\) replaced by the number of vertices.
 \end{example}
 
 \begin{example}[Cycles and Cubes]
 	\label{ex:laplacian-cycles-cubes}
-	For the cycle \(C_n\), which is \(2\)-regular, the normalized Laplacian is \(I-\Adjacency{C_n}/2\). The Fourier vectors on the cyclic group \(\ZZ/n\ZZ\) diagonalize the adjacency matrix, giving adjacency eigenvalues \(2\cos(2\pi k/n)\) and normalized Laplacian eigenvalues
-	\[
+	For the cycle \(C_n\), which is \(2\)-regular, the normalized Laplacian is \(\IdentityMatrix-\Adjacency{C_n}/2\). The Fourier vectors on the cyclic group \(\ZZ/n\ZZ\) diagonalize the adjacency matrix, giving adjacency eigenvalues \(2\cos(2\pi k/n)\) and normalized Laplacian eigenvalues
+	\begin{equation}
 		1-\cos\left(\frac{2\pi k}{n}\right)
-	\]
+	\end{equation}
 	for \(k=0,\ldots,n-1\). For the \(r\)-dimensional cube \(Q_r\), which is \(r\)-regular, the Walsh characters diagonalize the adjacency matrix, and the normalized Laplacian eigenvalues are
-	\[
+	\begin{equation}
 		\frac{2k}{r}
-	\]
+	\end{equation}
 	with multiplicity \(\binom{r}{k}\) for \(k=0,\ldots,r\). These examples are the finite Abelian group version of the same phenomenon: the Laplacian is simple to analyze when the graph has enough symmetry to provide an explicit Fourier basis.
 \end{example}
 
 \subsection{Random Walks and the Laplacian}
 \label{subsec:laplacian-random-walks}
 
-Let \(G\) be a graph with no isolated vertices. The simple random walk on \(G\) moves from a vertex \(u\) to each neighbor \(v\) with probability \(1/d_u\). We write \(K_G\) for the corresponding operator on functions,
-\[
-	K_G f(u)=\frac{1}{d_u}\sum_{v\sim u}f(v).
-\]
-This operator is not symmetric in the ordinary Euclidean inner product when \(G\) is not regular, but it is self-adjoint in the degree-weighted inner product
-\[
-	\langle f,g\rangle_{\pi}\coloneqq \sum_{v\in V}\pi(v)f(v)g(v),
+Let \(\Graph\) be a graph with no isolated vertices. The simple random walk on \(\Graph\) moves from a vertex \(u\) to each neighbor \(v\) with probability \(1/d_u\). We write \(\vec{K}_\Graph\) for the corresponding operator on functions,
+\begin{equation}
+	\vec{K}_\Graph f(u)=\frac{1}{d_u}\sum_{v\sim u}f(v).
+\end{equation}
+This operator is not symmetric in the ordinary Euclidean inner product when \(\Graph\) is not regular, but it is self-adjoint in the degree-weighted inner product
+\begin{equation}
+	\langle f,g\rangle_{\pi}\coloneqq \sum_{v\in \Vertices}\pi(v)f(v)g(v),
 	\qquad
-	\pi(v)\coloneqq \frac{d_v}{\vol(G)}.
-\]
-Indeed, if \(\{u,v\}\in E\), then
-\[
-	\pi(u)\frac{1}{d_u}=\frac{d_u}{\vol(G)}\frac{1}{d_u}=\frac{1}{\vol(G)}=\frac{d_v}{\vol(G)}\frac{1}{d_v}=\pi(v)\frac{1}{d_v}.
-\]
-This equality is the reversibility identity \(\pi(u)K_G(u,v)=\pi(v)K_G(v,u)\). It also shows that \(\pi\) is stationary, because
-\[
-	\sum_{u\in V}\pi(u)K_G(u,v)
+	\pi(v)\coloneqq \frac{d_v}{\vol(\Graph)}.
+\end{equation}
+Indeed, if \(\{u,v\}\in\Edges\), then
+\begin{equation}
+	\pi(u)\frac{1}{d_u}=\frac{d_u}{\vol(\Graph)}\frac{1}{d_u}=\frac{1}{\vol(\Graph)}=\frac{d_v}{\vol(\Graph)}\frac{1}{d_v}=\pi(v)\frac{1}{d_v}.
+\end{equation}
+This equality is the reversibility identity \(\pi(u)\vec{K}_\Graph(u,v)=\pi(v)\vec{K}_\Graph(v,u)\). It also shows that \(\pi\) is stationary, because
+\begin{equation}
+	\sum_{u\in \Vertices}\pi(u)\vec{K}_\Graph(u,v)
 	=
-	\sum_{u\sim v}\frac{1}{\vol(G)}
+	\sum_{u\sim v}\frac{1}{\vol(\Graph)}
 	=
-	\frac{d_v}{\vol(G)}
+	\frac{d_v}{\vol(\Graph)}
 	=
 	\pi(v).
-\]
+\end{equation}
 
-The relation with the normalized Laplacian is obtained by conjugating \(K_G\) into a symmetric operator. Let
-\[
-	M_G\coloneqq \DegreeMatrix{G}^{-1/2}\Adjacency{G}\DegreeMatrix{G}^{-1/2}.
-\]
+The relation with the normalized Laplacian is obtained by conjugating \(\vec{K}_\Graph\) into a symmetric operator. Let
+\begin{equation}
+	\vec{M}_\Graph\coloneqq \DegreeMatrix{\Graph}^{-1/2}\Adjacency{\Graph}\DegreeMatrix{\Graph}^{-1/2}.
+\end{equation}
 Then
-\[
-	\NormLaplacian{G}=I-M_G.
-\]
-Furthermore, \(K_G=\DegreeMatrix{G}^{-1/2}M_G\DegreeMatrix{G}^{1/2}\) as an operator on functions, and therefore \(K_G\) and \(M_G=I-\NormLaplacian{G}\) have the same eigenvalues. Thus the eigenvalues of the random-walk operator are \(1-\lambda_i\), where the \(\lambda_i\)'s are the normalized Laplacian eigenvalues.
+\begin{equation}
+	\NormLaplacian{\Graph}=\IdentityMatrix-\vec{M}_\Graph.
+\end{equation}
+Furthermore, \(\vec{K}_\Graph=\DegreeMatrix{\Graph}^{-1/2}\vec{M}_\Graph\DegreeMatrix{\Graph}^{1/2}\) as an operator on functions, and therefore \(\vec{K}_\Graph\) and \(\vec{M}_\Graph=\IdentityMatrix-\NormLaplacian{\Graph}\) have the same eigenvalues. Thus the eigenvalues of the random-walk operator are \(1-\lambda_i\), where the \(\lambda_i\)'s are the normalized Laplacian eigenvalues.
+
+The preceding conjugation is useful because it lets us prove a mixing statement for nonregular graphs by doing ordinary Euclidean spectral analysis on the symmetric matrix \(\vec{M}_\Graph\), while interpreting the conclusion in the stationary measure \(\pi\). The theorem below is the form needed later when regularity is not available and when bipartite periodicity must be removed by laziness.
 
 \begin{theorem}[Lazy Walk Mixing from \(\lambda_1\)]
 	\label{thm:lazy-walk-laplacian-mixing}
-	Let \(G\) be a connected graph with no isolated vertices, let \(\lambda_1\) be the first nonzero eigenvalue of \(\NormLaplacian{G}\), and let \(K_{\mathrm{lazy}}=(I+K_G)/2\). If \(p_x^{(t)}\) is the distribution of the lazy random walk after \(t\) steps started at \(x\), then
-	\[
+	Let \(\Graph\) be a connected graph with no isolated vertices, let \(\lambda_1\) be the first nonzero eigenvalue of \(\NormLaplacian{\Graph}\), and let \(\vec{K}_{\mathrm{lazy}}=(\IdentityMatrix+\vec{K}_\Graph)/2\). If \(p_x^{(t)}\) is the distribution of the lazy random walk after \(t\) steps started at \(x\), then
+	\begin{equation}
 		\StatDist\left(p_x^{(t)},\pi\right)
 		\leq
-		\frac{1}{2}\sqrt{\frac{\vol(G)}{d_x}}\left(1-\frac{\lambda_1}{2}\right)^t
+		\frac{1}{2}\sqrt{\frac{\vol(\Graph)}{d_x}}\left(1-\frac{\lambda_1}{2}\right)^t
 		\leq
-		\frac{1}{2}\sqrt{\frac{\vol(G)}{d_x}}\exp\left(-\frac{\lambda_1 t}{2}\right).
-	\]
+		\frac{1}{2}\sqrt{\frac{\vol(\Graph)}{d_x}}\exp\left(-\frac{\lambda_1 t}{2}\right).
+	\end{equation}
 \end{theorem}
 
 \begin{proof}
 	The proof decomposes the initial density into its stationary part and its orthogonal error. The lazy walk fixes the stationary part, while every orthogonal component is contracted by at least a factor \(1-\lambda_1/2\), because laziness maps each Laplacian eigenvalue \(\lambda_i\in[0,2]\) to the random-walk eigenvalue \(1-\lambda_i/2\in[0,1]\).
 
-	For a distribution \(p\) on \(V\), define its density relative to stationarity by
-	\[
+	For a distribution \(p\) on \(\Vertices\), define its density relative to stationarity by
+	\begin{equation}
 		r(v)=\frac{p(v)}{\pi(v)}.
-	\]
+	\end{equation}
 	The total variation distance can be written as
-	\[
-		\StatDist(p,\pi)=\frac{1}{2}\sum_{v\in V}\abs{p(v)-\pi(v)}
+	\begin{equation}
+		\StatDist(p,\pi)=\frac{1}{2}\sum_{v\in \Vertices}\abs{p(v)-\pi(v)}
 		=
-		\frac{1}{2}\sum_{v\in V}\pi(v)\abs{r(v)-1}.
-	\]
+		\frac{1}{2}\sum_{v\in \Vertices}\pi(v)\abs{r(v)-1}.
+	\end{equation}
 	By Cauchy--Schwarz in the probability measure \(\pi\), we have
-	\[
-		\sum_{v\in V}\pi(v)\abs{r(v)-1}
+	\begin{equation}
+		\sum_{v\in \Vertices}\pi(v)\abs{r(v)-1}
 		\leq
-		\left(\sum_{v\in V}\pi(v)\right)^{1/2}
-		\left(\sum_{v\in V}\pi(v)(r(v)-1)^2\right)^{1/2}.
-	\]
+		\left(\sum_{v\in \Vertices}\pi(v)\right)^{1/2}
+		\left(\sum_{v\in \Vertices}\pi(v)(r(v)-1)^2\right)^{1/2}.
+	\end{equation}
 	Since \(\sum_v\pi(v)=1\), this becomes
-	\[
+	\begin{equation}
 		\StatDist(p,\pi)\leq \frac{1}{2}\norm{r-1}_{L^2(\pi)}.
-	\]
+	\end{equation}
 
-	Now take \(p=p_x^{(t)}\), and let \(r_t=p_x^{(t)}/\pi\). We verify that the density evolves by the same self-adjoint Markov operator \(K_{\mathrm{lazy}}\) acting on functions. For the non-lazy walk, reversibility gives
-	\[
+	Now take \(p=p_x^{(t)}\), and let \(r_t=p_x^{(t)}/\pi\). We verify that the density evolves by the same self-adjoint Markov operator \(\vec{K}_{\mathrm{lazy}}\) acting on functions. For the non-lazy walk, reversibility gives
+	\begin{equation}
 		r_{t+1}(y)
 		=
 		\frac{p_x^{(t+1)}(y)}{\pi(y)}
 		=
-		\frac{\sum_{z\in V}p_x^{(t)}(z)K_G(z,y)}{\pi(y)}
+		\frac{\sum_{z\in \Vertices}p_x^{(t)}(z)\vec{K}_\Graph(z,y)}{\pi(y)}
 		=
-		\sum_{z\in V}\frac{p_x^{(t)}(z)}{\pi(z)}K_G(y,z)
+		\sum_{z\in \Vertices}\frac{p_x^{(t)}(z)}{\pi(z)}\vec{K}_\Graph(y,z)
 		=
-		K_G r_t(y).
-	\]
-	The same calculation with \(K_{\mathrm{lazy}}\) in place of \(K_G\) gives
-	\[
-		r_t-1=K_{\mathrm{lazy}}^t(r_0-1).
-	\]
-	Because \(G\) is connected, \(\lambda_0=0\) has multiplicity one by \cref{lem:zero-eigenvalues-components}, and the constants are the stationary eigenspace. The operator \(K_{\mathrm{lazy}}\) has eigenvalues \(1-\lambda_i/2\). By \cref{lem:laplacian-spectrum-interval}, every \(\lambda_i\) lies in \([0,2]\), and therefore every nonconstant eigenvalue of \(K_{\mathrm{lazy}}\) lies in the interval \([0,1-\lambda_1/2]\). Hence, on the subspace orthogonal to constants in \(L^2(\pi)\),
-	\[
-		\norm{K_{\mathrm{lazy}}^t h}_{L^2(\pi)}
+		\vec{K}_\Graph r_t(y).
+	\end{equation}
+	The same calculation with \(\vec{K}_{\mathrm{lazy}}\) in place of \(\vec{K}_\Graph\) gives
+	\begin{equation}
+		r_t-1=\vec{K}_{\mathrm{lazy}}^t(r_0-1).
+	\end{equation}
+	Because \(\Graph\) is connected, \(\lambda_0=0\) has multiplicity one by \cref{lem:zero-eigenvalues-components}, and the constants are the stationary eigenspace. The operator \(\vec{K}_{\mathrm{lazy}}\) has eigenvalues \(1-\lambda_i/2\). By \cref{lem:laplacian-spectrum-interval}, every \(\lambda_i\) lies in \([0,2]\), and therefore every nonconstant eigenvalue of \(\vec{K}_{\mathrm{lazy}}\) lies in the interval \([0,1-\lambda_1/2]\). Hence, on the subspace orthogonal to constants in \(L^2(\pi)\),
+	\begin{equation}
+		\norm{\vec{K}_{\mathrm{lazy}}^t h}_{L^2(\pi)}
 		\leq
 		\left(1-\frac{\lambda_1}{2}\right)^t\norm{h}_{L^2(\pi)}.
-	\]
+	\end{equation}
 	The function \(r_0-1\) is orthogonal to constants because
-	\[
+	\begin{equation}
 		\langle r_0-1,1\rangle_{\pi}
 		=
-		\sum_{v\in V}\pi(v)\left(\frac{p_x^{(0)}(v)}{\pi(v)}-1\right)
+		\sum_{v\in \Vertices}\pi(v)\left(\frac{p_x^{(0)}(v)}{\pi(v)}-1\right)
 		=
-		\sum_{v\in V}p_x^{(0)}(v)-\sum_{v\in V}\pi(v)
+		\sum_{v\in \Vertices}p_x^{(0)}(v)-\sum_{v\in \Vertices}\pi(v)
 		=
 		1-1
 		=
 		0.
-	\]
+	\end{equation}
 	Therefore
-	\[
+	\begin{equation}
 		\norm{r_t-1}_{L^2(\pi)}
 		\leq
 		\left(1-\frac{\lambda_1}{2}\right)^t\norm{r_0-1}_{L^2(\pi)}.
-	\]
+	\end{equation}
 
 	It remains to compute the initial norm. Since \(p_x^{(0)}\) is the point mass at \(x\), we have \(r_0(x)=1/\pi(x)\) and \(r_0(v)=0\) for \(v\neq x\). Thus
-	\[
+	\begin{equation}
 		\norm{r_0-1}_{L^2(\pi)}^2
 		=
 		\pi(x)\left(\frac{1}{\pi(x)}-1\right)^2+\sum_{v\neq x}\pi(v).
-	\]
+	\end{equation}
 	Expanding the first term gives
-	\[
+	\begin{equation}
 		\pi(x)\left(\frac{1}{\pi(x)}-1\right)^2
 		=
 		\pi(x)\left(\frac{1}{\pi(x)^2}-\frac{2}{\pi(x)}+1\right)
 		=
 		\frac{1}{\pi(x)}-2+\pi(x).
-	\]
+	\end{equation}
 	The remaining sum is \(\sum_{v\neq x}\pi(v)=1-\pi(x)\). Hence
-	\[
+	\begin{equation}
 		\norm{r_0-1}_{L^2(\pi)}^2
 		=
 		\frac{1}{\pi(x)}-2+\pi(x)+1-\pi(x)
@@ -856,18 +894,18 @@ Furthermore, \(K_G=\DegreeMatrix{G}^{-1/2}M_G\DegreeMatrix{G}^{1/2}\) as an oper
 		\leq
 		\frac{1}{\pi(x)}
 		=
-		\frac{\vol(G)}{d_x}.
-	\]
+		\frac{\vol(\Graph)}{d_x}.
+	\end{equation}
 	Combining the total-variation bound, the contraction bound, and the initial norm estimate gives
-	\[
+	\begin{equation}
 		\StatDist\left(p_x^{(t)},\pi\right)
 		\leq
-		\frac{1}{2}\sqrt{\frac{\vol(G)}{d_x}}\left(1-\frac{\lambda_1}{2}\right)^t.
-	\]
+		\frac{1}{2}\sqrt{\frac{\vol(\Graph)}{d_x}}\left(1-\frac{\lambda_1}{2}\right)^t.
+	\end{equation}
 	Finally, since \(1-y\leq e^{-y}\) for all real \(y\), applied with \(y=\lambda_1/2\), we get
-	\[
+	\begin{equation}
 		\left(1-\frac{\lambda_1}{2}\right)^t\leq \exp\left(-\frac{\lambda_1 t}{2}\right),
-	\]
+	\end{equation}
 	which proves the second displayed bound.
 \end{proof}
 

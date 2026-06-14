@@ -2,43 +2,45 @@
 \label{sec:spectral-theory}
 
 The spectral theory of expanders studies the random-walk operator
-\[
-	\Markov{G}=\frac{1}{d}\vec{A}_G
-\]
-as a linear operator on functions \(f\colon V\to\RR\). Since \(G\) is undirected and \(d\)-regular, this operator is real symmetric. Hence it has an orthonormal eigenbasis, and its action is completely described by its eigenvalues. Expansion is the statement that every component orthogonal to the constants is contracted.
+\begin{equation}
+	\Markov{\Graph}=\frac{1}{d}\Adjacency{\Graph}
+\end{equation}
+as a linear operator on functions \(f\colon \Vertices\to\RR\). Since \(\Graph\) is undirected and \(d\)-regular, this operator is real symmetric. Hence it has an orthonormal eigenbasis, and its action is completely described by its eigenvalues. Expansion is the statement that every component orthogonal to the constants is contracted.
 
 \subsection{The Normalized Adjacency Operator}
 \label{subsec:spectrum}
 
-Let \(G\) be a connected \(d\)-regular graph on \(n\) vertices. The normalized adjacency matrix \(\Markov{G}=\vec{A}_G/d\) is symmetric and stochastic. Its eigenvalues satisfy
-\[
+Let \(\Graph\) be a connected \(d\)-regular graph on \(n\) vertices. The normalized adjacency matrix \(\Markov{\Graph}=\Adjacency{\Graph}/d\) is symmetric and stochastic. Its eigenvalues satisfy
+\begin{equation}
 	1=\mu_1\geq \mu_2\geq \cdots\geq \mu_n\geq -1.
-\]
+\end{equation}
 The eigenvalue \(1\) has eigenvector \(\vec{e}_0=\vec{1}/\sqrt{n}\). Connectedness is equivalent to the multiplicity of this eigenvalue being one. The one-sided spectral gap is
-\[
-	\SpectralGap(G)\coloneqq 1-\mu_2,
-\]
+\begin{equation}
+	\SpectralGap(\Graph)\coloneqq 1-\mu_2,
+\end{equation}
 and the two-sided spectral parameter is
-\[
-	\lambda(G)\coloneqq \max\{\abs{\mu_2},\abs{\mu_n}\}.
-\]
+\begin{equation}
+	\lambda(\Graph)\coloneqq \max\{\abs{\mu_2},\abs{\mu_n}\}.
+\end{equation}
 The one-sided gap controls expansion and convergence after lazifying the walk. The two-sided parameter controls direct convergence of the non-lazy walk to uniformity.
 
 \begin{definition}[\((n,d,\lambda)\)-Expander]
 	\label{def:spectral-expander}
-	A \(d\)-regular graph \(G\) on \(n\) vertices is an \((n,d,\lambda)\)-expander if
-	\[
-		\norm{\Markov{G}f}_2\leq \lambda\norm{f}_2
-	\]
-	for every \(f\perp\vec{1}\). Equivalently, \(\lambda(G)\leq\lambda\).
+	A \(d\)-regular graph \(\Graph\) on \(n\) vertices is an \((n,d,\lambda)\)-expander if
+	\begin{equation}
+		\norm{\Markov{\Graph}f}_2\leq \lambda\norm{f}_2
+	\end{equation}
+	for every \(f\perp\vec{1}\). Equivalently, \(\lambda(\Graph)\leq\lambda\).
 \end{definition}
+
+The following theorem explains why there is a genuine limit to how small the nontrivial eigenvalues of a bounded-degree graph can be. Without such a limitation, one might hope to make the spectral gap approach \(1\) while keeping \(d\) fixed, but the universal cover of a \(d\)-regular graph already imposes the obstruction that appears in the lower bound below.
 
 \begin{theorem}[Alon-Boppana~\cite{Alo1986}]
 	\label{thm:alon-boppana}
-	For every infinite family \(\{G_i\}\) of connected \(d\)-regular graphs with \(\abs{V(G_i)}\to\infty\),
-	\[
-		\liminf_{i\to\infty}\mu_2(G_i)\geq \frac{2\sqrt{d-1}}{d}.
-	\]
+	For every infinite family \(\{\Graph_i\}\) of connected \(d\)-regular graphs with \(\abs{\Vertices(\Graph_i)}\to\infty\),
+	\begin{equation}
+		\liminf_{i\to\infty}\mu_2(\Graph_i)\geq \frac{2\sqrt{d-1}}{d}.
+	\end{equation}
 \end{theorem}
 
 Thus no infinite family of \(d\)-regular graphs can have normalized second eigenvalue asymptotically below \(2\sqrt{d-1}/d\). Ramanujan graphs are the families that meet this barrier up to the sign issue at the bottom of the spectrum.
@@ -46,63 +48,63 @@ Thus no infinite family of \(d\)-regular graphs can have normalized second eigen
 \subsection{Rayleigh Quotients}
 \label{subsec:rayleigh}
 
-The bridge between cuts and eigenvalues is the Rayleigh quotient. For \(f\colon V\to\RR\), define
-\[
-	\mathcal{E}(f)\coloneqq \frac{1}{2d}\sum_{u,v\in V}\vec{A}_G(u,v)(f(u)-f(v))^2=\frac{1}{d}\sum_{\{u,v\}\in E}(f(u)-f(v))^2.
-\]
+The bridge between cuts and eigenvalues is the Rayleigh quotient. For \(f\colon \Vertices\to\RR\), define
+\begin{equation}
+	\mathcal{E}(f)\coloneqq \frac{1}{2d}\sum_{u,v\in \Vertices}\Adjacency{\Graph}(u,v)(f(u)-f(v))^2=\frac{1}{d}\sum_{\{u,v\}\in\Edges}(f(u)-f(v))^2.
+\end{equation}
 This is the Dirichlet energy of \(f\).
 
 \begin{lemma}[Rayleigh Principle]
 	\label{lem:rayleigh}
 	For every \(f\perp\vec{1}\) with \(f\neq 0\),
-	\[
+	\begin{equation}
 		1-\mu_2\leq \frac{\mathcal{E}(f)}{\norm{f}_2^2}.
-	\]
+	\end{equation}
 	Moreover,
-	\[
+	\begin{equation}
 		1-\mu_2=\min_{\substack{f\perp\vec{1}\\f\neq 0}}\frac{\mathcal{E}(f)}{\norm{f}_2^2}.
-	\]
+	\end{equation}
 \end{lemma}
 
 \begin{proof}
-	The proof is the finite-dimensional spectral theorem written in the basis that diagonalizes the random-walk operator. The only calculation that matters is the identity saying that the quadratic form of \(\vec{I}-\Markov{G}\) is exactly the normalized Dirichlet energy.
+	The proof is the finite-dimensional spectral theorem written in the basis that diagonalizes the random-walk operator. The only calculation that matters is the identity saying that the quadratic form of \(\IdentityMatrix-\Markov{\Graph}\) is exactly the normalized Dirichlet energy.
 
-	Since \(\Markov{G}\) is symmetric, it has an orthonormal eigenbasis \(e_1=\vec{e}_0,e_2,\ldots,e_n\) with eigenvalues \(1,\mu_2,\ldots,\mu_n\). Since \(f\perp\vec{1}\), and since \(e_1=\vec{1}/\sqrt{n}\), we may write
-	\[
+	Since \(\Markov{\Graph}\) is symmetric, it has an orthonormal eigenbasis \(e_1=\vec{e}_0,e_2,\ldots,e_n\) with eigenvalues \(1,\mu_2,\ldots,\mu_n\). Since \(f\perp\vec{1}\), and since \(e_1=\vec{1}/\sqrt{n}\), we may write
+	\begin{equation}
 		f=\sum_{i=2}^n a_i e_i.
-	\]
-	Using \((\vec{I}-\Markov{G})e_i=(1-\mu_i)e_i\) and the orthonormality of the \(e_i\)'s, we get
-	\[
-		\langle f,(\vec{I}-\Markov{G})f\rangle=\sum_{i=2}^n a_i^2(1-\mu_i)\geq (1-\mu_2)\sum_{i=2}^n a_i^2.
-	\]
+	\end{equation}
+	Using \((\IdentityMatrix-\Markov{\Graph})e_i=(1-\mu_i)e_i\) and the orthonormality of the \(e_i\)'s, we get
+	\begin{equation}
+		\langle f,(\IdentityMatrix-\Markov{\Graph})f\rangle=\sum_{i=2}^n a_i^2(1-\mu_i)\geq (1-\mu_2)\sum_{i=2}^n a_i^2.
+	\end{equation}
 	The same orthonormal expansion gives
-	\[
+	\begin{equation}
 		\norm{f}_2^2=\sum_{i=2}^n a_i^2.
-	\]
-	It remains to identify the quadratic form. Since \(\Markov{G}=\vec{A}_G/d\), we have
-	\[
-		\langle f,(\vec{I}-\Markov{G})f\rangle
+	\end{equation}
+	It remains to identify the quadratic form. Since \(\Markov{\Graph}=\Adjacency{\Graph}/d\), we have
+	\begin{equation}
+		\langle f,(\IdentityMatrix-\Markov{\Graph})f\rangle
 		=
-		\sum_{v\in V}f(v)^2-\frac{1}{d}\sum_{u,v\in V}\vec{A}_G(u,v)f(u)f(v).
-	\]
-	Because \(G\) is \(d\)-regular, the first term can be written as
-	\[
-		\sum_{v\in V}f(v)^2=\frac{1}{2d}\sum_{u,v\in V}\vec{A}_G(u,v)\left(f(u)^2+f(v)^2\right),
-	\]
+		\sum_{v\in \Vertices}f(v)^2-\frac{1}{d}\sum_{u,v\in \Vertices}\Adjacency{\Graph}(u,v)f(u)f(v).
+	\end{equation}
+	Because \(\Graph\) is \(d\)-regular, the first term can be written as
+	\begin{equation}
+		\sum_{v\in \Vertices}f(v)^2=\frac{1}{2d}\sum_{u,v\in \Vertices}\Adjacency{\Graph}(u,v)\left(f(u)^2+f(v)^2\right),
+	\end{equation}
 	where the equality holds because each vertex appears in exactly \(d\) ordered adjacent pairs as the first endpoint and in exactly \(d\) ordered adjacent pairs as the second endpoint. Substituting this expression gives
-	\[
-		\langle f,(\vec{I}-\Markov{G})f\rangle
+	\begin{equation}
+		\langle f,(\IdentityMatrix-\Markov{\Graph})f\rangle
 		=
-		\frac{1}{2d}\sum_{u,v\in V}\vec{A}_G(u,v)\left(f(u)^2+f(v)^2-2f(u)f(v)\right).
-	\]
+		\frac{1}{2d}\sum_{u,v\in \Vertices}\Adjacency{\Graph}(u,v)\left(f(u)^2+f(v)^2-2f(u)f(v)\right).
+	\end{equation}
 	Thus
-	\[
-		\langle f,(\vec{I}-\Markov{G})f\rangle
+	\begin{equation}
+		\langle f,(\IdentityMatrix-\Markov{\Graph})f\rangle
 		=
-		\frac{1}{2d}\sum_{u,v\in V}\vec{A}_G(u,v)(f(u)-f(v))^2
+		\frac{1}{2d}\sum_{u,v\in \Vertices}\Adjacency{\Graph}(u,v)(f(u)-f(v))^2
 		=
 		\mathcal{E}(f).
-	\]
+	\end{equation}
 	Combining the displayed inequalities gives the lower bound in the Rayleigh quotient. If \(f=e_2\) is an eigenvector for \(\mu_2\), then all coefficients except \(a_2\) vanish, and the displayed inequality is an equality. This proves both assertions.
 \end{proof}
 
@@ -113,73 +115,73 @@ The expander mixing lemma says that a spectral expander distributes edges betwee
 
 \begin{lemma}[Expander Mixing Lemma~\cite{HLW2006}]
 	\label{lem:expander-mixing}
-	Let \(G=(V,E)\) be a \(d\)-regular \((n,d,\lambda)\)-expander. For all \(S,T\subseteq V\),
-	\[
+	Let \(\Graph=(\Vertices,\Edges)\) be a \(d\)-regular \((n,d,\lambda)\)-expander. For all \(S,T\subseteq \Vertices\),
+	\begin{equation}
 		\abs{e(S,T)-\frac{d\abs{S}\abs{T}}{n}}\leq \lambda d\sqrt{\abs{S}\abs{T}}.
-	\]
+	\end{equation}
 \end{lemma}
 
 \begin{proof}
 	The proof isolates the uniform component of each indicator vector. The uniform components produce exactly the expected number of edges, while the components orthogonal to the constants are controlled by the spectral-expander assumption.
 
 	Let \(\vec{1}_S\) and \(\vec{1}_T\) be the indicator vectors of \(S\) and \(T\). Decompose
-	\[
+	\begin{equation}
 		\vec{1}_S=\frac{\abs{S}}{n}\vec{1}+x
 		\quad\text{and}\quad
 		\vec{1}_T=\frac{\abs{T}}{n}\vec{1}+y,
-	\]
+	\end{equation}
 	where
-	\[
+	\begin{equation}
 		x=\vec{1}_S-\frac{\abs{S}}{n}\vec{1}
 		\quad\text{and}\quad
 		y=\vec{1}_T-\frac{\abs{T}}{n}\vec{1}.
-	\]
+	\end{equation}
 	We have
-	\[
+	\begin{equation}
 		\langle x,\vec{1}\rangle=\abs{S}-\frac{\abs{S}}{n}\langle\vec{1},\vec{1}\rangle=\abs{S}-\frac{\abs{S}}{n}n=0,
-	\]
-	and the same calculation gives \(y\perp\vec{1}\). Since \(\vec{A}_G=d\Markov{G}\),
-	\[
-		e(S,T)=\vec{1}_S^{\top}\vec{A}_G\vec{1}_T=d\vec{1}_S^{\top}\Markov{G}\vec{1}_T.
-	\]
+	\end{equation}
+	and the same calculation gives \(y\perp\vec{1}\). Since \(\Adjacency{\Graph}=d\Markov{\Graph}\),
+	\begin{equation}
+		e(S,T)=\vec{1}_S^{\top}\Adjacency{\Graph}\vec{1}_T=d\vec{1}_S^{\top}\Markov{\Graph}\vec{1}_T.
+	\end{equation}
 	Substituting the two decompositions gives
-	\[
-		d\left\langle \frac{\abs{S}}{n}\vec{1}+x,\Markov{G}\left(\frac{\abs{T}}{n}\vec{1}+y\right)\right\rangle.
-	\]
+	\begin{equation}
+		d\left\langle \frac{\abs{S}}{n}\vec{1}+x,\Markov{\Graph}\left(\frac{\abs{T}}{n}\vec{1}+y\right)\right\rangle.
+	\end{equation}
 	The constant-constant term is
-	\[
-		d\left\langle \frac{\abs{S}}{n}\vec{1},\frac{\abs{T}}{n}\Markov{G}\vec{1}\right\rangle
+	\begin{equation}
+		d\left\langle \frac{\abs{S}}{n}\vec{1},\frac{\abs{T}}{n}\Markov{\Graph}\vec{1}\right\rangle
 		=
 		d\left\langle \frac{\abs{S}}{n}\vec{1},\frac{\abs{T}}{n}\vec{1}\right\rangle
 		=
 		\frac{d\abs{S}\abs{T}}{n}.
-	\]
+	\end{equation}
 	The two mixed terms vanish because
-	\[
-		\left\langle x,\Markov{G}\vec{1}\right\rangle=\langle x,\vec{1}\rangle=0
-	\]
-	and, using symmetry of \(\Markov{G}\),
-	\[
-		\left\langle \vec{1},\Markov{G}y\right\rangle=\left\langle \Markov{G}\vec{1},y\right\rangle=\langle \vec{1},y\rangle=0.
-	\]
+	\begin{equation}
+		\left\langle x,\Markov{\Graph}\vec{1}\right\rangle=\langle x,\vec{1}\rangle=0
+	\end{equation}
+	and, using symmetry of \(\Markov{\Graph}\),
+	\begin{equation}
+		\left\langle \vec{1},\Markov{\Graph}y\right\rangle=\left\langle \Markov{\Graph}\vec{1},y\right\rangle=\langle \vec{1},y\rangle=0.
+	\end{equation}
 	Hence
-	\[
-		e(S,T)-\frac{d\abs{S}\abs{T}}{n}=d\langle x,\Markov{G}y\rangle.
-	\]
+	\begin{equation}
+		e(S,T)-\frac{d\abs{S}\abs{T}}{n}=d\langle x,\Markov{\Graph}y\rangle.
+	\end{equation}
 	By Cauchy--Schwarz,
-	\[
-		\abs{\langle x,\Markov{G}y\rangle}\leq \norm{x}_2\norm{\Markov{G}y}_2.
-	\]
-	Since \(y\perp\vec{1}\) and \(G\) is an \((n,d,\lambda)\)-expander, the definition gives
-	\[
-		\norm{\Markov{G}y}_2\leq \lambda\norm{y}_2,
-	\]
+	\begin{equation}
+		\abs{\langle x,\Markov{\Graph}y\rangle}\leq \norm{x}_2\norm{\Markov{\Graph}y}_2.
+	\end{equation}
+	Since \(y\perp\vec{1}\) and \(\Graph\) is an \((n,d,\lambda)\)-expander, the definition gives
+	\begin{equation}
+		\norm{\Markov{\Graph}y}_2\leq \lambda\norm{y}_2,
+	\end{equation}
 	and therefore
-	\[
-		\abs{\langle x,\Markov{G}y\rangle}\leq \lambda\norm{x}_2\norm{y}_2.
-	\]
+	\begin{equation}
+		\abs{\langle x,\Markov{\Graph}y\rangle}\leq \lambda\norm{x}_2\norm{y}_2.
+	\end{equation}
 	Finally, we compute
-	\[
+	\begin{equation}
 		\norm{x}_2^2
 		=
 		\left\|\vec{1}_S-\frac{\abs{S}}{n}\vec{1}\right\|_2^2
@@ -188,56 +190,56 @@ The expander mixing lemma says that a spectral expander distributes edges betwee
 		=
 		\abs{S}\left(1-\frac{\abs{S}}{n}\right)
 		\leq \abs{S},
-	\]
+	\end{equation}
 	and the same calculation with \(T\) in place of \(S\) gives
-	\[
+	\begin{equation}
 		\norm{y}_2^2\leq \abs{T}.
-	\]
+	\end{equation}
 	Combining these estimates yields
-	\[
+	\begin{equation}
 		\abs{e(S,T)-\frac{d\abs{S}\abs{T}}{n}}\leq \lambda d\sqrt{\abs{S}\abs{T}},
-	\]
+	\end{equation}
 	as required.
 \end{proof}
 
 \subsection{Random Walk Mixing}
 \label{subsec:random-walk-mixing}
 
-Spectral expansion is exactly contraction of the nonuniform part of a distribution. This gives the standard logarithmic mixing bound.
+Spectral expansion is exactly contraction of the nonuniform part of a distribution. This gives the standard logarithmic mixing bound, and it is the point at which the algebraic definition of expansion becomes a probabilistic statement. The theorem below should be read as saying that the only part of the initial distribution that survives under repeated averaging is its uniform component.
 
 \begin{theorem}[Spectral Mixing Bound]
 	\label{thm:spectral-mixing}
-	Let \(G\) be a \(d\)-regular graph on \(n\) vertices with \(\lambda(G)\leq\lambda<1\). For every starting vertex \(v_0\) and every \(t\geq 0\),
-	\[
-		\StatDist(\Markov{G}^t\vec{1}_{v_0},\vec{u})\leq \frac{\sqrt{n}}{2}\lambda^t.
-	\]
+	Let \(\Graph\) be a \(d\)-regular graph on \(n\) vertices with \(\lambda(\Graph)\leq\lambda<1\). For every starting vertex \(v_0\) and every \(t\geq 0\),
+	\begin{equation}
+		\StatDist(\Markov{\Graph}^t\vec{1}_{v_0},\vec{u})\leq \frac{\sqrt{n}}{2}\lambda^t.
+	\end{equation}
 	Consequently,
-	\[
-		\tau_{\mathrm{mix},G}(\epsilon)\leq \frac{\log n+2\log(1/(2\epsilon))}{2\log(1/\lambda)}.
-	\]
+	\begin{equation}
+		\tau_{\mathrm{mix},\Graph}(\epsilon)\leq \frac{\log n+2\log(1/(2\epsilon))}{2\log(1/\lambda)}.
+	\end{equation}
 \end{theorem}
 
 \begin{proof}
 	The proof decomposes the point mass into its uniform part and its orthogonal error. The uniform part is fixed by the random walk, and the orthogonal part contracts by a factor \(\lambda\) at every step.
 
 	Write
-	\[
+	\begin{equation}
 		z=\vec{1}_{v_0}-\vec{u}.
-	\]
-	Since \(\langle\vec{1}_{v_0},\vec{1}\rangle=1\) and \(\langle\vec{u},\vec{1}\rangle=1\), we have \(z\perp\vec{1}\). Since \(\Markov{G}\vec{u}=\vec{u}\), we get
-	\[
-		\Markov{G}^t\vec{1}_{v_0}-\vec{u}
+	\end{equation}
+	Since \(\langle\vec{1}_{v_0},\vec{1}\rangle=1\) and \(\langle\vec{u},\vec{1}\rangle=1\), we have \(z\perp\vec{1}\). Since \(\Markov{\Graph}\vec{u}=\vec{u}\), we get
+	\begin{equation}
+		\Markov{\Graph}^t\vec{1}_{v_0}-\vec{u}
 		=
-		\Markov{G}^t(\vec{u}+z)-\vec{u}
+		\Markov{\Graph}^t(\vec{u}+z)-\vec{u}
 		=
-		\Markov{G}^t z.
-	\]
-	Because \(z\perp\vec{1}\) and \(\lambda(G)\leq \lambda\), the operator norm of \(\Markov{G}\) on \(\vec{1}^{\perp}\) is at most \(\lambda\), and hence
-	\[
-		\norm{\Markov{G}^t\vec{1}_{v_0}-\vec{u}}_2\leq \lambda^t\norm{\vec{1}_{v_0}-\vec{u}}_2\leq \lambda^t.
-	\]
+		\Markov{\Graph}^t z.
+	\end{equation}
+	Because \(z\perp\vec{1}\) and \(\lambda(\Graph)\leq \lambda\), the operator norm of \(\Markov{\Graph}\) on \(\vec{1}^{\perp}\) is at most \(\lambda\), and hence
+	\begin{equation}
+		\norm{\Markov{\Graph}^t\vec{1}_{v_0}-\vec{u}}_2\leq \lambda^t\norm{\vec{1}_{v_0}-\vec{u}}_2\leq \lambda^t.
+	\end{equation}
 	The last inequality follows from the calculation
-	\[
+	\begin{equation}
 		\norm{\vec{1}_{v_0}-\vec{u}}_2^2
 		=
 		\left(1-\frac{1}{n}\right)^2+(n-1)\frac{1}{n^2}
@@ -246,33 +248,94 @@ Spectral expansion is exactly contraction of the nonuniform part of a distributi
 		=
 		1-\frac{1}{n}
 		\leq 1.
-	\]
-	Applying \cref{lem:l2-tv}, with \(\mu=\Markov{G}^t\vec{1}_{v_0}\), gives
-	\[
-		\StatDist(\Markov{G}^t\vec{1}_{v_0},\vec{u})
+	\end{equation}
+	Applying \cref{lem:l2-tv}, with \(\mu=\Markov{\Graph}^t\vec{1}_{v_0}\), gives
+	\begin{equation}
+		\StatDist(\Markov{\Graph}^t\vec{1}_{v_0},\vec{u})
 		\leq
-		\frac{\sqrt{n}}{2}\norm{\Markov{G}^t\vec{1}_{v_0}-\vec{u}}_2
+		\frac{\sqrt{n}}{2}\norm{\Markov{\Graph}^t\vec{1}_{v_0}-\vec{u}}_2
 		\leq
 		\frac{\sqrt{n}}{2}\lambda^t.
-	\]
+	\end{equation}
 	To obtain the mixing-time estimate, it is enough to choose \(t\) so that
-	\[
+	\begin{equation}
 		\frac{\sqrt{n}}{2}\lambda^t\leq \epsilon.
-	\]
+	\end{equation}
 	Since \(0<\lambda<1\), taking logarithms gives
-	\[
+	\begin{equation}
 		t\log(1/\lambda)\geq \log\left(\frac{\sqrt{n}}{2\epsilon}\right)
 		=
 		\frac{1}{2}\log n+\log(1/(2\epsilon)).
-	\]
+	\end{equation}
 	Thus every
-	\[
+	\begin{equation}
 		t\geq \frac{\log n+2\log(1/(2\epsilon))}{2\log(1/\lambda)}
-	\]
+	\end{equation}
 	satisfies the desired total-variation bound.
 \end{proof}
 
-For an expander family with \(\lambda\leq 1-c\), this is \(O(\log n+\log(1/\epsilon))\). This is the formal meaning of the phrase that a random walk on an expander rapidly forgets where it started.
+For an expander family with \(\lambda\leq 1-c\), this is \(\bigO(\log n+\log(1/\epsilon))\). This is the formal meaning of the phrase that a random walk on an expander rapidly forgets where it started.
+
+\subsection{Spectral Sweep Partitioning}
+\label{subsec:spectral-sweep-partitioning}
+
+We now isolate the algorithmic content of the upper bound in the Cheeger inequality. The graph partitioning problem asks for a set \(S\) whose boundary is small compared with its volume, and the spectral relaxation replaces the discrete indicator of \(S\) by a real-valued function with small Rayleigh quotient. Sorting the vertices according to such a function and sweeping over all prefixes converts the relaxed solution back into a cut.
+
+\begin{definition}[Spectral Sweep Partitioning]
+	\label{def:spectral-sweep-partitioning}
+	Let \(\Graph=(\Vertices,\Edges)\) be a connected \(d\)-regular graph on \(n\) vertices, and let \(g\perp\vec{1}\) be an eigenvector of \(\Markov{\Graph}=\Adjacency{\Graph}/d\) with eigenvalue \(\mu_2\). The spectral sweep procedure associated with \(g\) is the following deterministic procedure.
+	\begin{compactenum}
+		\item Relabel the vertices as \(v_1,\ldots,v_n\) so that
+		\begin{equation}
+			\label{eq:spectral-sweep-order}
+			g(v_1)\leq g(v_2)\leq\cdots\leq g(v_n).
+		\end{equation}
+		\item For each \(i\in\{1,\ldots,n-1\}\), form the sweep cut
+		\begin{equation}
+			\label{eq:spectral-sweep-prefix}
+			S_i\coloneqq \{v_1,\ldots,v_i\}.
+		\end{equation}
+		\item Among all sets in
+		\begin{equation}
+			\label{eq:spectral-sweep-candidate-family}
+			\mathcal{C}_g\coloneqq \{S_i\mid \abs{S_i}\leq n/2\}\cup\{\Vertices\setminus S_i\mid \abs{\Vertices\setminus S_i}\leq n/2\},
+		\end{equation}
+		return a set \(S_\star\) minimizing
+		\begin{equation}
+			\label{eq:spectral-sweep-objective}
+			\frac{\abs{\partial S}}{d\abs{S}}.
+		\end{equation}
+	\end{compactenum}
+\end{definition}
+
+The use of the adjacency eigenvector in \cref{def:spectral-sweep-partitioning} is the regular-graph version of the normalized-Laplacian prescription in \cref{eq:sweep-order-normalized-laplacian}. Indeed, when \(\Graph\) is \(d\)-regular, the eigenvectors of \(\NormLaplacian{\Graph}=\IdentityMatrix-\Adjacency{\Graph}/d\) are exactly the eigenvectors of \(\Markov{\Graph}\), and the rescaling by \(\sqrt{d_v}\) does not change the ordering because \(d_v=d\) for every \(v\in\Vertices\).
+
+\begin{proposition}[Guarantee of the Spectral Sweep]
+	\label{prop:spectral-sweep-guarantee}
+	If \(S_\star\) is the output of \cref{def:spectral-sweep-partitioning}, then
+	\begin{equation}
+		\label{eq:spectral-sweep-guarantee}
+		\frac{\abs{\partial S_\star}}{d\abs{S_\star}}\leq \sqrt{2(1-\mu_2)}.
+	\end{equation}
+\end{proposition}
+
+\begin{proof}
+	The proof is exactly the constructive part of the Cheeger inequality. The sweep lemma shows that some threshold set of a suitable nonnegative truncation of the eigenvector has expansion at most \(\sqrt{2(1-\mu_2)}\), and every such threshold set appears as one side of a sweep cut in the sorted order of the original eigenvector. The procedure checks both sides of each sweep cut when the side has size at most \(n/2\), and therefore it cannot return a set with larger expansion than the best threshold set.
+
+	Let \(m\) be a median of the coordinates of \(g\), and define \(g_+\) and \(g_-\) as in the proof of the upper bound in \cref{thm:cheeger}. The argument given in \cref{subsec:cheeger-proof} proves that at least one of these two functions, call it \(f\), satisfies
+	\begin{equation}
+		\label{eq:spectral-sweep-truncation-rayleigh}
+		\Rayleigh(f)\leq 1-\mu_2,
+	\end{equation}
+	and has all positive threshold sets of size at most \(n/2\). By \cref{lem:sweep}, applied to this function \(f\), there exists a threshold set \(T\) such that
+	\begin{equation}
+		\label{eq:spectral-sweep-threshold-bound}
+		\frac{\abs{\partial T}}{d\abs{T}}\leq \sqrt{2\Rayleigh(f)}\leq \sqrt{2(1-\mu_2)}.
+	\end{equation}
+	If \(f=g_+\), then \(T\) has the form \(\{v\in\Vertices\mid g(v)>t\}\) for some \(t\), which is a suffix in the nondecreasing order in \cref{eq:spectral-sweep-order}. If \(f=g_-\), then \(T\) has the form \(\{v\in\Vertices\mid g(v)<t\}\), which is a prefix in that order. In either case \(T\) belongs to the candidate family in \cref{eq:spectral-sweep-candidate-family}, because \(\abs{T}\leq n/2\). Since \(S_\star\) minimizes \cref{eq:spectral-sweep-objective} over this candidate family, \cref{eq:spectral-sweep-guarantee} follows.
+\end{proof}
+
+In an implementation, the sweep itself is linear after the vertices have been sorted. Once the order in \cref{eq:spectral-sweep-order} is fixed, one can scan the vertices from left to right and update the number of crossing edges by inspecting the incident edges of the newly inserted vertex. Thus the computational bottleneck is not evaluating the sweep, but obtaining an exact or approximate second eigenvector; for the purposes of this note, the exact variational statement is enough.
 
 \subsection{Proof of the Cheeger Inequality}
 \label{subsec:cheeger-proof}
@@ -282,179 +345,179 @@ We now prove \cref{thm:cheeger}. The lower bound is a direct Rayleigh quotient a
 \begin{proof}[Proof of the lower bound in \cref{thm:cheeger}]
 	The proof tests the Rayleigh quotient on the balanced indicator of an arbitrary cut. Since this function is constant on each side of the cut, only boundary edges contribute to its Dirichlet energy.
 
-	Let \(S\subseteq V\) satisfy \(0<\abs{S}\leq n/2\), and set
-	\[
+	Let \(S\subseteq \Vertices\) satisfy \(0<\abs{S}\leq n/2\), and set
+	\begin{equation}
 		f=\vec{1}_S-\frac{\abs{S}}{n}\vec{1}.
-	\]
+	\end{equation}
 	Then
-	\[
+	\begin{equation}
 		\langle f,\vec{1}\rangle
 		=
 		\abs{S}-\frac{\abs{S}}{n}n
 		=
 		0,
-	\]
+	\end{equation}
 	so \(f\perp\vec{1}\). Furthermore,
-	\[
+	\begin{equation}
 		\norm{f}_2^2
 		=
 		\sum_{v\in S}\left(1-\frac{\abs{S}}{n}\right)^2
 		+
 		\sum_{v\notin S}\left(\frac{\abs{S}}{n}\right)^2.
-	\]
+	\end{equation}
 	Writing \(s=\abs{S}\), the last display is
-	\[
+	\begin{equation}
 		s\left(1-\frac{s}{n}\right)^2+(n-s)\frac{s^2}{n^2}
 		=
 		s-\frac{2s^2}{n}+\frac{s^3}{n^2}+\frac{s^2}{n}-\frac{s^3}{n^2}
 		=
 		s\left(1-\frac{s}{n}\right).
-	\]
-	Since \(f\) is constant on \(S\) and on \(V\setminus S\), the only edges contributing to \(\mathcal{E}(f)\) are boundary edges, and each such edge contributes \(1\). Therefore
-	\[
+	\end{equation}
+	Since \(f\) is constant on \(S\) and on \(\Vertices\setminus S\), the only edges contributing to \(\mathcal{E}(f)\) are boundary edges, and each such edge contributes \(1\). Therefore
+	\begin{equation}
 		\mathcal{E}(f)=\frac{\abs{\partial S}}{d}.
-	\]
+	\end{equation}
 	By \cref{lem:rayleigh},
-	\[
+	\begin{equation}
 		1-\mu_2\leq \frac{\mathcal{E}(f)}{\norm{f}_2^2}
 		=\frac{\abs{\partial S}}{d\abs{S}(1-\abs{S}/n)}
 		\leq \frac{2\abs{\partial S}}{d\abs{S}}.
-	\]
+	\end{equation}
 	Taking the minimum over all such \(S\) gives
-	\[
-		\frac{1-\mu_2}{2}\leq \EdgeExpansion(G).
-	\]
+	\begin{equation}
+		\frac{1-\mu_2}{2}\leq \EdgeExpansion(\Graph).
+	\end{equation}
 \end{proof}
 
 \begin{lemma}[Sweep Lemma]
 	\label{lem:sweep}
-	Let \(f\colon V\to\RR_{\geq 0}\) be nonzero and let
-	\[
-		R(f)\coloneqq \frac{\sum_{\{u,v\}\in E}(f(u)-f(v))^2}{d\sum_{v\in V}f(v)^2}.
-	\]
-	Then there exists a threshold set \(S_t=\{v\in V\mid f(v)>t\}\) with \(0<\abs{S_t}\leq n/2\) such that
-	\[
-		\EdgeExpansion(S_t)\leq \sqrt{2R(f)},
-	\]
+	Let \(f\colon \Vertices\to\RR_{\geq 0}\) be nonzero and let
+	\begin{equation}
+		\Rayleigh(f)\coloneqq \frac{\sum_{\{u,v\}\in\Edges}(f(u)-f(v))^2}{d\sum_{v\in \Vertices}f(v)^2}.
+	\end{equation}
+	Then there exists a threshold set \(S_t=\{v\in \Vertices\mid f(v)>t\}\) with \(0<\abs{S_t}\leq n/2\) such that
+	\begin{equation}
+		\EdgeExpansion(S_t)\leq \sqrt{2\Rayleigh(f)},
+	\end{equation}
 	provided all threshold sets of \(f\) have size at most \(n/2\).
 \end{lemma}
 
 \begin{proof}
-	The proof uses the layer-cake representation of a nonnegative function. Integrating the boundary size of threshold sets counts, for each edge, exactly the length of the interval of thresholds that separate the two endpoint values. This converts the assumption that every threshold cut expands into a lower bound on \(\sum_{\{u,v\}}\abs{f(u)^2-f(v)^2}\), while Cauchy--Schwarz converts the same quantity into an upper bound in terms of \(R(f)\).
+	The proof uses the layer-cake representation of a nonnegative function. Integrating the boundary size of threshold sets counts, for each edge, exactly the length of the interval of thresholds that separate the two endpoint values. This converts the assumption that every threshold cut expands into a lower bound on \(\sum_{\{u,v\}}\abs{f(u)^2-f(v)^2}\), while Cauchy--Schwarz converts the same quantity into an upper bound in terms of \(\Rayleigh(f)\).
 
 	For \(r\geq 0\), write
-	\[
-		S_r=\{v\in V\mid f(v)>r\}.
-	\]
+	\begin{equation}
+		S_r=\{v\in \Vertices\mid f(v)>r\}.
+	\end{equation}
 	It will be slightly cleaner to integrate over squared thresholds. For \(t\geq 0\), define
-	\[
-		T_t=\{v\in V\mid f(v)^2>t\}.
-	\]
+	\begin{equation}
+		T_t=\{v\in \Vertices\mid f(v)^2>t\}.
+	\end{equation}
 	The sets \(T_t\) are exactly the sets \(S_{\sqrt{t}}\), and therefore the hypothesis on threshold sets says that every nonempty \(T_t\) has size at most \(n/2\).
 
 	We first prove the two layer-cake identities needed below. For each vertex \(v\), since \(f(v)^2\geq 0\), we have
-	\[
-		f(v)^2=\int_0^\infty \mathbf{1}_{[0,f(v)^2)}(t)\,dt.
-	\]
+	\begin{equation}
+		f(v)^2=\int_0^\infty \mathbf{1}_{[0,f(v)^2)}(t)\odif{t}.
+	\end{equation}
 	Summing this identity over all vertices and interchanging the finite sum with the integral gives
-	\[
-		\sum_{v\in V}f(v)^2
+	\begin{equation}
+		\sum_{v\in \Vertices}f(v)^2
 		=
-		\int_0^\infty \sum_{v\in V}\mathbf{1}_{T_t}(v)\,dt
+		\int_0^\infty \sum_{v\in \Vertices}\mathbf{1}_{T_t}(v)\odif{t}
 		=
-		\int_0^\infty \abs{T_t}\,dt.
-	\]
+		\int_0^\infty \abs{T_t}\odif{t}.
+	\end{equation}
 	For an edge \(\{u,v\}\), define
-	\[
+	\begin{equation}
 		\chi_{u,v}(t)\coloneqq \abs{\mathbf{1}_{T_t}(u)-\mathbf{1}_{T_t}(v)}.
-	\]
+	\end{equation}
 	If \(f(u)^2\leq f(v)^2\), then \(\chi_{u,v}(t)=1\) exactly for \(t\in[f(u)^2,f(v)^2)\), and hence
-	\[
-		\int_0^\infty \chi_{u,v}(t)\,dt
+	\begin{equation}
+		\int_0^\infty \chi_{u,v}(t)\odif{t}
 		=
-		\int_{f(u)^2}^{f(v)^2}1\,dt
+		\int_{f(u)^2}^{f(v)^2}1\odif{t}
 		=
 		f(v)^2-f(u)^2.
-	\]
+	\end{equation}
 	If \(f(v)^2\leq f(u)^2\), the same calculation with \(u\) and \(v\) interchanged gives
-	\[
-		\int_0^\infty \chi_{u,v}(t)\,dt
+	\begin{equation}
+		\int_0^\infty \chi_{u,v}(t)\odif{t}
 		=
 		f(u)^2-f(v)^2.
-	\]
+	\end{equation}
 	Thus, in all cases,
-	\[
-		\int_0^\infty \chi_{u,v}(t)\,dt=\abs{f(u)^2-f(v)^2}.
-	\]
+	\begin{equation}
+		\int_0^\infty \chi_{u,v}(t)\odif{t}=\abs{f(u)^2-f(v)^2}.
+	\end{equation}
 	Summing over all edges gives
-	\[
-		\int_0^\infty \abs{\partial T_t}\,dt
+	\begin{equation}
+		\int_0^\infty \abs{\partial T_t}\odif{t}
 		=
-		\sum_{\{u,v\}\in E}\abs{f(u)^2-f(v)^2}.
-	\]
+		\sum_{\{u,v\}\in\Edges}\abs{f(u)^2-f(v)^2}.
+	\end{equation}
 
 	Now suppose, toward a contradiction, that every nonempty threshold set \(T_t\) satisfies
-	\[
+	\begin{equation}
 		\frac{\abs{\partial T_t}}{d\abs{T_t}}>\alpha,
-	\]
-	where \(\alpha=\sqrt{2R(f)}\). Since empty threshold sets contribute zero to both integrals, this assumption implies
-	\[
-		\int_0^\infty \abs{\partial T_t}\,dt
+	\end{equation}
+	where \(\alpha=\sqrt{2\Rayleigh(f)}\). Since empty threshold sets contribute zero to both integrals, this assumption implies
+	\begin{equation}
+		\int_0^\infty \abs{\partial T_t}\odif{t}
 		>
-		\alpha d\int_0^\infty \abs{T_t}\,dt.
-	\]
+		\alpha d\int_0^\infty \abs{T_t}\odif{t}.
+	\end{equation}
 	Using the two layer-cake identities just proved, we obtain
-	\[
-		\sum_{\{u,v\}\in E}\abs{f(u)^2-f(v)^2}
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}\abs{f(u)^2-f(v)^2}
 		>
-		\alpha d\sum_{v\in V}f(v)^2.
-	\]
+		\alpha d\sum_{v\in \Vertices}f(v)^2.
+	\end{equation}
 
 	We next upper-bound the left-hand side. Since
-	\[
+	\begin{equation}
 		\abs{f(u)^2-f(v)^2}
 		=
 		\abs{f(u)-f(v)}\abs{f(u)+f(v)},
-	\]
+	\end{equation}
 	Cauchy--Schwarz over the finite edge set gives
-	\[
-		\sum_{\{u,v\}\in E}\abs{f(u)^2-f(v)^2}
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}\abs{f(u)^2-f(v)^2}
 		\leq
-		\left(\sum_{\{u,v\}\in E}(f(u)-f(v))^2\right)^{1/2}
-		\left(\sum_{\{u,v\}\in E}(f(u)+f(v))^2\right)^{1/2}.
-	\]
+		\left(\sum_{\{u,v\}\in\Edges}(f(u)-f(v))^2\right)^{1/2}
+		\left(\sum_{\{u,v\}\in\Edges}(f(u)+f(v))^2\right)^{1/2}.
+	\end{equation}
 	For every edge \(\{u,v\}\), we have
-	\[
+	\begin{equation}
 		(f(u)+f(v))^2
 		=
 		2f(u)^2+2f(v)^2-(f(u)-f(v))^2
 		\leq
 		2f(u)^2+2f(v)^2.
-	\]
+	\end{equation}
 	Summing over edges gives
-	\[
-		\sum_{\{u,v\}\in E}(f(u)+f(v))^2
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}(f(u)+f(v))^2
 		\leq
-		2\sum_{\{u,v\}\in E}\left(f(u)^2+f(v)^2\right)
+		2\sum_{\{u,v\}\in\Edges}\left(f(u)^2+f(v)^2\right)
 		=
-		2d\sum_{v\in V}f(v)^2,
-	\]
-	because \(G\) is \(d\)-regular. By the definition of \(R(f)\),
-	\[
-		\sum_{\{u,v\}\in E}(f(u)-f(v))^2=R(f)d\sum_{v\in V}f(v)^2.
-	\]
+		2d\sum_{v\in \Vertices}f(v)^2,
+	\end{equation}
+	because \(\Graph\) is \(d\)-regular. By the definition of \(\Rayleigh(f)\),
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}(f(u)-f(v))^2=\Rayleigh(f)d\sum_{v\in \Vertices}f(v)^2.
+	\end{equation}
 	Combining the last three displays yields
-	\[
-		\sum_{\{u,v\}\in E}\abs{f(u)^2-f(v)^2}
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}\abs{f(u)^2-f(v)^2}
 		\leq
-		\sqrt{R(f)d\sum_v f(v)^2}\sqrt{2d\sum_v f(v)^2}
+		\sqrt{\Rayleigh(f)d\sum_v f(v)^2}\sqrt{2d\sum_v f(v)^2}
 		=
-		\sqrt{2R(f)}\,d\sum_{v\in V}f(v)^2.
-	\]
-	This contradicts the strict lower bound with \(\alpha=\sqrt{2R(f)}\). Hence there exists a nonempty threshold set \(T_t\) such that
-	\[
-		\frac{\abs{\partial T_t}}{d\abs{T_t}}\leq \sqrt{2R(f)}.
-	\]
+		\sqrt{2\Rayleigh(f)}\,d\sum_{v\in \Vertices}f(v)^2.
+	\end{equation}
+	This contradicts the strict lower bound with \(\alpha=\sqrt{2\Rayleigh(f)}\). Hence there exists a nonempty threshold set \(T_t\) such that
+	\begin{equation}
+		\frac{\abs{\partial T_t}}{d\abs{T_t}}\leq \sqrt{2\Rayleigh(f)}.
+	\end{equation}
 	Since \(T_t=S_{\sqrt{t}}\), this is the required threshold set.
 \end{proof}
 
@@ -462,77 +525,77 @@ We now prove \cref{thm:cheeger}. The lower bound is a direct Rayleigh quotient a
 	The proof first turns an eigenvector into a nonnegative function supported on at most half the vertices without increasing the Rayleigh quotient. The sweep lemma then finds one threshold cut whose expansion is controlled by that quotient.
 
 	Let \(g\perp\vec{1}\) be an eigenvector for \(\mu_2\), normalized so that \(g\neq 0\). By \cref{lem:rayleigh}, applied to this eigenvector, we have
-	\[
-		\frac{\sum_{\{u,v\}\in E}(g(u)-g(v))^2}{d\sum_{v\in V}g(v)^2}=1-\mu_2.
-	\]
+	\begin{equation}
+		\frac{\sum_{\{u,v\}\in\Edges}(g(u)-g(v))^2}{d\sum_{v\in \Vertices}g(v)^2}=1-\mu_2.
+	\end{equation}
 	Choose a median \(m\) of the coordinates of \(g\), meaning that at most \(n/2\) vertices satisfy \(g(v)>m\) and at most \(n/2\) vertices satisfy \(g(v)<m\). Define
-	\[
+	\begin{equation}
 		g_+(v)=\max\{g(v)-m,0\}
 		\quad\text{and}\quad
 		g_-(v)=\max\{m-g(v),0\}.
-	\]
+	\end{equation}
 	The supports of \(g_+\) and \(g_-\) have size at most \(n/2\), and the same is true of all their positive threshold sets. Moreover,
-	\[
+	\begin{equation}
 		g(v)-m=g_+(v)-g_-(v)
-	\]
+	\end{equation}
 	for every vertex \(v\), and at most one of \(g_+(v)\) and \(g_-(v)\) is nonzero at each vertex.
 
 	We claim that at least one of \(g_+\) and \(g_-\) has Rayleigh quotient at most \(1-\mu_2\). First, for every edge \(\{u,v\}\), the maps \(x\mapsto \max\{x-m,0\}\) and \(x\mapsto \max\{m-x,0\}\) are monotone with disjoint slopes, and a direct case check gives
-	\[
+	\begin{equation}
 		(g_+(u)-g_+(v))^2+(g_-(u)-g_-(v))^2\leq (g(u)-g(v))^2.
-	\]
+	\end{equation}
 	To spell out the case check, if \(g(u)\) and \(g(v)\) are both at least \(m\), then the \(g_-\) difference is zero and the \(g_+\) difference is \(g(u)-g(v)\). If both are at most \(m\), then the \(g_+\) difference is zero and the \(g_-\) difference is \(g(v)-g(u)\). If \(g(u)\geq m\geq g(v)\), then the left-hand side is \((g(u)-m)^2+(m-g(v))^2\), which is at most \((g(u)-g(v))^2\) because
-	\[
+	\begin{equation}
 		(g(u)-g(v))^2
 		=
 		(g(u)-m+m-g(v))^2
 		\geq
 		(g(u)-m)^2+(m-g(v))^2.
-	\]
+	\end{equation}
 	The remaining crossing case is the same with \(u\) and \(v\) interchanged. Summing over all edges gives
-	\[
-		\sum_{\{u,v\}\in E}(g_+(u)-g_+(v))^2+\sum_{\{u,v\}\in E}(g_-(u)-g_-(v))^2
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}(g_+(u)-g_+(v))^2+\sum_{\{u,v\}\in\Edges}(g_-(u)-g_-(v))^2
 		\leq
-		\sum_{\{u,v\}\in E}(g(u)-g(v))^2.
-	\]
+		\sum_{\{u,v\}\in\Edges}(g(u)-g(v))^2.
+	\end{equation}
 	For the denominators, since at most one of \(g_+(v)\) and \(g_-(v)\) is nonzero at each vertex, we have
-	\[
-		\sum_{v\in V}g_+(v)^2+\sum_{v\in V}g_-(v)^2
+	\begin{equation}
+		\sum_{v\in \Vertices}g_+(v)^2+\sum_{v\in \Vertices}g_-(v)^2
 		=
-		\sum_{v\in V}(g(v)-m)^2.
-	\]
+		\sum_{v\in \Vertices}(g(v)-m)^2.
+	\end{equation}
 	Using \(g\perp\vec{1}\), we compute
-	\[
-		\sum_{v\in V}(g(v)-m)^2
+	\begin{equation}
+		\sum_{v\in \Vertices}(g(v)-m)^2
 		=
-		\sum_{v\in V}g(v)^2-2m\sum_{v\in V}g(v)+nm^2
+		\sum_{v\in \Vertices}g(v)^2-2m\sum_{v\in \Vertices}g(v)+nm^2
 		=
-		\sum_{v\in V}g(v)^2+nm^2
+		\sum_{v\in \Vertices}g(v)^2+nm^2
 		\geq
-		\sum_{v\in V}g(v)^2.
-	\]
-	If one of \(g_+\) and \(g_-\) is identically zero, then the other is nonzero, because \(g\) is not constant, and the numerator inequality and denominator inequality above immediately give its Rayleigh quotient at most \(1-\mu_2\). Indeed, in that case the nonzero truncation has numerator at most \(\sum_{\{u,v\}\in E}(g(u)-g(v))^2\) and denominator at least \(\sum_v g(v)^2\). Otherwise both \(g_+\) and \(g_-\) are nonzero. If both nonzero functions had Rayleigh quotient strictly larger than \(1-\mu_2\), then multiplying each strict inequality by its denominator and adding would give
-	\[
-		\sum_{\{u,v\}\in E}(g_+(u)-g_+(v))^2+\sum_{\{u,v\}\in E}(g_-(u)-g_-(v))^2
+		\sum_{v\in \Vertices}g(v)^2.
+	\end{equation}
+	If one of \(g_+\) and \(g_-\) is identically zero, then the other is nonzero, because \(g\) is not constant, and the numerator inequality and denominator inequality above immediately give its Rayleigh quotient at most \(1-\mu_2\). Indeed, in that case the nonzero truncation has numerator at most \(\sum_{\{u,v\}\in\Edges}(g(u)-g(v))^2\) and denominator at least \(\sum_v g(v)^2\). Otherwise both \(g_+\) and \(g_-\) are nonzero. If both nonzero functions had Rayleigh quotient strictly larger than \(1-\mu_2\), then multiplying each strict inequality by its denominator and adding would give
+	\begin{equation}
+		\sum_{\{u,v\}\in\Edges}(g_+(u)-g_+(v))^2+\sum_{\{u,v\}\in\Edges}(g_-(u)-g_-(v))^2
 		>
 		(1-\mu_2)d\left(\sum_v g_+(v)^2+\sum_v g_-(v)^2\right).
-	\]
+	\end{equation}
 	The right-hand side is at least
-	\[
+	\begin{equation}
 		(1-\mu_2)d\sum_v g(v)^2
 		=
-		\sum_{\{u,v\}\in E}(g(u)-g(v))^2,
-	\]
+		\sum_{\{u,v\}\in\Edges}(g(u)-g(v))^2,
+	\end{equation}
 	contradicting the numerator inequality above. Hence at least one nonzero function among \(g_+\) and \(g_-\), call it \(f\), satisfies
-	\[
-		R(f)\leq 1-\mu_2.
-	\]
+	\begin{equation}
+		\Rayleigh(f)\leq 1-\mu_2.
+	\end{equation}
 	Every threshold set of this \(f\) has size at most \(n/2\), so \cref{lem:sweep} gives a nonempty threshold set \(S\) with
-	\[
+	\begin{equation}
 		\EdgeExpansion(S)\leq \sqrt{2(1-\mu_2)}.
-	\]
-	Since \(\EdgeExpansion(G)\) is the minimum of \(\EdgeExpansion(U)=\abs{\partial U}/(d\abs{U})\) over all nonempty \(U\subseteq V\) with \(\abs{U}\leq n/2\), and since \(S\) is one such set, we conclude that
-	\[
-		\EdgeExpansion(G)\leq \sqrt{2(1-\mu_2)}.
-	\]
+	\end{equation}
+	Since \(\EdgeExpansion(\Graph)\) is the minimum of \(\EdgeExpansion(U)=\abs{\partial U}/(d\abs{U})\) over all nonempty \(U\subseteq \Vertices\) with \(\abs{U}\leq n/2\), and since \(S\) is one such set, we conclude that
+	\begin{equation}
+		\EdgeExpansion(\Graph)\leq \sqrt{2(1-\mu_2)}.
+	\end{equation}
 \end{proof}

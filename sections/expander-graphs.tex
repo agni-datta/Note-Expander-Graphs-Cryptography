@@ -3,80 +3,152 @@
 
 An expander graph is a sparse graph with no sparse cut. More precisely, every set of vertices that is not already a macroscopic part of the graph must have many edges leaving it, or many new neighbors outside it, depending on the chosen definition. The strength of the subject is that these definitions are robust. They differ in constants, degree factors, and the range of set sizes on which expansion is demanded, but for bounded-degree graph families they capture the same qualitative phenomenon.
 
+\begin{figure}[t]
+	\centering
+	\begin{mdframed}[linewidth=0.4pt, linecolor=expanderMutedColor!45, backgroundcolor=white, roundcorner=2pt, innerleftmargin=6pt, innerrightmargin=6pt, innertopmargin=6pt, innerbottommargin=6pt]
+		\centering
+		\adjustbox{max width=.96\textwidth}{%
+			\begin{tikzpicture}[
+					vertex/.style={circle, draw=expanderVertexColor, fill=expanderVertexColor!12, minimum size=7.2mm, inner sep=0pt},
+					chosen/.style={circle, draw=expanderBoundaryColor, fill=expanderBoundaryColor!14, minimum size=7.2mm, inner sep=0pt},
+					edge/.style={line width=0.55pt, draw=expanderMutedColor},
+					cross/.style={line width=0.95pt, draw=expanderBoundaryColor}
+				]
+				\node[chosen] (a1) at (0,1.25) {};
+				\node[chosen] (a2) at (0,0) {};
+				\node[chosen] (a3) at (0,-1.25) {};
+				\node[vertex] (b1) at (1.65,1.25) {};
+				\node[vertex] (b2) at (1.65,0) {};
+				\node[vertex] (b3) at (1.65,-1.25) {};
+				\node[vertex] (c1) at (3.3,1.25) {};
+				\node[vertex] (c2) at (3.3,0) {};
+				\node[vertex] (c3) at (3.3,-1.25) {};
+				\draw[edge] (a1) -- (a2) -- (a3);
+				\draw[edge] (b1) -- (b2) -- (b3);
+				\draw[edge] (c1) -- (c2) -- (c3);
+				\draw[cross] (a2) -- (b2);
+				\draw[edge] (b1) -- (c1);
+				\draw[edge] (b2) -- (c2);
+				\draw[edge] (b3) -- (c3);
+				\node[chosen] (x1) at (5.75,1.35) {};
+				\node[chosen] (x2) at (5.1,0.1) {};
+				\node[chosen] (x3) at (5.95,-1.25) {};
+				\node[vertex] (y1) at (7.65,1.35) {};
+				\node[vertex] (y2) at (8.35,0.25) {};
+				\node[vertex] (y3) at (7.85,-1.25) {};
+				\node[vertex] (z1) at (9.85,1.25) {};
+				\node[vertex] (z2) at (10.05,-0.05) {};
+				\node[vertex] (z3) at (9.35,-1.35) {};
+				\draw[edge] (x1) -- (x2) -- (x3) -- (x1);
+				\draw[edge] (y1) -- (y2) -- (y3) -- (y1);
+				\draw[edge] (z1) -- (z2) -- (z3) -- (z1);
+				\foreach \u/\v in {x1/y1,x1/y2,x2/y1,x2/y3,x3/y2,x3/y3,x1/z2,x2/z1,x3/z3} {
+						\draw[cross] (\u) -- (\v);
+					}
+				\draw[edge] (y1) -- (z1);
+				\draw[edge] (y2) -- (z2);
+				\draw[edge] (y3) -- (z3);
+			\end{tikzpicture}%
+		}
+	\end{mdframed}
+	\caption{A schematic comparison between a sparse graph with a bottleneck, shown on the left, and a sparse graph whose small sets have many exits, shown on the right. The highlighted vertices represent a set \(S\), while the red crossing edges indicate the part of the graph that certifies whether \(S\) is poorly connected to the rest of the graph or expands into it.}
+	\label{fig:expansion-versus-bottleneck}
+\end{figure}
+
+The comparison in \cref{fig:expansion-versus-bottleneck} is the informal model behind the formal definitions below. The left-hand graph shows why sparsity alone is not enough, since a small set can be separated from the rest of the graph by very few crossing edges, whereas the right-hand graph shows the feature that expansion enforces, namely that every small set must expose many exits. In theoretical informatics, abbreviated \textsc{ti}, this distinction should be read as a resource statement rather than merely as a graph-theoretic curiosity: bounded degree means that every vertex has only a constant local communication budget, whereas expansion says that no small region can isolate information, errors, randomness, or adversarial influence without exposing a proportional interface to the rest of the system.
+
+\subsection{Why Expanders Are Extremal}
+\label{subsec:why-expanders-are-extremal}
+
+The most misleading thing about expanders is that they invite a picture and then punish the picture. A drawing on a page already asks the graph to behave like a low-dimensional geometric object, whereas a good expander is a graph whose large-scale behavior systematically resists that request. Thus \cref{fig:expansion-versus-bottleneck} should not be read as a faithful visualization of a large expander, but only as a schematic representation of what fails in a bottlenecked graph and what is forbidden in an expanding graph.
+
+This point is useful both in theoretical computer science and in applications. A path, a cycle, a grid, a tree, and a dumbbell graph all admit simple drawings because they have visible geometric or separator structure, and exactly this structure creates small cuts, slow diffusion, and small spectral gap. In contrast, an expander is sparse but behaves, for many large-scale tests, like a complete graph whose edges have been thinned without introducing a bottleneck. This is why expanders reduce randomness, support efficient error-correcting codes, underlie pseudorandom constructions, and serve as limiting examples for graph algorithms that are expected to behave differently on low-dimensional data and on noisy highly connected data; see the survey of Hoory, Linial, and Wigderson~\cite{HLW2006} and Vadhan's monograph~\cite{Vad2012}.
+
+There is also a useful distinction between the theoretical and practical meanings of sparsity. In the classical expander definition, the degree \(d\) is fixed independently of \(n\), because the strongest phenomenon is that constant local information can force global connectivity, mixing, and pseudorandomness. If \(d\) grows like a polylogarithm in \(n\), many concentration effects already become available, while if \(d\) is comparable to \(n\), the complete graph is no longer being approximated by a genuinely sparse object. The constant-degree regime is therefore the cleanest mathematical regime, even though in data analysis one often uses the word expander-like for irregular or weighted graphs whose conductance and discrepancy properties resemble those of a bounded-degree expander.
+
 \subsection{Neighborhood Expansion}
 \label{subsec:neighborhood-expansion}
 
-We first fix the neighborhood notation that will be used throughout the combinatorial part of the note. If \(G=(V,E)\) is a graph and \(U\subseteq V\), then the external neighborhood of \(U\) is
-\[
-	\extNbr_G(U)\coloneqq \{v\in V\setminus U\mid \text{there exists }u\in U\text{ such that }\{u,v\}\in E\}.
-\]
-If \(U,W\subseteq V\) are disjoint, then the relative external neighborhood of \(U\) in \(W\) is
-\[
-	\extNbr_G(U,W)\coloneqq \{v\in W\mid \text{there exists }u\in U\text{ such that }\{u,v\}\in E\},
-\]
-so that \(\extNbr_G(U)=\extNbr_G(U,V\setminus U)\). We write \(\edgeBetween_G(U,W)\) for the number of edges with one endpoint in \(U\) and the other endpoint in \(W\), counted with multiplicity when the graph is a multigraph. When the underlying graph is clear, we omit the subscript \(G\).
+We first fix the neighborhood notation that will be used throughout the combinatorial part of the note. If \(\Graph=(\Vertices,\Edges)\) is a graph and \(U\subseteq \Vertices\), then the external neighborhood of \(U\) is the set defined in
+\begin{equation}
+	\label{eq:external-neighborhood-definition}
+	\extNbr_\Graph(U)\coloneqq \{v\in \Vertices\setminus U\mid \exists u\in U \;:\; \{u,v\}\in\Edges\}.
+\end{equation}
+If \(U,W\subseteq \Vertices\) are disjoint, then the relative external neighborhood of \(U\) in \(W\) is the set defined in
+\begin{equation}
+	\label{eq:relative-external-neighborhood-definition}
+	\extNbr_\Graph(U,W)\coloneqq \{v\in W\mid \exists u\in U \;:\; \{u,v\}\in\Edges\},
+\end{equation}
+so that \(\extNbr_\Graph(U)=\extNbr_\Graph(U,\Vertices\setminus U)\) by \cref{eq:external-neighborhood-definition,eq:relative-external-neighborhood-definition}. We write \(\edgeBetween_\Graph(U,W)\) for the number of edges with one endpoint in \(U\) and the other endpoint in \(W\), counted with multiplicity when the graph is a multigraph. When the underlying graph is clear, we omit the subscript \(\Graph\).
 
 \begin{definition}[Vertex Expander]
 	\label{def:alpha-expander}
-	Let \(G=(V,E)\) be a graph on \(n\) vertices, and let \(\alpha>0\). We say that \(G\) is an \(\alpha\)-vertex expander if every set \(U\subseteq V\) with \(0<\abs{U}\leq n/2\) satisfies
-	\[
-		\abs{\extNbr_G(U)}\geq \alpha\abs{U}.
-	\]
+	Let \(\Graph=(\Vertices,\Edges)\) be a graph on \(n\) vertices, and let \(\alpha>0\). We say that \(\Graph\) is an \(\alpha\)-vertex expander if every set \(U\subseteq \Vertices\) with \(0<\abs{U}\leq n/2\) satisfies
+	\begin{equation}
+		\label{eq:alpha-expander-condition}
+		\abs{\extNbr_\Graph(U)}\geq \alpha\abs{U}.
+	\end{equation}
 \end{definition}
 
-The cutoff at \(n/2\) is a convention rather than a mathematical boundary. It is the right convention for cuts, since every cut has a smaller side, and it is also strong enough to imply basic global consequences such as connectedness. Indeed, if \(G\) were disconnected and \(C\) were a connected component of size at most \(n/2\), then \(\extNbr_G(C)=\emptyset\), contradicting \cref{def:alpha-expander}. If all connected components had size greater than \(n/2\), there could be at most one such component, and the graph would again be connected.
+The cutoff at \(n/2\) is a convention rather than a mathematical boundary. It is the right convention for cuts, since every cut has a smaller side, and it is also strong enough to imply basic global consequences such as connectedness. Indeed, if \(\Graph\) were disconnected and \(C\) were a connected component of size at most \(n/2\), then \(\extNbr_\Graph(C)=\emptyset\), contradicting \cref{eq:alpha-expander-condition}. If all connected components had size greater than \(n/2\), there could be at most one such component, and the graph would again be connected.
 
 It is often useful to ask for expansion only at selected scales. This is especially common in arguments where one first proves expansion for sets of a prescribed size and then extracts a genuinely expanding induced subgraph.
 
 \begin{definition}[Scale-Restricted Vertex Expansion]
 	\label{def:scale-restricted-expansion}
-	Let \(G=(V,E)\) be a graph, let \(I\subseteq\NN\), and let \(\alpha>0\). We say that \(G\) is an \((I,\alpha)\)-vertex expander if every set \(U\subseteq V\) with \(\abs{U}\in I\) satisfies
-	\[
-		\abs{\extNbr_G(U)}\geq \alpha\abs{U}.
-	\]
-	For a positive integer \(k\), we say that \(G\) is a \((k,\alpha)\)-vertex expander if it is an \((\{1,\ldots,k\},\alpha)\)-vertex expander.
+	Let \(\Graph=(\Vertices,\Edges)\) be a graph, let \(I\subseteq\NN\), and let \(\alpha>0\). We say that \(\Graph\) is an \((I,\alpha)\)-vertex expander if every set \(U\subseteq \Vertices\) with \(\abs{U}\in I\) satisfies
+	\begin{equation}
+		\label{eq:scale-restricted-expansion-condition}
+		\abs{\extNbr_\Graph(U)}\geq \alpha\abs{U}.
+	\end{equation}
+	For a positive integer \(k\), we say that \(\Graph\) is a \((k,\alpha)\)-vertex expander if it is an \((\{1,\ldots,k\},\alpha)\)-vertex expander.
 \end{definition}
 
-Thus an \(\alpha\)-vertex expander on \(n\) vertices is the same object as an \((\{1,\ldots,\lfloor n/2\rfloor\},\alpha)\)-vertex expander, up to the harmless rounding convention at \(n/2\). The converse is not literally true when expansion is required only at one scale, because a graph may expand all sets of size \(n/100\) while still having isolated vertices. Nevertheless, for the qualitative uses in this note, expansion at a linear scale can often be converted into ordinary expansion after passing to a large induced subgraph. The basic mechanism is the following deletion lemma, which is a standard form of the expansion-extraction argument used in the graph-expansion literature; see the survey of Hoory, Linial, and Wigderson~\cite{HLW2006} and the decomposition work of Moshkovitz and Shapira~\cite{SODA:MosSha15} for broader context.
+Thus an \(\alpha\)-vertex expander on \(n\) vertices is the same object as an \((\{1,\ldots,\lfloor n/2\rfloor\},\alpha)\)-vertex expander, up to the harmless rounding convention at \(n/2\), because \cref{eq:alpha-expander-condition,eq:scale-restricted-expansion-condition} impose the same inequality on the same family of sets. The converse is not literally true when expansion is required only at one scale, because a graph may expand all sets of size \(n/100\) while still having isolated vertices. Nevertheless, for the qualitative uses in this note, expansion at a linear scale can often be converted into ordinary expansion after passing to a large induced subgraph. The basic mechanism is the following deletion lemma, which is a standard form of the expansion-extraction argument used in the graph-expansion literature; see the survey of Hoory, Linial, and Wigderson~\cite{HLW2006} and the decomposition work of Moshkovitz and Shapira~\cite{SODA:MosSha15} for broader context.
 
 \begin{lemma}[Interval Expansion Deletion]
 	\label{lem:interval-expansion-deletion}
-	Let \(G\) be a graph on \(n\) vertices, and suppose that every set \(U\subseteq V(G)\) with \(n/3\leq\abs{U}\leq 2n/3\) satisfies \(\abs{\extNbr_G(U)}\geq\alpha\abs{U}\). Then there is a set \(Z\subseteq V(G)\) with \(\abs{Z}<n/3\) such that the induced graph \(G[V(G)\setminus Z]\) is an \(\alpha\)-vertex expander.
+	Let \(\Graph\) be a graph on \(n\) vertices, and suppose that every set \(U\subseteq \Vertices(\Graph)\) with \(n/3\leq\abs{U}\leq 2n/3\) satisfies \(\abs{\extNbr_\Graph(U)}\geq\alpha\abs{U}\). Then there is a set \(Z\subseteq \Vertices(\Graph)\) with \(\abs{Z}<n/3\) such that the induced graph \(\Graph[\Vertices(\Graph)\setminus Z]\) is an \(\alpha\)-vertex expander.
 \end{lemma}
 
 \begin{proof}
 	The key observation is that bad nonexpanding sets can be deleted one by one, and the union of all deleted sets remains bad in the original graph. If the union ever entered the interval on which expansion is assumed, this would contradict the hypothesis. The only remaining point is to check that the union cannot jump over the whole interval in a single deletion step.
 
-	Start with \(G_0=G\). As long as the current graph \(G_i\) contains a set \(A_i\subseteq V(G_i)\) with \(0<\abs{A_i}\leq \abs{V(G_i)}/2\) and \(\abs{\extNbr_{G_i}(A_i)}<\alpha\abs{A_i}\), delete \(A_i\) and set \(G_{i+1}=G_i[V(G_i)\setminus A_i]\). Let \(Z_i=A_0\cup\cdots\cup A_{i-1}\) be the set deleted before the \(i\)-th step.
+	Start with \(\Graph_0=\Graph\). As long as the current graph \(\Graph_i\) contains a set \(A_i\subseteq \Vertices(\Graph_i)\) with \(0<\abs{A_i}\leq \abs{\Vertices(\Graph_i)}/2\) and \(\abs{\extNbr_{\Graph_i}(A_i)}<\alpha\abs{A_i}\), delete \(A_i\) and set \(\Graph_{i+1}=\Graph_i[\Vertices(\Graph_i)\setminus A_i]\). Let \(Z_i=A_0\cup\cdots\cup A_{i-1}\) be the set deleted before the \(i\)-th step.
 
 	We claim that
-	\[
-		\abs{\extNbr_G(Z_i)}<\alpha\abs{Z_i}
-	\]
-	for every \(i\geq 1\). Every vertex in \(\extNbr_G(Z_i)\) is adjacent in \(G\) to some first deleted set \(A_j\), and if the vertex was not deleted before \(A_j\), then it is counted in \(\extNbr_{G_j}(A_j)\). If the vertex was deleted before \(A_j\), then it lies in \(Z_i\) and is not counted in the external neighborhood of \(Z_i\). Thus
-	\[
-		\extNbr_G(Z_i)\subseteq \bigcup_{j<i}\extNbr_{G_j}(A_j),
-	\]
-	and therefore
-	\[
-		\abs{\extNbr_G(Z_i)}\leq \sum_{j<i}\abs{\extNbr_{G_j}(A_j)}<\alpha\sum_{j<i}\abs{A_j}=\alpha\abs{Z_i},
-	\]
-	as claimed.
+	\begin{equation}
+		\label{eq:interval-deleted-neighborhood-bound}
+		\abs{\extNbr_\Graph(Z_i)}<\alpha\abs{Z_i}
+	\end{equation}
+	for every \(i\geq 1\). Every vertex in \(\extNbr_\Graph(Z_i)\) is adjacent in \(\Graph\) to some first deleted set \(A_j\), and if the vertex was not deleted before \(A_j\), then it is counted in \(\extNbr_{\Graph_j}(A_j)\). If the vertex was deleted before \(A_j\), then it lies in \(Z_i\) and is not counted in the external neighborhood of \(Z_i\). Thus
+	\begin{equation}
+		\label{eq:interval-deleted-neighborhood-containment}
+		\extNbr_\Graph(Z_i)\subseteq \bigcup_{j<i}\extNbr_{\Graph_j}(A_j),
+	\end{equation}
+	and therefore \cref{eq:interval-deleted-neighborhood-containment} and the deletion rule give
+	\begin{equation}
+		\label{eq:interval-deleted-neighborhood-sum}
+		\abs{\extNbr_\Graph(Z_i)}\leq \sum_{j<i}\abs{\extNbr_{\Graph_j}(A_j)}<\alpha\sum_{j<i}\abs{A_j}=\alpha\abs{Z_i},
+	\end{equation}
+	which proves \cref{eq:interval-deleted-neighborhood-bound}.
 
-	The expansion hypothesis implies that \(\abs{Z_i}\) never lies in the interval \([n/3,2n/3]\). Suppose, toward a contradiction, that \(\abs{Z_i}\) first exceeds \(2n/3\) after deleting \(A_{i-1}\). Then \(\abs{Z_{i-1}}<n/3\), and the deletion rule gives
-	\[
-		\abs{A_{i-1}}\leq \frac{\abs{V(G_{i-1})}}{2}=\frac{n-\abs{Z_{i-1}}}{2}.
-	\]
-	It follows that
-	\[
+	The expansion hypothesis and \cref{eq:interval-deleted-neighborhood-bound} imply that \(\abs{Z_i}\) never lies in the interval \([n/3,2n/3]\). Suppose, toward a contradiction, that \(\abs{Z_i}\) first exceeds \(2n/3\) after deleting \(A_{i-1}\). Then \(\abs{Z_{i-1}}<n/3\), and the deletion rule gives
+	\begin{equation}
+		\label{eq:interval-last-deletion-size}
+		\abs{A_{i-1}}\leq \frac{\abs{\Vertices(\Graph_{i-1})}}{2}=\frac{n-\abs{Z_{i-1}}}{2}.
+	\end{equation}
+	It follows from \cref{eq:interval-last-deletion-size} that
+	\begin{equation}
+		\label{eq:interval-jump-contradiction}
 		\abs{Z_i}=\abs{Z_{i-1}}+\abs{A_{i-1}}\leq \abs{Z_{i-1}}+\frac{n-\abs{Z_{i-1}}}{2}=\frac{n+\abs{Z_{i-1}}}{2}<\frac{2n}{3},
-	\]
+	\end{equation}
 	contradicting the choice of \(i\). Hence the procedure halts with \(\abs{Z_i}<n/3\), since the graph loses at least one vertex at each deletion step and cannot continue indefinitely.
 
-	Let \(Z\) be the final deleted set and let \(H=G[V(G)\setminus Z]\). By the stopping condition, every set \(A\subseteq V(H)\) with \(0<\abs{A}\leq \abs{V(H)}/2\) satisfies \(\abs{\extNbr_H(A)}\geq \alpha\abs{A}\). Thus \(H\) is an \(\alpha\)-vertex expander.
+	Let \(Z\) be the final deleted set and let \(H=\Graph[\Vertices(\Graph)\setminus Z]\). By the stopping condition, every set \(A\subseteq \Vertices(H)\) with \(0<\abs{A}\leq \abs{\Vertices(H)}/2\) satisfies \(\abs{\extNbr_H(A)}\geq \alpha\abs{A}\). Thus \(H\) is an \(\alpha\)-vertex expander.
 \end{proof}
 
-The same deletion mechanism, combined with elementary scale-lifting arguments, gives the following qualitative principle. For every \(c,\alpha\in(0,1]\), there are constants \(c',\alpha'>0\) such that if \(G\) is a \((\{\lfloor cn\rfloor\},\alpha)\)-vertex expander on \(n\) vertices, then \(G\) contains an induced subgraph on at least \(c'n\) vertices that is an \(\alpha'\)-vertex expander. We shall not need the exact constants in this note; the point is that expansion at one linear scale already forces an expanding subgraph of linear size.
+The same deletion mechanism, combined with elementary scale-lifting arguments, gives the following qualitative principle. For every \(c,\alpha\in(0,1]\), there are constants \(c',\alpha'>0\) such that if \(\Graph\) is a \((\{\lfloor cn\rfloor\},\alpha)\)-vertex expander on \(n\) vertices, then \(\Graph\) contains an induced subgraph on at least \(c'n\) vertices that is an \(\alpha'\)-vertex expander. We shall not need the exact constants in this note; the point is that expansion at one linear scale already forces an expanding subgraph of linear size.
 
 The hypothesis that the relevant expanding scale is linear in \(n\) cannot be removed. If \(k=o(n)\), then a graph may be a \((k,\alpha)\)-vertex expander for local reasons and still fail to contain any linearly large expanding induced subgraph. For example, a disjoint union of cliques of size about \((1+\alpha)k\) expands all sufficiently small sets inside their own clique, but it has no connected component of linear size. More subtle examples show that strong local expansion can coexist with separators in every large induced subgraph; the construction of Moshkovitz and Shapira~\cite{SODA:MosSha15} is a useful warning that local expansion and global expansion are genuinely different notions unless the scale is already linear.
 
@@ -85,123 +157,508 @@ The hypothesis that the relevant expanding scale is linear in \(n\) cannot be re
 
 We next record the most immediate consequences of \cref{def:alpha-expander}. These facts are elementary, but they explain why the cutoff at \(n/2\) is the natural convention for a first definition. Expansion up to half the graph already implies that metric balls grow exponentially until they become macroscopic, and this growth forces logarithmic diameter.
 
-For a graph \(G=(V,E)\), a vertex \(v\in V\), and an integer \(t\geq 0\), let
-\[
-	\Ball_t^G(v)\coloneqq \{w\in V\mid \operatorname{dist}_G(v,w)\leq t\}
-\]
+For a graph \(\Graph=(\Vertices,\Edges)\), a vertex \(v\in \Vertices\), and an integer \(t\geq 0\), let
+\begin{equation}
+	\label{eq:ball-definition}
+	\Ball_t^\Graph(v)\coloneqq \{w\in \Vertices\mid \operatorname{dist}_\Graph(v,w)\leq t\}
+\end{equation}
 be the ball of radius \(t\) around \(v\). When the graph is clear, we write \(\Ball_t(v)\).
 
 \begin{proposition}[Growth of Balls]
 	\label{prop:ball-growth}
-	Let \(G=(V,E)\) be an \(\alpha\)-vertex expander on \(n\geq 2\) vertices. For every \(v\in V\) and every integer \(t\geq 0\),
-	\[
+	Let \(\Graph=(\Vertices,\Edges)\) be an \(\alpha\)-vertex expander on \(n\geq 2\) vertices. For every \(v\in \Vertices\) and every integer \(t\geq 0\),
+	\begin{equation}
+		\label{eq:ball-growth-bound}
 		\abs{\Ball_t(v)}\geq \min\{n/2,(1+\alpha)^t\}.
-	\]
+	\end{equation}
 \end{proposition}
 
 \begin{proof}
 	The proof is an induction on the radius. The point is that, as long as the current ball has size at most \(n/2\), the expansion hypothesis adds at least an \(\alpha\)-fraction of new vertices at the next step. Once the ball has size at least \(n/2\), the asserted lower bound no longer asks for further growth.
 
 	For \(t=0\), we have \(\Ball_0(v)=\{v\}\), and hence
-	\[
+	\begin{equation}
+		\label{eq:ball-base-case}
 		\abs{\Ball_0(v)}=1=\min\{n/2,1\},
-	\]
-	since \(n\geq 2\). Suppose now that the claim holds for \(t-1\), where \(t\geq 1\). If \(\abs{\Ball_{t-1}(v)}\geq n/2\), then \(\Ball_{t-1}(v)\subseteq \Ball_t(v)\), and therefore
-	\[
+	\end{equation}
+	since \(n\geq 2\), and \cref{eq:ball-base-case} proves \cref{eq:ball-growth-bound} for \(t=0\). Suppose now that the claim holds for \(t-1\), where \(t\geq 1\). If \(\abs{\Ball_{t-1}(v)}\geq n/2\), then \(\Ball_{t-1}(v)\subseteq \Ball_t(v)\), and therefore
+	\begin{equation}
+		\label{eq:ball-monotone-case}
 		\abs{\Ball_t(v)}\geq \abs{\Ball_{t-1}(v)}\geq n/2\geq \min\{n/2,(1+\alpha)^t\}.
-	\]
+	\end{equation}
 	It remains to consider the case in which \(\abs{\Ball_{t-1}(v)}<n/2\). Put \(U=\Ball_{t-1}(v)\). By the induction hypothesis,
-	\[
+	\begin{equation}
+		\label{eq:ball-induction-hypothesis}
 		\abs{U}\geq \min\{n/2,(1+\alpha)^{t-1}\}.
-	\]
-	Since \(\abs{U}<n/2\), the minimum in the last display cannot be \(n/2\), and hence \(\abs{U}\geq (1+\alpha)^{t-1}\). Moreover, every external neighbor of \(U\) lies at distance at most \(t\) from \(v\), so
-	\[
-		U\cup \extNbr_G(U)\subseteq \Ball_t(v).
-	\]
-	The sets \(U\) and \(\extNbr_G(U)\) are disjoint by definition of external neighborhood, and \cref{def:alpha-expander} gives \(\abs{\extNbr_G(U)}\geq \alpha\abs{U}\). Thus
-	\[
-		\abs{\Ball_t(v)}\geq \abs{U}+\abs{\extNbr_G(U)}\geq (1+\alpha)\abs{U}\geq (1+\alpha)^t.
-	\]
-	This proves the induction step.
+	\end{equation}
+	Since \(\abs{U}<n/2\), the minimum in \cref{eq:ball-induction-hypothesis} cannot be \(n/2\), and hence \(\abs{U}\geq (1+\alpha)^{t-1}\). Moreover, every external neighbor of \(U\) lies at distance at most \(t\) from \(v\), so
+	\begin{equation}
+		\label{eq:ball-next-contained}
+		U\cup \extNbr_\Graph(U)\subseteq \Ball_t(v).
+	\end{equation}
+	The sets \(U\) and \(\extNbr_\Graph(U)\) are disjoint by \cref{eq:external-neighborhood-definition}, and \cref{def:alpha-expander} gives \(\abs{\extNbr_\Graph(U)}\geq \alpha\abs{U}\). Thus \cref{eq:ball-next-contained} implies
+	\begin{equation}
+		\label{eq:ball-growth-step}
+		\abs{\Ball_t(v)}\geq \abs{U}+\abs{\extNbr_\Graph(U)}\geq (1+\alpha)\abs{U}\geq (1+\alpha)^t.
+	\end{equation}
+	The two cases \cref{eq:ball-monotone-case,eq:ball-growth-step} prove the induction step.
 \end{proof}
 
 \begin{corollary}[Logarithmic Diameter]
 	\label{cor:logarithmic-diameter}
-	If \(G\) is an \(\alpha\)-vertex expander on \(n\geq 2\) vertices, then
-	\[
-		\operatorname{diam}(G)\leq 2\left\lceil\frac{\log(n/2)}{\log(1+\alpha)}\right\rceil+1.
-	\]
-	In particular, \(\operatorname{diam}(G)=O_\alpha(\log n)\).
+	If \(\Graph\) is an \(\alpha\)-vertex expander on \(n\geq 2\) vertices, then
+	\begin{equation}
+		\label{eq:diameter-bound}
+		\operatorname{diam}(\Graph)\leq 2\left\lceil\frac{\log(n/2)}{\log(1+\alpha)}\right\rceil+1.
+	\end{equation}
+	In particular, \(\operatorname{diam}(\Graph)=O_\alpha(\log n)\).
 \end{corollary}
 
 \begin{proof}
 	The idea is to grow two balls, one from each endpoint. After logarithmically many steps each ball has size at least half the graph. If the two balls intersect, the two centers are close through the intersection; if they do not intersect, expansion has already implied connectedness, and the two half-sized parts must be joined by an edge.
 
-	Let \(u,v\in V\), and set
-	\[
+	Let \(u,v\in \Vertices\), and set
+	\begin{equation}
+		\label{eq:diameter-radius-choice}
 		t=\left\lceil\frac{\log(n/2)}{\log(1+\alpha)}\right\rceil.
-	\]
-	By \cref{prop:ball-growth}, both \(\Ball_t(u)\) and \(\Ball_t(v)\) have size at least \(n/2\). If these two balls intersect, then there is a vertex \(w\in \Ball_t(u)\cap \Ball_t(v)\), and therefore
-	\[
-		\operatorname{dist}_G(u,v)\leq \operatorname{dist}_G(u,w)+\operatorname{dist}_G(w,v)\leq 2t.
-	\]
-	If the two balls do not intersect, then they both have size exactly \(n/2\) and their union is all of \(V\). Since \cref{def:alpha-expander} implies that \(G\) is connected, there is an edge with one endpoint in \(\Ball_t(u)\) and the other endpoint in \(\Ball_t(v)\). This edge gives a path from \(u\) to \(v\) of length at most \(2t+1\). Since \(u\) and \(v\) were arbitrary, the displayed diameter bound follows.
+	\end{equation}
+	By \cref{prop:ball-growth,eq:diameter-radius-choice}, both \(\Ball_t(u)\) and \(\Ball_t(v)\) have size at least \(n/2\). If these two balls intersect, then there is a vertex \(w\in \Ball_t(u)\cap \Ball_t(v)\), and therefore
+	\begin{equation}
+		\label{eq:diameter-intersection-path}
+		\operatorname{dist}_\Graph(u,v)\leq \operatorname{dist}_\Graph(u,w)+\operatorname{dist}_\Graph(w,v)\leq 2t.
+	\end{equation}
+	If the two balls do not intersect, then they both have size exactly \(n/2\) and their union is all of \(\Vertices\). Since \cref{def:alpha-expander} implies that \(\Graph\) is connected, there is an edge with one endpoint in \(\Ball_t(u)\) and the other endpoint in \(\Ball_t(v)\). This edge gives a path from \(u\) to \(v\) of length at most \(2t+1\), while the intersecting case is covered by \cref{eq:diameter-intersection-path}. Since \(u\) and \(v\) were arbitrary, \cref{eq:diameter-bound} follows.
 \end{proof}
 
-We can also connect this elementary vertex-expansion definition to the more analytic language of conductance and mixing. If \(G\) is an \(\alpha\)-vertex expander with maximum degree \(\Delta\), then the Cheeger constant defined below satisfies \(h(G)\geq \alpha/\Delta\). Indeed, for every nonempty \(U\subseteq V\) with \(\abs{U}\leq n/2\), each vertex in \(\extNbr_G(U)\) is incident to at least one edge from \(U\), and hence
-\[
-	\edgeBetween_G(U,V\setminus U)\geq \abs{\extNbr_G(U)}\geq \alpha\abs{U}.
-\]
-Since \(\vol_G(U)\leq \Delta\abs{U}\), the ratio defining \(h(G)\) is at least \(\alpha/\Delta\) on the smaller side of every cut.
+\begin{figure}[t]
+	\centering
+	\begin{mdframed}[linewidth=0.4pt, linecolor=expanderMutedColor!45, backgroundcolor=white, roundcorner=2pt, innerleftmargin=6pt, innerrightmargin=6pt, innertopmargin=6pt, innerbottommargin=6pt]
+		\centering
+		\adjustbox{max width=.88\textwidth}{%
+			\begin{tikzpicture}[
+					vertex/.style={circle, draw=expanderVertexColor, fill=expanderVertexColor!10, minimum size=6mm, inner sep=0pt},
+					walkedge/.style={line width=0.55pt, draw=expanderMutedColor},
+					walkarrow/.style={-Latex, line width=1pt, draw=expanderBoundaryColor},
+					mixedarrow/.style={-Latex, line width=0.9pt, draw=expanderAccentColor}
+				]
+				\foreach \i in {0,...,9} {
+						\node[vertex] (c\i) at ({1.65*cos(36*\i)},{1.65*sin(36*\i)}) {};
+					}
+				\foreach \i [evaluate=\i as \j using {int(mod(\i+1,10))}] in {0,...,9} {
+						\draw[walkedge] (c\i) -- (c\j);
+					}
+				\draw[walkarrow] (c1) to[bend left=18] (c2);
+				\draw[walkarrow] (c2) to[bend left=18] (c3);
+				\draw[walkarrow] (c3) to[bend left=18] (c4);
+				\begin{scope}[xshift=5.9cm]
+					\node[vertex] (e1) at (0,1.55) {};
+					\node[vertex] (e2) at (1.55,0.95) {};
+					\node[vertex] (e3) at (1.3,-0.95) {};
+					\node[vertex] (e4) at (-0.25,-1.5) {};
+					\node[vertex] (e5) at (-1.6,-0.3) {};
+					\node[vertex] (e6) at (-1.1,1.1) {};
+					\node[vertex] (e7) at (0.2,0.05) {};
+					\foreach \u/\v in {e1/e2,e2/e3,e3/e4,e4/e5,e5/e6,e6/e1,e1/e7,e2/e7,e3/e7,e4/e7,e5/e7,e6/e7,e1/e3,e2/e5,e4/e6} {
+							\draw[walkedge] (\u) -- (\v);
+						}
+					\draw[mixedarrow] (e6) to[bend left=12] (e7);
+					\draw[mixedarrow] (e7) to[bend left=12] (e3);
+					\draw[mixedarrow] (e3) to[bend left=12] (e1);
+				\end{scope}
+			\end{tikzpicture}%
+		}
+	\end{mdframed}
+	\caption{A random walk on a cycle, shown on the left, diffuses slowly because every step only moves mass across a one-dimensional boundary, whereas a random walk on an expander, shown on the right, repeatedly encounters many fresh exits from any small set. This schematic is meant to explain why \(\alpha\)-vertex expansion leads naturally to logarithmic diameter and rapid mixing under bounded-degree hypotheses.}
+	\label{fig:random-walk-cycle-expander}
+\end{figure}
 
-Consequently, when \(\alpha=\Theta(1)\) and \(\Delta=O(1)\), the lazy simple random walk on \(G\) mixes in \(O(\log n)\) steps by the classical conductance bound of Jerrum and Sinclair~\cite{STOC:JerSin88}; see also Levin, Peres, and Wilmer~\cite{LPW2009} for a systematic treatment of mixing times. The bounded-degree assumption is essential for this conclusion. If one takes two cliques of size \(n/2\) and joins them by a perfect matching, the resulting graph is a constant vertex expander, but a random walk started inside one clique crosses to the other side only after \(\Theta(n)\) steps on average, because only one of the \(\Theta(n)\) incident edges at a typical vertex leaves its clique.
+\cref{fig:random-walk-cycle-expander} puts the ball-growth argument in probabilistic language. On a cycle, a walk started from one vertex remains concentrated near its starting point for a long time, while on an expander the same bounded-degree local rule spreads mass across many new vertices at each scale until the walk has no small region left in which to remain concentrated.
 
-These elementary consequences show that \cref{def:alpha-expander} already enforces global structure. Later arguments use stronger forms of the same principle, where expansion prevents sublinear separators, supports long paths and cycles, or makes sparse local constraints behave like global constraints.
+We can also connect this elementary vertex-expansion definition to the more analytic language of conductance and mixing. If \(\Graph\) is an \(\alpha\)-vertex expander with maximum degree \(\Delta\), then the Cheeger constant defined below satisfies \(h(\Graph)\geq \alpha/\Delta\). Indeed, for every nonempty \(U\subseteq \Vertices\) with \(\abs{U}\leq n/2\), each vertex in \(\extNbr_\Graph(U)\) is incident to at least one edge from \(U\), and hence
+\begin{equation}
+	\label{eq:vertex-expansion-implies-edge-crossing}
+	\edgeBetween_\Graph(U,\Vertices\setminus U)\geq \abs{\extNbr_\Graph(U)}\geq \alpha\abs{U}.
+\end{equation}
+Since \(\vol_\Graph(U)\leq \Delta\abs{U}\), the ratio defining \(h(\Graph)\) is at least \(\alpha/\Delta\) on the smaller side of every cut by \cref{eq:vertex-expansion-implies-edge-crossing}.
+
+Consequently, when \(\alpha=\Theta(1)\) and \(\Delta=\bigO(1)\), the lazy simple random walk on \(\Graph\) mixes in \(\bigO(\log n)\) steps by the classical conductance bound of Jerrum and Sinclair~\cite{STOC:JerSin88}; see also Levin, Peres, and Wilmer~\cite{LPW2009} for a systematic treatment of mixing times. The bounded-degree assumption is essential for this conclusion. If one takes two cliques of size \(n/2\) and joins them by a perfect matching, the resulting graph is a constant vertex expander, but a random walk started inside one clique crosses to the other side only after \(\Theta(n)\) steps on average, because only one of the \(\Theta(n)\) incident edges at a typical vertex leaves its clique.
+
+These elementary consequences show that \cref{def:alpha-expander} already enforces global structure. We next record a stronger form of the same principle, where expansion prevents balanced separators and, conversely, the absence of small balanced separators forces a large induced expander.
+
+\subsection{Separators and Large Expanding Subgraphs}
+\label{subsec:separators-large-expanding-subgraphs}
+
+Separators provide a convenient language for measuring whether a graph can be broken into two macroscopic pieces after deleting a small number of vertices. This language belongs historically to structural graph theory, where the planar separator theorem of Lipton and Tarjan~\cite{LT1979} is the paradigmatic result, whereas expanders are usually introduced in extremal combinatorics, probability, and theoretical computer science. The point of the next two propositions is that, at the qualitative level and up to constant losses, these two languages describe the same obstruction.
+
+\begin{definition}[Balanced Separator]
+	\label{def:balanced-separator}
+	Let \(\Graph=(\Vertices,\Edges)\) be a graph on \(n\) vertices. We say that a set \(S\subseteq \Vertices\) is a balanced separator in \(\Graph\) if there are sets \(A,B\subseteq \Vertices\) such that \(\Vertices=A\cup B\cup S\), the three sets are pairwise disjoint, \(\abs{A}\leq 2n/3\), \(\abs{B}\leq 2n/3\), and no edge of \(\Graph\) has one endpoint in \(A\) and the other endpoint in \(B\).
+\end{definition}
+
+The adjective balanced is important. In a bounded-degree graph, deleting the neighbors of one vertex may disconnect that vertex from the rest of the graph at constant cost, and this says almost nothing about global connectivity. By contrast, \cref{def:balanced-separator} asks whether one can separate the graph into pieces that are both nontrivial at the scale of \(n\), and it is precisely this balanced requirement that expansion rules out.
+
+\begin{proposition}[Expanders Have No Small Balanced Separators]
+	\label{prop:expanders-have-linear-separators}
+	Let \(\Graph\) be an \(\alpha\)-vertex expander on \(n\) vertices. If \(S\) is a balanced separator in \(\Graph\), then
+	\begin{equation}
+		\label{eq:separator-size-lower-bound}
+		\abs{S}\geq \frac{\alpha n}{3(1+\alpha)}.
+	\end{equation}
+\end{proposition}
+
+\begin{proof}
+	The mechanism is that the smaller side of a balanced separation must still contain linearly many vertices once the separator is included, and expansion then forces many external neighbors of that smaller side. Since all such external neighbors must lie in the separator, the separator itself has to be linear. The only algebraic point is to combine the lower bound coming from balance with the upper bound on the smaller side that follows from expansion.
+
+	Let \(S\) be a balanced separator, and let \(A\) and \(B\) be as in \cref{def:balanced-separator}. Put \(s=\abs{S}\), \(a=\abs{A}\), and \(b=\abs{B}\), and relabel \(A\) and \(B\), if necessary, so that \(a\leq b\). Since \(a+b+s=n\) and \(b\leq 2n/3\), we have
+	\begin{equation}
+		\label{eq:separator-balance-a-plus-s}
+		a+s=n-b\geq \frac{n}{3}.
+	\end{equation}
+	Moreover, \(a\leq n/2\), because \(a\leq b\) and \(a+b\leq n\). No edge of \(\Graph\) joins \(A\) to \(B\), and every vertex outside \(A\cup S\) belongs to \(B\), so
+	\begin{equation}
+		\label{eq:separator-neighborhood-contained}
+		\extNbr_\Graph(A)\subseteq S.
+	\end{equation}
+	By \cref{def:alpha-expander}, applied to the set \(A\), and by \cref{eq:separator-neighborhood-contained}, we obtain
+	\begin{equation}
+		\label{eq:separator-expansion-for-a}
+		s\geq \abs{\extNbr_\Graph(A)}\geq \alpha a.
+	\end{equation}
+	The inequality in \cref{eq:separator-expansion-for-a} gives \(a\leq s/\alpha\). Substituting this estimate into \cref{eq:separator-balance-a-plus-s} yields
+	\begin{equation}
+		\label{eq:separator-final-algebra}
+		\frac{n}{3}\leq a+s\leq \frac{s}{\alpha}+s=\frac{1+\alpha}{\alpha}s.
+	\end{equation}
+	Rearranging \cref{eq:separator-final-algebra} gives \cref{eq:separator-size-lower-bound}.
+\end{proof}
+
+\begin{proposition}[Large Separators Contain Large Expanders]
+	\label{prop:large-separators-contain-large-expanders}
+	Let \(\Graph\) be a graph on \(n\) vertices, and let \(\beta>0\). If every balanced separator in \(\Graph\) has size at least \(\beta n\), then \(\Graph\) contains an induced \((3\beta/2)\)-vertex expander on at least \(2n/3\) vertices.
+\end{proposition}
+
+\begin{proof}
+	The proof reverses the deletion argument used in \cref{lem:interval-expansion-deletion}. We repeatedly delete sets that fail to expand inside the current graph, and we track the union of all deleted sets in the original graph. If this union ever becomes large enough to serve as one side of a balanced separation, then its small external neighborhood becomes a forbidden small separator; hence the deletion process must stop early, and the remaining induced graph is expanding by construction.
+
+	Start with \(\Graph_0=\Graph\). As long as the current graph \(\Graph_i\) contains a set \(A_i\subseteq \Vertices(\Graph_i)\) satisfying
+	\begin{equation}
+		\label{eq:separator-deletion-rule-size}
+		0<\abs{A_i}\leq \frac{\abs{\Vertices(\Graph_i)}}{2}
+	\end{equation}
+	and
+	\begin{equation}
+		\label{eq:separator-deletion-rule-expansion}
+		\abs{\extNbr_{\Graph_i}(A_i)}<\frac{3\beta}{2}\abs{A_i},
+	\end{equation}
+	delete \(A_i\) and set \(\Graph_{i+1}=\Graph_i[\Vertices(\Graph_i)\setminus A_i]\). Let
+	\begin{equation}
+		\label{eq:separator-deleted-union}
+		Z_i=\bigcup_{j<i}A_j
+	\end{equation}
+	be the set deleted before the \(i\)-th step. As in the proof of \cref{lem:interval-expansion-deletion}, every external neighbor of \(Z_i\) in \(\Graph\) is counted as an external neighbor of one of the deleted sets at the moment that set is deleted, and therefore \cref{eq:separator-deletion-rule-expansion} implies
+	\begin{equation}
+		\label{eq:separator-deleted-union-neighborhood}
+		\abs{\extNbr_\Graph(Z_i)}\leq \sum_{j<i}\abs{\extNbr_{\Graph_j}(A_j)}<\frac{3\beta}{2}\sum_{j<i}\abs{A_j}=\frac{3\beta}{2}\abs{Z_i}.
+	\end{equation}
+	We claim that \(\abs{Z_i}<n/3\) for every \(i\). Suppose otherwise, and let \(i\) be the first index for which \(\abs{Z_i}\geq n/3\). Put \(Z'=Z_i\setminus A_{i-1}=Z_{i-1}\). By the choice of \(i\), we have \(\abs{Z'}<n/3\), and by \cref{eq:separator-deletion-rule-size},
+	\begin{equation}
+		\label{eq:separator-last-deletion-size}
+		\abs{A_{i-1}}\leq \frac{n-\abs{Z'}}{2}.
+	\end{equation}
+	Combining the definition of \(Z_i\) with \cref{eq:separator-last-deletion-size}, we get
+	\begin{equation}
+		\label{eq:separator-deleted-union-upper}
+		\abs{Z_i}=\abs{Z'}+\abs{A_{i-1}}\leq \abs{Z'}+\frac{n-\abs{Z'}}{2}=\frac{n+\abs{Z'}}{2}<\frac{2n}{3}.
+	\end{equation}
+	Let \(S_i=\extNbr_\Graph(Z_i)\), and let
+	\begin{equation}
+		\label{eq:separator-complement-side}
+		Y_i=\Vertices(\Graph)\setminus (Z_i\cup S_i).
+	\end{equation}
+	There is no edge between \(Z_i\) and \(Y_i\), because every vertex outside \(Z_i\) adjacent to \(Z_i\) lies in \(S_i\). Moreover, \cref{eq:separator-deleted-union-upper} gives \(\abs{Z_i}<2n/3\), and \cref{eq:separator-deleted-union-neighborhood} together with \(\abs{Z_i}<2n/3\) gives
+	\begin{equation}
+		\label{eq:separator-small-neighborhood-from-deletion}
+		\abs{S_i}<\frac{3\beta}{2}\abs{Z_i}<\beta n.
+	\end{equation}
+	Since \(\abs{Z_i}\geq n/3\), \cref{eq:separator-complement-side} and \cref{eq:separator-small-neighborhood-from-deletion} also imply
+	\begin{equation}
+		\label{eq:separator-other-side-balanced}
+		\abs{Y_i}=n-\abs{Z_i}-\abs{S_i}\leq n-\abs{Z_i}<\frac{2n}{3}.
+	\end{equation}
+	Hence \(S_i\) is a balanced separator according to \cref{def:balanced-separator}, separating \(Z_i\) from \(Y_i\), while \cref{eq:separator-small-neighborhood-from-deletion} says that \(\abs{S_i}<\beta n\). This contradicts the hypothesis that every balanced separator has size at least \(\beta n\).
+
+	The deletion process therefore halts with a deleted set \(Z\) satisfying
+	\begin{equation}
+		\label{eq:separator-final-deleted-size}
+		\abs{Z}<\frac{n}{3}.
+	\end{equation}
+	Let \(H=\Graph[\Vertices(\Graph)\setminus Z]\). By \cref{eq:separator-final-deleted-size}, the graph \(H\) has at least \(2n/3\) vertices. By the stopping condition, every set \(A\subseteq \Vertices(H)\) with \(0<\abs{A}\leq \abs{\Vertices(H)}/2\) satisfies
+	\begin{equation}
+		\label{eq:separator-final-expansion}
+		\abs{\extNbr_H(A)}\geq \frac{3\beta}{2}\abs{A}.
+	\end{equation}
+	Thus \(H\) is an induced \((3\beta/2)\)-vertex expander on at least \(2n/3\) vertices, as claimed.
+\end{proof}
+
+\cref{prop:expanders-have-linear-separators,prop:large-separators-contain-large-expanders} justify a useful shift in viewpoint. When we want to prove a statement whose real hypothesis is that no small balanced separator exists, it is often cleaner to pass to a large induced weak expander and argue with neighborhoods rather than with recursive decompositions. Conversely, when a hereditary graph class has sublinear balanced separators, as planar graphs do by the Lipton--Tarjan theorem~\cite{LT1979}, \cref{prop:expanders-have-linear-separators} rules out induced expanders of superconstant size with a fixed expansion parameter.
+
+The separator criterion is qualitative, since it assumes the absence of small separators in all parts of the graph. A different way to force a large expander is to require that the whole graph is denser than all sufficiently small induced subgraphs, and that no vertex has enough degree to hide edge expansion at a single point. This is the locally sparse mechanism developed by Krivelevich~\cite{Kri2017}; we include a self-contained version because the proof is a useful template.
+
+\begin{definition}[Locally Sparse Graph]
+	\label{def:locally-sparse-graph}
+	Let \(c_1>c_2>1\) and \(0<\beta<1\). We say that a graph \(\Graph=(\Vertices,\Edges)\) on \(n\) vertices is \((c_1,c_2,\beta)\)-locally sparse if
+	\begin{equation}
+		\label{eq:locally-sparse-global-density}
+		\abs{\Edges}\geq c_1\abs{\Vertices}
+	\end{equation}
+	and every set \(W\subseteq \Vertices\) with \(\abs{W}\leq \beta n\) spans fewer than \(c_2\abs{W}\) edges.
+\end{definition}
+
+\begin{theorem}[Locally Sparse Graphs Contain Expanders]
+	\label{thm:locally-sparse-graphs-contain-expanders}
+	Let \(c_1>c_2>1\), let \(0<\beta<1\), and let \(\Delta\geq 1\). If \(\Graph\) is a \((c_1,c_2,\beta)\)-locally sparse graph on \(n\) vertices with maximum degree at most \(\Delta\), then \(\Graph\) contains an induced \(\alpha\)-vertex expander on more than \(\beta n\) vertices, where
+	\begin{equation}
+		\label{eq:locally-sparse-alpha}
+		\alpha=\frac{c_1-c_2}{2\Delta(\lceil \log_2(1/\beta)\rceil+1)}.
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	The proof searches for a dense induced subgraph that is minimal with respect to its current density threshold. Minimality ensures that every vertex set touches many edges, because otherwise deleting that set would preserve the density threshold. Small sets then expand because local sparseness prevents them from spanning too many of the edges they touch, while medium-sized sets either expand or contain a dense induced subgraph on at most half as many vertices; repeating the latter alternative can happen only logarithmically many times before it contradicts the lower bound imposed by local sparseness.
+
+	Set
+	\begin{equation}
+		\label{eq:locally-sparse-rounds}
+		L=\lceil \log_2(1/\beta)\rceil+1
+	\end{equation}
+	and
+	\begin{equation}
+		\label{eq:locally-sparse-eta}
+		\eta=\frac{c_1-c_2}{2L}.
+	\end{equation}
+	We shall construct a sequence of induced subgraphs, and in the \(r\)-th round we maintain a density threshold
+	\begin{equation}
+		\label{eq:locally-sparse-threshold}
+		\rho_r=c_1-r\eta.
+	\end{equation}
+	The process begins with \(\Graph^{(0)}=\Graph\). At the start of round \(r\), where \(0\leq r\leq L\), we shall have an induced subgraph \(\Graph^{(r)}\) with
+	\begin{equation}
+		\label{eq:locally-sparse-current-density}
+		\frac{\abs{\Edges(\Graph^{(r)})}}{\abs{\Vertices(\Graph^{(r)})}}\geq \rho_r.
+	\end{equation}
+	For \(r=0\), \cref{eq:locally-sparse-current-density} is exactly \cref{eq:locally-sparse-global-density}.
+
+	Choose an induced subgraph \(H=(W,F)\) of \(\Graph^{(r)}\) that is minimal under vertex deletion subject to
+	\begin{equation}
+		\label{eq:locally-sparse-minimal-density}
+		\frac{\abs{F}}{\abs{W}}\geq \rho_r.
+	\end{equation}
+	Such a subgraph exists because \(\Graph^{(r)}\) satisfies \cref{eq:locally-sparse-current-density}. We first note that \(H\) has more than \(\beta n\) vertices. Indeed, since \(r\leq L\), \cref{eq:locally-sparse-threshold,eq:locally-sparse-eta} give
+	\begin{equation}
+		\label{eq:locally-sparse-threshold-above-c2}
+		\rho_r=c_1-r\eta\geq c_1-L\eta=\frac{c_1+c_2}{2}>c_2.
+	\end{equation}
+	If \(\abs{W}\leq \beta n\), then \cref{def:locally-sparse-graph} says that \(W\) spans fewer than \(c_2\abs{W}\) edges in \(\Graph\), and hence fewer than \(c_2\abs{W}\) edges in \(H\), contradicting \cref{eq:locally-sparse-minimal-density,eq:locally-sparse-threshold-above-c2}. Thus
+	\begin{equation}
+		\label{eq:locally-sparse-current-size}
+		\abs{W}>\beta n.
+	\end{equation}
+
+	Minimality also implies that every proper nonempty set \(U\subsetneq W\) touches at least \(\rho_r\abs{U}\) edges of \(H\), where an edge touches \(U\) if at least one endpoint lies in \(U\). To prove this, let \(\tau_H(U)\) denote the number of edges of \(H\) with at least one endpoint in \(U\). If \(\tau_H(U)<\rho_r\abs{U}\), then the induced subgraph \(H[W\setminus U]\) has
+	\begin{equation}
+		\label{eq:locally-sparse-minimality-contradiction}
+		\abs{F}-\tau_H(U)>\abs{F}-\rho_r\abs{U}\geq \rho_r\abs{W}-\rho_r\abs{U}=\rho_r\abs{W\setminus U}
+	\end{equation}
+	edges, where the second inequality uses \cref{eq:locally-sparse-minimal-density}. Since \(U\) is proper, \(W\setminus U\) is nonempty, and \cref{eq:locally-sparse-minimality-contradiction} contradicts the minimal choice of \(H\). Consequently,
+	\begin{equation}
+		\label{eq:locally-sparse-touching-lower-bound}
+		\tau_H(U)\geq \rho_r\abs{U}
+	\end{equation}
+	for every proper nonempty \(U\subsetneq W\).
+
+	We next prove expansion for small sets. Let \(U\subseteq W\) satisfy \(0<\abs{U}\leq \beta n\). By local sparseness, the number of edges of \(H\) with both endpoints in \(U\) is less than \(c_2\abs{U}\), and by \cref{eq:locally-sparse-touching-lower-bound} the number of edges of \(H\) with at least one endpoint in \(U\) is at least \(\rho_r\abs{U}\). Hence the number of edges of \(H\) from \(U\) to \(W\setminus U\) is greater than
+	\begin{equation}
+		\label{eq:locally-sparse-small-edge-bound}
+		(\rho_r-c_2)\abs{U}\geq \frac{c_1-c_2}{2}\abs{U},
+	\end{equation}
+	where the last inequality is \cref{eq:locally-sparse-threshold-above-c2}. Since every vertex of \(H\) has degree at most \(\Delta\), \cref{eq:locally-sparse-small-edge-bound} implies
+	\begin{equation}
+		\label{eq:locally-sparse-small-neighbor-bound}
+		\abs{\extNbr_H(U)}\geq \frac{c_1-c_2}{2\Delta}\abs{U}\geq \alpha\abs{U},
+	\end{equation}
+	with \(\alpha\) as in \cref{eq:locally-sparse-alpha}.
+
+	It remains to handle sets \(U\subseteq W\) satisfying
+	\begin{equation}
+		\label{eq:locally-sparse-medium-range}
+		\beta n<\abs{U}\leq \frac{\abs{W}}{2}.
+	\end{equation}
+	If every such \(U\) spans fewer than \((\rho_r-\eta)\abs{U}\) edges in \(H\), then \cref{eq:locally-sparse-touching-lower-bound} gives at least \(\eta\abs{U}\) edges from \(U\) to \(W\setminus U\), and the maximum-degree bound gives
+	\begin{equation}
+		\label{eq:locally-sparse-medium-neighbor-bound}
+		\abs{\extNbr_H(U)}\geq \frac{\eta}{\Delta}\abs{U}=\alpha\abs{U}.
+	\end{equation}
+	Combining \cref{eq:locally-sparse-small-neighbor-bound,eq:locally-sparse-medium-neighbor-bound}, we see that \(H\) is an \(\alpha\)-vertex expander, since every set of size at most \(\abs{W}/2\) is either small or medium. In this case \cref{eq:locally-sparse-current-size} gives the required induced expander on more than \(\beta n\) vertices.
+
+	Otherwise, there is a set \(U\subseteq W\) satisfying \cref{eq:locally-sparse-medium-range} that spans at least \((\rho_r-\eta)\abs{U}\) edges in \(H\). We then define
+	\begin{equation}
+		\label{eq:locally-sparse-next-graph}
+		\Graph^{(r+1)}=H[U].
+	\end{equation}
+	By the choice of \(U\) and by \cref{eq:locally-sparse-threshold}, the next graph satisfies
+	\begin{equation}
+		\label{eq:locally-sparse-next-density}
+		\frac{\abs{\Edges(\Graph^{(r+1)})}}{\abs{\Vertices(\Graph^{(r+1)})}}\geq \rho_r-\eta=\rho_{r+1},
+	\end{equation}
+	so the invariant \cref{eq:locally-sparse-current-density} is preserved. Furthermore, \cref{eq:locally-sparse-medium-range} implies
+	\begin{equation}
+		\label{eq:locally-sparse-halving}
+		\abs{\Vertices(\Graph^{(r+1)})}\leq \frac{\abs{W}}{2}\leq \frac{\abs{\Vertices(\Graph^{(r)})}}{2}.
+	\end{equation}
+
+	The nonterminating alternative in \cref{eq:locally-sparse-next-graph} cannot occur for \(L\) consecutive rounds. If it did, then repeated use of \cref{eq:locally-sparse-halving} would give
+	\begin{equation}
+		\label{eq:locally-sparse-too-small}
+		\abs{\Vertices(\Graph^{(L)})}\leq \frac{n}{2^L}<\beta n,
+	\end{equation}
+	where the strict inequality follows from \cref{eq:locally-sparse-rounds}. On the other hand, \cref{eq:locally-sparse-current-density,eq:locally-sparse-threshold-above-c2} applied with \(r=L\) would force \(\Graph^{(L)}\) to have edge density greater than \(c_2\), contradicting local sparseness because of \cref{eq:locally-sparse-too-small}. Thus the process terminates in one of the expansion cases above, and the induced subgraph obtained there proves the theorem.
+\end{proof}
+
+\cref{thm:locally-sparse-graphs-contain-expanders} should be viewed as a density-versus-local-sparseness principle. Global density says that there are enough edges somewhere to support expansion, local sparseness says that these edges cannot all be trapped inside a small exceptional set, and bounded degree lets us convert edge escape into vertex escape.
+
+\begin{proposition}[Sparse Random Graphs Are Locally Sparse]
+	\label{prop:sparse-random-graphs-locally-sparse}
+	Let \(c_1>0\) and \(c_2>1\) be fixed constants. There is a constant \(\beta=\beta(c_1,c_2)>0\) such that, if \(\Graph\sim \Graph(n,c_1/n)\), then with probability tending to one as \(n\to\infty\), every set \(W\subseteq \Vertices(\Graph)\) with \(\abs{W}\leq \beta n\) spans fewer than \(c_2\abs{W}\) edges.
+\end{proposition}
+
+\begin{proof}
+	The proof is a union bound over the possible sizes of a bad set. The only estimate that matters is that, for a fixed set of \(k\) vertices, asking it to span linearly many edges costs a power of \(k/n\), and this power beats the entropy cost of choosing the set once \(k\) is at most a sufficiently small linear fraction of \(n\). Very small \(k\)'s are handled separately by the same bound, because then \(k/n\) is polynomially small.
+
+	Fix \(k\), and let \(\mathcal{E}_k\) be the event that some \(k\)-vertex set spans at least \(\lceil c_2 k\rceil\) edges. Using the estimates \(\binom{N}{M}\leq (eN/M)^M\) and \(\binom{n}{k}\leq (en/k)^k\), we obtain
+	\begin{equation}
+		\label{eq:random-local-sparse-union-bound}
+		\Pr[\mathcal{E}_k]\leq \binom{n}{k}\binom{\binom{k}{2}}{\lceil c_2k\rceil}\left(\frac{c_1}{n}\right)^{\lceil c_2k\rceil}.
+	\end{equation}
+	Since \(c_1\) and \(c_2\) are fixed, increasing the constant below if necessary to absorb the ceiling in \(\lceil c_2k\rceil\), \cref{eq:random-local-sparse-union-bound} yields a constant \(C=C(c_1,c_2)>0\) such that
+	\begin{equation}
+		\label{eq:random-local-sparse-summand}
+		\Pr[\mathcal{E}_k]\leq \left(C\left(\frac{k}{n}\right)^{c_2-1}\right)^k
+	\end{equation}
+	for all \(1\leq k\leq n\). Choose \(\beta>0\) so that
+	\begin{equation}
+		\label{eq:random-local-sparse-beta-choice}
+		C\beta^{c_2-1}\leq \frac{1}{2}.
+	\end{equation}
+	For \(1\leq k\leq n^{1/2}\), \cref{eq:random-local-sparse-summand} gives
+	\begin{equation}
+		\label{eq:random-local-sparse-small-k}
+		\Pr[\mathcal{E}_k]\leq \left(Cn^{-(c_2-1)/2}\right)^k.
+	\end{equation}
+	The right-hand side of \cref{eq:random-local-sparse-small-k} is summable over \(1\leq k\leq n^{1/2}\) with total \(o(1)\), because \(c_2>1\) and the first term tends to zero. For \(n^{1/2}<k\leq \beta n\), \cref{eq:random-local-sparse-summand,eq:random-local-sparse-beta-choice} give
+	\begin{equation}
+		\label{eq:random-local-sparse-large-k}
+		\Pr[\mathcal{E}_k]\leq 2^{-k}.
+	\end{equation}
+	Summing \cref{eq:random-local-sparse-large-k} over \(n^{1/2}<k\leq \beta n\) also gives \(o(1)\). Therefore
+	\begin{equation}
+		\label{eq:random-local-sparse-final-union}
+		\Pr\left[\bigcup_{1\leq k\leq \beta n}\mathcal{E}_k\right]\leq \sum_{1\leq k\leq n^{1/2}}\Pr[\mathcal{E}_k]+\sum_{n^{1/2}<k\leq \beta n}\Pr[\mathcal{E}_k]=o(1).
+	\end{equation}
+	The complement of the event in \cref{eq:random-local-sparse-final-union} is exactly the asserted local sparseness property.
+\end{proof}
+
+\cref{thm:locally-sparse-graphs-contain-expanders,prop:sparse-random-graphs-locally-sparse} explain why large induced expanders appear naturally inside sparse random graphs after one also controls high-degree vertices. The maximum-degree condition in \cref{thm:locally-sparse-graphs-contain-expanders} is used only when converting many escaping edges into many escaping vertices, as in \cref{eq:locally-sparse-small-neighbor-bound,eq:locally-sparse-medium-neighbor-bound}; without such a condition, a single high-degree vertex can account for too many crossing edges and destroy vertex expansion.
 
 \subsection{Examples and Limitations}
 \label{subsec:examples-alpha-expanders}
 
 We now record a few basic sources of \(\alpha\)-vertex expanders. The purpose of the list is not merely to exhibit examples, but also to calibrate what one should and should not expect from the weak vertex-expansion assumption in \cref{def:alpha-expander}. In particular, the examples below show that expansion by itself neither forces non-bipartiteness nor guarantees the presence of arbitrary bounded-degree subgraphs.
 
+\begin{figure}[t]
+	\centering
+	\begin{mdframed}[linewidth=0.4pt, linecolor=expanderMutedColor!45, backgroundcolor=white, roundcorner=2pt, innerleftmargin=6pt, innerrightmargin=6pt, innertopmargin=6pt, innerbottommargin=6pt]
+		\centering
+		\adjustbox{max width=.78\textwidth}{%
+			\begin{tikzpicture}[
+					leftv/.style={circle, draw=expanderBoundaryColor, fill=expanderBoundaryColor!12, minimum size=7mm, inner sep=0pt},
+					rightv/.style={circle, draw=expanderVertexColor, fill=expanderVertexColor!10, minimum size=7mm, inner sep=0pt},
+					edge/.style={line width=0.5pt, draw=expanderMutedColor},
+					focusedge/.style={line width=0.95pt, draw=expanderBoundaryColor}
+				]
+				\foreach \i/\y in {1/2.0,2/1.0,3/0,4/-1.0,5/-2.0} {
+						\node[leftv] (l\i) at (0,\y) {};
+					}
+				\foreach \i/\y in {1/2.25,2/1.35,3/0.45,4/-0.45,5/-1.35,6/-2.25} {
+						\node[rightv] (r\i) at (4.5,\y) {};
+					}
+				\foreach \i in {1,...,5} {
+						\foreach \j in {1,...,6} {
+								\pgfmathtruncatemacro{\test}{mod(2*\i+\j,4)}
+								\ifnum\test<2
+									\draw[edge] (l\i) -- (r\j);
+								\fi
+							}
+					}
+				\draw[focusedge] (l2) -- (r1);
+				\draw[focusedge] (l2) -- (r3);
+				\draw[focusedge] (l3) -- (r2);
+				\draw[focusedge] (l3) -- (r4);
+				\draw[focusedge] (l4) -- (r3);
+				\draw[focusedge] (l4) -- (r5);
+				\node[draw=expanderBoundaryColor, rounded corners=2pt, fit=(l2)(l3)(l4), inner sep=5pt] {};
+			\end{tikzpicture}%
+		}
+	\end{mdframed}
+	\caption{A bipartite graph in which expansion is measured from a selected set on the left side to the distinct right vertices reached by its incident edges. The highlighted left vertices and highlighted crossing edges emphasize that a graph may have strong one-sided neighborhood growth while still having no odd cycle, because every edge crosses the bipartition. Complete bipartite graphs give the cleanest example, while sparse bipartite expanders preserve the same qualitative lesson with bounded degree.}
+	\label{fig:bipartite-expander-example}
+\end{figure}
+
+The bipartite example in \cref{fig:bipartite-expander-example} should be read as a warning about what vertex expansion does not encode. The selected left vertices may have many distinct right neighbors, and hence may satisfy a strong neighborhood-growth inequality, but the bipartition simultaneously forbids every odd cycle. Thus vertex expansion alone controls escape from sets, not the parity structure of the graph.
+
 \begin{example}[Complete Bipartite Graphs]
 	\label{ex:complete-bipartite-expander}
-	Let \(G=K_{a,b}\), where \(a=\lfloor \alpha n\rfloor\), \(b=n-a\), and \(0<\alpha\leq 1/2\). Up to the harmless rounding in \(a\), the graph \(G\) is an \(\alpha\)-vertex expander.
+	Let \(\Graph=K_{a,b}\), where \(a=\lfloor \alpha n\rfloor\), \(b=n-a\), and \(0<\alpha\leq 1/2\). Up to the harmless rounding in \(a\), the graph \(\Graph\) is an \(\alpha\)-vertex expander.
 
 	Indeed, let \(A,B\) be the two sides of the bipartition, with \(\abs{A}=a\) and \(\abs{B}=b\), and let \(U\subseteq A\cup B\) satisfy \(0<\abs{U}\leq n/2\). Write \(U_A=U\cap A\) and \(U_B=U\cap B\). If both \(U_A\) and \(U_B\) are nonempty, then every vertex outside \(U\) is adjacent to a vertex in \(U\), and therefore
-	\[
-		\abs{\extNbr_G(U)}=n-\abs{U}\geq \abs{U}\geq \alpha\abs{U}.
-	\]
-	If \(U\subseteq A\), then \(\extNbr_G(U)=B\), and so \(\abs{\extNbr_G(U)}=b\geq \alpha\abs{U}\). If \(U\subseteq B\), then \(\extNbr_G(U)=A\), and \(\abs{A}\geq \alpha\abs{U}\) because \(\abs{U}\leq n/2\) and \(\alpha\leq 1/2\), after adjusting constants for the rounding of \(a\).
+	\begin{equation}
+		\label{eq:complete-bipartite-mixed-neighborhood}
+		\abs{\extNbr_\Graph(U)}=n-\abs{U}\geq \abs{U}\geq \alpha\abs{U}.
+	\end{equation}
+	If \(U\subseteq A\), then \(\extNbr_\Graph(U)=B\), and so \(\abs{\extNbr_\Graph(U)}=b\geq \alpha\abs{U}\). If \(U\subseteq B\), then \(\extNbr_\Graph(U)=A\), and \(\abs{A}\geq \alpha\abs{U}\) because \(\abs{U}\leq n/2\) and \(\alpha\leq 1/2\), after adjusting constants for the rounding of \(a\). Together with \cref{eq:complete-bipartite-mixed-neighborhood}, these cases verify the expansion condition.
 
 	This example is deliberately dense, but it has sparse analogues obtained by replacing the complete bipartite cut by a bounded-degree bipartite expander between two linear-sized parts. Its main lesson is structural rather than quantitative: an \(\alpha\)-vertex expander may be bipartite, and hence no theorem about weak vertex expanders can promise an odd cycle without imposing an additional hypothesis.
 \end{example}
 
 \begin{example}[Spectral Certificates]
 	\label{ex:spectral-certificates}
-	The spectral method gives the most common algebraic certificate for expansion. Let \(G\) be a \(d\)-regular graph on \(n\) vertices, let \(A(G)\) be its adjacency matrix, and write
-	\[
-		d=\lambda_1(A(G))\geq \lambda_2(A(G))\geq\cdots\geq \lambda_n(A(G))
-	\]
-	for the eigenvalues of \(A(G)\). If \(\lambda_2=\lambda_2(A(G))\), then the Cheeger inequality in \cref{thm:cheeger}, together with the comparison between edge and vertex expansion in \cref{prop:edge-vertex-expansion}, implies that \(G\) is an \(\alpha\)-vertex expander with
-	\[
+	The spectral method gives the most common algebraic certificate for expansion. Let \(\Graph\) be a \(d\)-regular graph on \(n\) vertices, let \(\Adjacency{\Graph}\) be its adjacency matrix, and write
+	\begin{equation}
+		\label{eq:spectral-adjacency-eigenvalue-order}
+		d=\lambda_1(\Adjacency{\Graph})\geq \lambda_2(\Adjacency{\Graph})\geq\cdots\geq \lambda_n(\Adjacency{\Graph})
+	\end{equation}
+	for the eigenvalues of \(\Adjacency{\Graph}\). If \(\lambda_2=\lambda_2(\Adjacency{\Graph})\) in \cref{eq:spectral-adjacency-eigenvalue-order}, then the Cheeger inequality in \cref{thm:cheeger}, together with the comparison between edge and vertex expansion in \cref{prop:edge-vertex-expansion}, implies that \(\Graph\) is an \(\alpha\)-vertex expander with
+	\begin{equation}
+		\label{eq:spectral-vertex-expansion-certificate}
 		\alpha\geq \frac{d-\lambda_2}{2d}.
-	\]
-	Thus a bounded-degree regular graph with a constant additive gap \(d-\lambda_2\) is a weak vertex expander. Conversely, bounded-degree vertex expansion forces a spectral gap after the usual Cheeger-type loss; this is one of the main reasons that combinatorial, random-walk, and spectral definitions of expansion are interchangeable at the qualitative level. We refer to Alon~\cite{Alo1986}, Alon and Milman~\cite{AM1985}, Chung~\cite{Chu1997}, and Hoory, Linial, and Wigderson~\cite{HLW2006} for the standard spectral background.
+	\end{equation}
+	Thus a bounded-degree regular graph with a constant additive gap \(d-\lambda_2\) is a weak vertex expander by \cref{eq:spectral-vertex-expansion-certificate}. Conversely, bounded-degree vertex expansion forces a spectral gap after the usual Cheeger-type loss; this is one of the main reasons that combinatorial, random-walk, and spectral definitions of expansion are interchangeable at the qualitative level. We refer to Alon~\cite{Alo1986}, Alon and Milman~\cite{AM1985}, Chung~\cite{Chu1997}, and Hoory, Linial, and Wigderson~\cite{HLW2006} for the standard spectral background.
 
-	The same point has a non-regular formulation. If \(D\) is the degree matrix and \(A\) is the adjacency matrix, the normalized Laplacian is
-	\[
-		\mathcal{L}(G)=I-D^{-1/2}AD^{-1/2},
-	\]
-	with the usual convention on isolated vertices. If \(0=\mu_0\leq \mu_1\leq\cdots\leq \mu_{n-1}\) are the eigenvalues of \(\mathcal{L}(G)\), then the graph Cheeger inequality gives
-	\[
-		\frac{h(G)^2}{2}\leq \mu_1\leq 2h(G).
-	\]
-	Consequently, for graphs without isolated vertices and with bounded maximum degree, keeping \(\mu_1\) bounded away from zero is another way of certifying vertex expansion bounded away from zero.
+	The same point has a non-regular formulation. If \(\DegreeMatrix{\Graph}\) is the degree matrix and \(\Adjacency{\Graph}\) is the adjacency matrix, the normalized Laplacian is
+	\begin{equation}
+		\label{eq:normalized-laplacian-definition}
+		\NormLaplacian{\Graph}=\IdentityMatrix-\DegreeMatrix{\Graph}^{-1/2}\Adjacency{\Graph}\DegreeMatrix{\Graph}^{-1/2},
+	\end{equation}
+	with the usual convention on isolated vertices. If \(0=\mu_0\leq \mu_1\leq\cdots\leq \mu_{n-1}\) are the eigenvalues of the matrix in \cref{eq:normalized-laplacian-definition}, then the graph Cheeger inequality gives
+	\begin{equation}
+		\label{eq:normalized-laplacian-cheeger}
+		\frac{h(\Graph)^2}{2}\leq \mu_1\leq 2h(\Graph).
+	\end{equation}
+	Consequently, for graphs without isolated vertices and with bounded maximum degree, keeping \(\mu_1\) bounded away from zero is another way of certifying vertex expansion bounded away from zero by \cref{eq:normalized-laplacian-cheeger}.
 \end{example}
 
 \begin{example}[Subdividing Edges]
 	\label{ex:subdivision-expander}
-	Expansion is stable, with a quantitative loss, under bounded subdivisions. If \(G\) is an \(\alpha\)-vertex expander of maximum degree \(\Delta\), and \(G^{(\ell)}\) is obtained by subdividing every edge of \(G\) exactly \(\ell\) times, then \(G^{(\ell)}\) is a \(c_{\Delta}\alpha/(\ell+1)\)-vertex expander for some constant \(c_{\Delta}>0\) depending only on \(\Delta\). The proof is a charging argument along the subdivided paths: a set in \(G^{(\ell)}\) either cuts many of these paths, which gives boundary vertices directly, or contains long pieces of many paths, in which case projecting those pieces back to \(G\) produces a set whose expansion in \(G\) supplies the missing boundary. We shall only use the qualitative conclusion that the loss is linear in the subdivision length.
+	Expansion is stable, with a quantitative loss, under bounded subdivisions. If \(\Graph\) is an \(\alpha\)-vertex expander of maximum degree \(\Delta\), and \(\Graph^{(\ell)}\) is obtained by subdividing every edge of \(\Graph\) exactly \(\ell\) times, then \(\Graph^{(\ell)}\) is a \(c_{\Delta}\alpha/(\ell+1)\)-vertex expander for some constant \(c_{\Delta}>0\) depending only on \(\Delta\). The proof is a charging argument along the subdivided paths: a set in \(\Graph^{(\ell)}\) either cuts many of these paths, which gives boundary vertices directly, or contains long pieces of many paths, in which case projecting those pieces back to \(\Graph\) produces a set whose expansion in \(\Graph\) supplies the missing boundary. We shall only use the qualitative conclusion that the loss is linear in the subdivision length.
 
 	This construction is a useful warning. Starting from an excellent bounded-degree expander and subdividing every edge once already produces a graph in which no two vertices of degree greater than two are adjacent. Hence one cannot hope to embed, as a subgraph, even a fixed tree containing two adjacent vertices of degree three. Weak expanders nevertheless retain enough global structure to force long paths, long cycles under mild additional hypotheses, and large minors; these are the kinds of conclusions that survive subdivision.
 \end{example}
@@ -209,10 +666,11 @@ We now record a few basic sources of \(\alpha\)-vertex expanders. The purpose of
 \begin{example}[Random Regular Graphs]
 	\label{ex:random-regular-expanders}
 	For every fixed \(d\geq 3\), a graph drawn uniformly from the \(d\)-regular graphs on \(n\) vertices is, with probability tending to one as \(n\to\infty\), an \(\alpha_d\)-vertex expander for some constant \(\alpha_d>0\). One can prove this directly in the configuration model by bounding the probability of a sparse cut, as in Bollobas~\cite{Bol1988}. One can also pass through the spectral route: Friedman's theorem on the second eigenvalue of random regular graphs~\cite{STOC:Friedman03} gives, with high probability,
-	\[
-		\lambda_2(A(G))\leq 2\sqrt{d-1}+o(1),
-	\]
-	and \cref{ex:spectral-certificates} then gives constant vertex expansion for every fixed \(d\geq 3\).
+	\begin{equation}
+		\label{eq:random-regular-second-eigenvalue}
+		\lambda_2(\Adjacency{\Graph})\leq 2\sqrt{d-1}+o(1),
+	\end{equation}
+	and \cref{ex:spectral-certificates,eq:random-regular-second-eigenvalue} then gives constant vertex expansion for every fixed \(d\geq 3\).
 \end{example}
 
 \subsection{Edge Expansion}
@@ -220,46 +678,149 @@ We now record a few basic sources of \(\alpha\)-vertex expanders. The purpose of
 
 \begin{definition}[Edge Expansion]
 	\label{def:edge-expansion}
-	Let \(G=(V,E)\) be a \(d\)-regular graph on \(n\) vertices. The edge expansion, also called the Cheeger constant, is
-	\[
-		\EdgeExpansion(G)\coloneqq \min_{\substack{S\subseteq V \\ 0<\abs{S}\leq n/2}}\frac{\abs{\partial S}}{d\abs{S}}.
-	\]
-	A family \(\{G_i\}_{i\geq 1}\) of \(d\)-regular graphs with \(\abs{V(G_i)}\to\infty\) is an edge-expander family if there exists a constant \(c>0\) such that \(\EdgeExpansion(G_i)\geq c\) for every \(i\).
+	Let \(\Graph=(\Vertices,\Edges)\) be a \(d\)-regular graph on \(n\) vertices. The edge expansion, also called the Cheeger constant, is
+	\begin{equation}
+		\label{eq:edge-expansion-definition}
+		\EdgeExpansion(\Graph)\coloneqq \min_{\substack{S\subseteq \Vertices \\ 0<\abs{S}\leq n/2}}\frac{\abs{\partial S}}{d\abs{S}}.
+	\end{equation}
+	A family \(\{\Graph_i\}_{i\geq 1}\) of \(d\)-regular graphs with \(\abs{\Vertices(\Graph_i)}\to\infty\) is an edge-expander family if there exists a constant \(c>0\) such that \(\EdgeExpansion(\Graph_i)\geq c\) for every \(i\).
 \end{definition}
 
-The normalization by \(d\abs{S}\) makes \(\EdgeExpansion(G)\) a number in \([0,1]\). It is the minimum fraction of edges leaving a set \(S\), where \(S\) is allowed to range over the smaller side of a cut. The restriction \(\abs{S}\leq n/2\) is not an extra assumption. Since \(\partial S=\partial(V\setminus S)\), every cut has a smaller side.
+The normalization by \(d\abs{S}\) in \cref{eq:edge-expansion-definition} makes \(\EdgeExpansion(\Graph)\) a number in \([0,1]\). It is the minimum fraction of edges leaving a set \(S\), where \(S\) is allowed to range over the smaller side of a cut. The restriction \(\abs{S}\leq n/2\) is not an extra assumption. Since \(\partial S=\partial(\Vertices\setminus S)\), every cut has a smaller side.
 
-For a non-regular graph, the corresponding edge-isoperimetric quantity is usually written in terms of volume. If \(G=(V,E)\) is any graph and \(U\subseteq V\), define
-\[
-	\vol_G(U)\coloneqq \sum_{v\in U}\deg_G(v).
-\]
-The Cheeger constant of \(G\) is
-\[
-	h(G)\coloneqq \min_{\emptyset\neq U\subsetneq V}\frac{\edgeBetween_G(U,V\setminus U)}{\min\{\vol_G(U),\vol_G(V\setminus U)\}}.
-\]
-Thus \(h(G)\) measures the smallest fraction of incident edge-volume that must cross a cut. In a \(d\)-regular graph this definition agrees with \(\EdgeExpansion(G)\), up to the choice of the smaller side of the cut, since \(\vol_G(U)=d\abs{U}\). If the maximum degree of \(G\) is bounded by \(\Delta\), then edge expansion also forces vertex expansion, because
-\[
-	\abs{\extNbr_G(U)}\geq \frac{\edgeBetween_G(U,V\setminus U)}{\Delta}.
-\]
-This is the precise sense in which, for bounded-degree graph families, the edge and vertex formulations are qualitatively equivalent; see the expander survey of Hoory, Linial, and Wigderson~\cite{HLW2006} and the isoperimetric inequalities of Alon and Milman~\cite{AM1985}.
+For a non-regular graph, the corresponding edge-isoperimetric quantity is usually written in terms of volume. If \(\Graph=(\Vertices,\Edges)\) is any graph and \(U\subseteq \Vertices\), define
+\begin{equation}
+	\label{eq:volume-definition}
+	\vol_\Graph(U)\coloneqq \sum_{v\in U}\deg_\Graph(v).
+\end{equation}
+The Cheeger constant of \(\Graph\) is
+\begin{equation}
+	\label{eq:cheeger-constant-definition}
+	h(\Graph)\coloneqq \min_{\emptyset\neq U\subsetneq \Vertices}\frac{\edgeBetween_\Graph(U,\Vertices\setminus U)}{\min\{\vol_\Graph(U),\vol_\Graph(\Vertices\setminus U)\}}.
+\end{equation}
+Thus \(h(\Graph)\) in \cref{eq:cheeger-constant-definition} measures the smallest fraction of incident edge-volume from \cref{eq:volume-definition} that must cross a cut. In a \(d\)-regular graph this definition agrees with \(\EdgeExpansion(\Graph)\), up to the choice of the smaller side of the cut, since \(\vol_\Graph(U)=d\abs{U}\). If the maximum degree of \(\Graph\) is bounded by \(\Delta\), then edge expansion also forces vertex expansion, because
+\begin{equation}
+	\label{eq:edge-expansion-to-vertex-expansion}
+	\abs{\extNbr_\Graph(U)}\geq \frac{\edgeBetween_\Graph(U,\Vertices\setminus U)}{\Delta}.
+\end{equation}
+\cref{eq:edge-expansion-to-vertex-expansion} is the precise sense in which, for bounded-degree graph families, the edge and vertex formulations are qualitatively equivalent; see the expander survey of Hoory, Linial, and Wigderson~\cite{HLW2006} and the isoperimetric inequalities of Alon and Milman~\cite{AM1985}.
+
+\begin{proposition}[Robust Giant Component]
+	\label{prop:edge-expander-robust-component}
+	Let \(\Graph=(\Vertices,\Edges)\) be a \(d\)-regular graph on \(n\) vertices with \(\EdgeExpansion(\Graph)\geq \phi\), and let \(F\subseteq \Edges\) satisfy
+	\begin{equation}
+		\label{eq:edge-deletion-budget}
+		\abs{F}\leq \epsilon\abs{\Edges},
+	\end{equation}
+	where \(0<\epsilon<\phi\). If \(\Graph'=(\Vertices,\Edges\setminus F)\), then \(\Graph'\) has a connected component of size at least
+	\begin{equation}
+		\label{eq:robust-component-size}
+		\left(1-\frac{\epsilon}{2\phi}\right)n.
+	\end{equation}
+\end{proposition}
+
+\begin{proof}
+	The proof is a counting argument that turns disconnected components into cuts of the original graph. Every edge of \(\Graph\) that crosses between two different components of \(\Graph'\) must have been deleted. If all components were small, summing the expansion inequality over all components would require too many deleted edges; if one component is already large, applying expansion to its complement bounds the number of vertices outside it.
+
+	Let \(C_1,\ldots,C_m\) be the connected components of \(\Graph'\), ordered so that
+	\begin{equation}
+		\label{eq:component-ordering}
+		\abs{C_1}\geq \abs{C_2}\geq\cdots\geq \abs{C_m}.
+	\end{equation}
+	Every edge of \(\Graph\) with endpoints in two distinct sets among \(C_1,\ldots,C_m\) belongs to \(F\). Therefore
+	\begin{equation}
+		\label{eq:deleted-edges-component-boundary}
+		\abs{F}\geq \frac{1}{2}\sum_{i=1}^m \edgeBetween_\Graph(C_i,\Vertices\setminus C_i),
+	\end{equation}
+	where the factor \(1/2\) appears because an edge between \(C_i\) and \(C_j\) is counted once in the boundary of \(C_i\) and once in the boundary of \(C_j\).
+
+	Suppose first that \(\abs{C_1}\leq n/2\). Then every \(C_i\) has size at most \(n/2\), and the hypothesis \(\EdgeExpansion(\Graph)\geq\phi\) gives
+	\begin{equation}
+		\label{eq:small-components-all-expand}
+		\edgeBetween_\Graph(C_i,\Vertices\setminus C_i)\geq \phi d\abs{C_i}
+	\end{equation}
+	for every \(i\). Combining \cref{eq:deleted-edges-component-boundary,eq:small-components-all-expand} yields
+	\begin{equation}
+		\label{eq:small-components-too-many-deleted}
+		\abs{F}\geq \frac{1}{2}\sum_{i=1}^m\phi d\abs{C_i}=\frac{\phi d n}{2}.
+	\end{equation}
+	On the other hand, since \(\Graph\) is \(d\)-regular, \(\abs{\Edges}=dn/2\), and \cref{eq:edge-deletion-budget} gives
+	\begin{equation}
+		\label{eq:deleted-budget-regular}
+		\abs{F}\leq \epsilon\frac{dn}{2}.
+	\end{equation}
+	Equations \cref{eq:small-components-too-many-deleted,eq:deleted-budget-regular} contradict \(\epsilon<\phi\), and hence \(\abs{C_1}>n/2\).
+
+	Let \(S=\Vertices\setminus C_1\). Since \(\abs{C_1}>n/2\), we have \(\abs{S}<n/2\). Every edge between \(S\) and \(C_1\) was deleted, so
+	\begin{equation}
+		\label{eq:large-component-cut-deleted}
+		\abs{F}\geq \edgeBetween_\Graph(S,C_1)=\edgeBetween_\Graph(S,\Vertices\setminus S).
+	\end{equation}
+	If \(S=\emptyset\), then \(\abs{C_1}=n\) and the conclusion follows. Otherwise, applying \(\EdgeExpansion(\Graph)\geq\phi\) to \(S\) gives
+	\begin{equation}
+		\label{eq:outside-large-component-expands}
+		\edgeBetween_\Graph(S,\Vertices\setminus S)\geq \phi d\abs{S}.
+	\end{equation}
+	Using \cref{eq:edge-deletion-budget,eq:large-component-cut-deleted,eq:outside-large-component-expands} and \(\abs{\Edges}=dn/2\), we obtain
+	\begin{equation}
+		\label{eq:outside-large-component-size}
+		\phi d\abs{S}\leq \abs{F}\leq \epsilon\frac{dn}{2},
+	\end{equation}
+	and therefore \(\abs{S}\leq \epsilon n/(2\phi)\). Since \(C_1=\Vertices\setminus S\), \cref{eq:robust-component-size} follows.
+\end{proof}
 
 \begin{example}[Complete Graph]
 	\label{ex:complete-graph}
 	The complete graph \(K_n\) satisfies
-	\[
+	\begin{equation}
+		\label{eq:complete-graph-expansion}
 		\frac{\abs{\partial S}}{(n-1)\abs{S}}=\frac{n-\abs{S}}{n-1}
-	\]
-	for every nonempty \(S\subseteq V\). Hence \(\EdgeExpansion(K_n)\geq 1/2\). This is excellent expansion, but the graph is not sparse. Expanders ask for the same constant-order behavior while keeping the degree bounded independently of \(n\).
+	\end{equation}
+	for every nonempty \(S\subseteq \Vertices\). Hence \(\EdgeExpansion(K_n)\geq 1/2\) by \cref{eq:complete-graph-expansion}. This is excellent expansion, but the graph is not sparse. Expanders ask for the same constant-order behavior while keeping the degree bounded independently of \(n\).
 \end{example}
 
 \begin{example}[Cycle]
 	\label{ex:cycle}
 	The cycle \(C_n\) is \(2\)-regular, but if \(S\) is a path of \(\lfloor n/2\rfloor\) consecutive vertices, then \(\abs{\partial S}=2\). Thus
-	\[
-		\EdgeExpansion(C_n)\leq \frac{2}{2\lfloor n/2\rfloor}=O(1/n).
-	\]
-	This example shows that bounded degree alone is meaningless. Sparsity must be paired with a global no-bottleneck condition.
+	\begin{equation}
+		\label{eq:cycle-expansion-bound}
+		\EdgeExpansion(C_n)\leq \frac{2}{2\lfloor n/2\rfloor}=\bigO(1/n).
+	\end{equation}
+	\cref{eq:cycle-expansion-bound} shows that bounded degree alone is meaningless. Sparsity must be paired with a global no-bottleneck condition.
 \end{example}
+
+\begin{figure}[t]
+	\centering
+	\begin{mdframed}[linewidth=0.4pt, linecolor=expanderMutedColor!45, backgroundcolor=white, roundcorner=2pt, innerleftmargin=6pt, innerrightmargin=6pt, innertopmargin=6pt, innerbottommargin=6pt]
+		\centering
+		\adjustbox{max width=.82\textwidth}{%
+			\begin{tikzpicture}[
+					vertex/.style={circle, draw=expanderVertexColor, fill=expanderVertexColor!10, minimum size=7.4mm, inner sep=0pt, font=\scriptsize},
+					edge/.style={line width=0.65pt, draw=expanderMutedColor},
+					frontedge/.style={line width=0.9pt, draw=expanderBoundaryColor}
+				]
+				\node[vertex] (v000) at (0,0) {\(000\)};
+				\node[vertex] (v001) at (2.85,0) {\(001\)};
+				\node[vertex] (v011) at (2.85,2.85) {\(011\)};
+				\node[vertex] (v010) at (0,2.85) {\(010\)};
+				\node[vertex] (v100) at (1.1,1.0) {\(100\)};
+				\node[vertex] (v101) at (3.95,1.0) {\(101\)};
+				\node[vertex] (v111) at (3.95,3.85) {\(111\)};
+				\node[vertex] (v110) at (1.1,3.85) {\(110\)};
+				\foreach \u/\v in {v000/v001,v001/v011,v011/v010,v010/v000,v100/v101,v101/v111,v111/v110,v110/v100,v000/v100,v001/v101,v011/v111,v010/v110} {
+						\draw[edge] (\u) -- (\v);
+					}
+				\draw[frontedge] (v000) -- (v001);
+				\draw[frontedge] (v000) -- (v010);
+				\draw[frontedge] (v000) -- (v100);
+			\end{tikzpicture}%
+		}
+	\end{mdframed}
+	\caption{The three-dimensional Boolean hypercube \(Q_3\), whose vertices are bit strings and whose edges connect strings at Hamming distance one. The highlighted edges incident to \(000\) show the three coordinate directions available from a single vertex. The \(m\)-dimensional hypercube \(Q_m\) has \(2^m\) vertices and degree \(m\), which is logarithmic in the number of vertices and therefore falls outside the constant-degree expander regime.}
+	\label{fig:boolean-hypercube}
+\end{figure}
+
+The hypercube in \cref{fig:boolean-hypercube} makes visible the tension between geometric structure and the bounded-degree convention used for expanders. Each edge changes exactly one coordinate, so the graph has a clean product geometry and many canonical directions, but the number of such directions at each vertex is \(m\). Since \(Q_m\) has \(2^m\) vertices, this degree equals \(\log_2\abs{\Vertices(Q_m)}\), and therefore the hypercube should not be confused with a constant-degree expander family even though it is far better connected than a cycle.
 
 \begin{example}[Hypercube]
 	\label{ex:hypercube}
@@ -273,62 +834,404 @@ Edge expansion measures escaping edges. Vertex expansion measures the number of 
 
 \begin{definition}[Vertex Expansion]
 	\label{def:vertex-expansion}
-	Let \(G=(V,E)\) be a \(d\)-regular graph. The external vertex expansion is
-	\[
-		\VertexExpansion(G)\coloneqq \min_{\substack{S\subseteq V \\ 0<\abs{S}\leq n/2}}\frac{\abs{\delta S}}{\abs{S}}.
-	\]
+	Let \(\Graph=(\Vertices,\Edges)\) be a \(d\)-regular graph. The external vertex expansion is
+	\begin{equation}
+		\label{eq:vertex-expansion-definition}
+		\VertexExpansion(\Graph)\coloneqq \min_{\substack{S\subseteq \Vertices \\ 0<\abs{S}\leq n/2}}\frac{\abs{\delta S}}{\abs{S}}.
+	\end{equation}
 \end{definition}
 
 \begin{proposition}[Edge and Vertex Expansion]
 	\label{prop:edge-vertex-expansion}
-	For every \(d\)-regular graph \(G\),
-	\[
-		\frac{\EdgeExpansion(G)}{1}\leq \VertexExpansion(G)\leq d\,\EdgeExpansion(G)
-	\]
-	after replacing the right-hand inequality by the statement that every minimizer \(S\) for edge expansion satisfies \(\abs{\delta S}\leq \abs{\partial S}\). More explicitly, for every \(S\subseteq V\) with \(0<\abs{S}\leq n/2\),
-	\[
+	For every \(d\)-regular graph \(\Graph\),
+	\begin{equation}
+		\label{eq:edge-vertex-expansion-global}
+		\frac{\EdgeExpansion(\Graph)}{1}\leq \VertexExpansion(\Graph)\leq d\,\EdgeExpansion(\Graph)
+	\end{equation}
+	after replacing the right-hand inequality by the statement that every minimizer \(S\) for edge expansion satisfies \(\abs{\delta S}\leq \abs{\partial S}\). More explicitly, for every \(S\subseteq \Vertices\) with \(0<\abs{S}\leq n/2\),
+	\begin{equation}
+		\label{eq:edge-vertex-expansion-setwise}
 		\frac{\abs{\partial S}}{d\abs{S}}\leq \frac{\abs{\delta S}}{\abs{S}}\leq \frac{\abs{\partial S}}{\abs{S}}.
-	\]
+	\end{equation}
 \end{proposition}
 
 \begin{proof}
 	Each vertex in \(\delta S\) is incident to at most \(d\) edges from \(S\), and every edge in \(\partial S\) ends in a vertex of \(\delta S\). Hence
-	\[
+	\begin{equation}
+		\label{eq:edge-vertex-bound-proof}
 		\abs{\delta S}\leq \abs{\partial S}\leq d\abs{\delta S}.
-	\]
-	Dividing by \(d\abs{S}\) or by \(\abs{S}\) gives the displayed inequalities.
+	\end{equation}
+	Dividing \cref{eq:edge-vertex-bound-proof} by \(d\abs{S}\) or by \(\abs{S}\) gives \cref{eq:edge-vertex-expansion-setwise}, and minimizing over \(S\) gives \cref{eq:edge-vertex-expansion-global}.
 \end{proof}
 
 For ordinary bounded-degree expansion, these inequalities are enough. For extractors, codes, and data structures, one often needs a stronger condition saying that almost every edge leaving a small set lands at a distinct neighbor. This is lossless expansion.
 
 \begin{definition}[Lossless Bipartite Expander]
 	\label{def:lossless-expander}
-	Let \(G=(L\cup R,E)\) be a left \(d\)-regular bipartite graph. For parameters \(K\) and \(\epsilon\in(0,1)\), we say that \(G\) is a \((K,\epsilon)\)-lossless expander if every set \(S\subseteq L\) with \(\abs{S}\leq K\) satisfies
-	\[
+	Let \(\Graph=(\LeftSet\cup \RightSet,\Edges)\) be a left \(d\)-regular bipartite graph. For parameters \(K\) and \(\epsilon\in(0,1)\), we say that \(\Graph\) is a \((K,\epsilon)\)-lossless expander if every set \(S\subseteq \LeftSet\) with \(\abs{S}\leq K\) satisfies
+	\begin{equation}
+		\label{eq:lossless-expansion-condition}
 		\abs{\Gamma(S)}\geq (1-\epsilon)d\abs{S},
-	\]
-	where \(\Gamma(S)\subseteq R\) is the set of right-neighbors of \(S\).
+	\end{equation}
+	where \(\Gamma(S)\subseteq \RightSet\) is the set of right-neighbors of \(S\).
 \end{definition}
 
-The adjective lossless refers to the \(d\abs{S}\) edges leaving \(S\). In the best possible case they reach \(d\abs{S}\) distinct right vertices. The definition allows only an \(\epsilon\)-fraction of these potential neighbors to be lost to collisions. This is much stronger than ordinary expansion and is the version that appears in expander codes and extractor constructions.
+The adjective lossless in \cref{eq:lossless-expansion-condition} refers to the \(d\abs{S}\) edges leaving \(S\). In the best possible case they reach \(d\abs{S}\) distinct right vertices. The definition allows only an \(\epsilon\)-fraction of these potential neighbors to be lost to collisions. This is much stronger than ordinary expansion and is the version that appears in expander codes and extractor constructions.
 
 \subsection{Spectral Expansion}
 \label{subsec:spectral-expansion-preview}
 
-Combinatorial expansion is often hard to prove directly. Spectral expansion gives a more algebraic certificate. If \(G\) is \(d\)-regular and \(\Markov{G}=\vec{A}_G/d\), then \(\Markov{G}\vec{e}_0=\vec{e}_0\). The graph is connected exactly when the eigenvalue \(1\) has multiplicity one, and it is aperiodic in the random-walk sense when there is no eigenvalue close to \(-1\). The relevant one-sided parameter is
-\[
-	\lambda(G)\coloneqq \max\{\abs{\mu_i(\Markov{G})} \mid i\geq 2\},
-\]
-and a smaller \(\lambda(G)\) means faster contraction away from the uniform direction.
+Combinatorial expansion is often hard to prove directly. Spectral expansion gives a more algebraic certificate, because it replaces the task of checking all cuts by the task of checking how the averaging operator acts on all functions after the constant part has been removed. If \(\Graph\) is \(d\)-regular and \(\Markov{\Graph}=\Adjacency{\Graph}/d\), then \(\Markov{\Graph}\vec{e}_0=\vec{e}_0\), where \(\vec{e}_0\) is the normalized constant vector. The graph is connected exactly when the eigenvalue \(1\) has multiplicity one, and it is aperiodic in the random-walk sense when there is no eigenvalue close to \(-1\). Thus one distinguishes between the one-sided parameter
+\begin{equation}
+	\label{eq:spectral-preview-lambda-plus}
+	\lambda_+(\Graph)\coloneqq \max\{\mu_i(\Markov{\Graph}) \mid i\geq 2\},
+\end{equation}
+which controls bottlenecks and edge expansion, and the two-sided parameter
+\begin{equation}
+	\label{eq:spectral-preview-lambda-two-sided}
+	\lambda_{\pm}(\Graph)\coloneqq \max\{\abs{\mu_i(\Markov{\Graph})} \mid i\geq 2\},
+\end{equation}
+which also rules out the nearly bipartite obstruction that makes a non-lazy random walk oscillate. A smaller value in \cref{eq:spectral-preview-lambda-plus,eq:spectral-preview-lambda-two-sided} means faster contraction away from the uniform direction; the first statement is the correct one for Cheeger-type edge expansion, whereas the second is the correct one for rapid mixing without adding laziness.
 
 \begin{definition}[Spectral Expander]
 	\label{def:spectral-expander-preview}
-	A \(d\)-regular graph \(G\) on \(n\) vertices is an \((n,d,\lambda)\)-spectral expander if
-	\[
-		\lambda(G)\leq \lambda.
-	\]
-	A graph family is a spectral expander family if \(d\) is bounded by a constant and \(\lambda\leq 1-c\) for some constant \(c>0\).
+	A \(d\)-regular graph \(\Graph\) on \(n\) vertices is an \((n,d,\lambda)\)-one-sided spectral expander if
+	\begin{equation}
+		\label{eq:one-sided-spectral-expander-condition}
+		\lambda_+(\Graph)\leq \lambda.
+	\end{equation}
+	It is an \((n,d,\lambda)\)-two-sided spectral expander if
+	\begin{equation}
+		\label{eq:two-sided-spectral-expander-condition}
+		\lambda_{\pm}(\Graph)\leq \lambda.
+	\end{equation}
+	A graph family is a spectral expander family if \(d\) is bounded by a constant and \(\lambda\leq 1-c\) for some constant \(c>0\), with the adjective one-sided or two-sided understood from \cref{eq:one-sided-spectral-expander-condition,eq:two-sided-spectral-expander-condition}.
 \end{definition}
+
+The analytic form of \cref{def:spectral-expander-preview} is a discrete Poincaré inequality. Intuitively, a function on a good expander cannot be nonconstant without paying a substantial amount of energy across edges: if \(f\) is large on one region and small on another, then many edges are forced to see this discrepancy, and if no such discrepancy exists, then \(f\) is already close to its mean. The following proposition records this principle with all constants visible.
+
+\begin{proposition}[Spectral Expansion as a Poincaré Inequality]
+	\label{prop:spectral-poincare}
+	Let \(\Graph=(\Vertices,\Edges)\) be a finite \(d\)-regular graph, let \(\varepsilon>0\), and let \(\Markov{\Graph}=\Adjacency{\Graph}/d\). For a function \(f:\Vertices\to\RR\), write
+	\begin{equation}
+		\label{eq:graph-mean-uniform}
+		\GraphMean{f}\coloneqq \frac{1}{\abs{\Vertices}}\sum_{v\in\Vertices}f(v),
+	\end{equation}
+	and define its squared gradient at \(v\) by
+	\begin{equation}
+		\label{eq:graph-gradient-magnitude}
+		\abs{\nabla_{\Graph} f(v)}^2\coloneqq \sum_{\substack{w\in\Vertices\\ \{v,w\}\in\Edges}}\bigl(f(w)-f(v)\bigr)^2.
+	\end{equation}
+	Then \(\Graph\) is a one-sided \(\varepsilon\)-spectral expander, meaning
+	\begin{equation}
+		\label{eq:poincare-spectral-assumption}
+		\lambda_+(\Graph)\leq 1-\varepsilon,
+	\end{equation}
+	if and only if every \(f:\Vertices\to\RR\) with \(\GraphMean{f}=0\) satisfies
+	\begin{equation}
+		\label{eq:poincare-gradient-form}
+		\sum_{v\in\Vertices}\abs{\nabla_{\Graph} f(v)}^2
+		\geq 2d\varepsilon\sum_{v\in\Vertices}f(v)^2.
+	\end{equation}
+	Equivalently, since each unordered edge is counted twice in \cref{eq:graph-gradient-magnitude}, \cref{eq:poincare-gradient-form} is the same as
+	\begin{equation}
+		\label{eq:poincare-edge-form}
+		\sum_{\{u,v\}\in\Edges}\bigl(f(u)-f(v)\bigr)^2
+		\geq d\varepsilon\sum_{v\in\Vertices}f(v)^2.
+	\end{equation}
+\end{proposition}
+
+\begin{proof}
+	We use the standard inner product
+	\begin{equation}
+		\label{eq:uniform-inner-product}
+		\langle f,g\rangle\coloneqq \sum_{v\in\Vertices}f(v)g(v),
+	\end{equation}
+	and we let \(\mathbf{1}\) denote the constant-one function. Since \(\Graph\) is \(d\)-regular, the operator \(\Markov{\Graph}\) is real symmetric, \(\Markov{\Graph}\mathbf{1}=\mathbf{1}\), and the subspace
+	\begin{equation}
+		\label{eq:mean-zero-subspace}
+		\mathbf{1}^{\perp}=\{f:\Vertices\to\RR\mid \GraphMean{f}=0\}
+	\end{equation}
+	is invariant under \(\Markov{\Graph}\). By the variational characterization of eigenvalues for a real symmetric operator, \cref{eq:poincare-spectral-assumption} is equivalent to
+	\begin{equation}
+		\label{eq:rayleigh-one-sided-bound}
+		\langle \Markov{\Graph}f,f\rangle\leq (1-\varepsilon)\langle f,f\rangle
+	\end{equation}
+	for every \(f\in\mathbf{1}^{\perp}\).
+
+	It remains only to identify the quadratic form in \cref{eq:rayleigh-one-sided-bound} with the energy across edges. For every \(f:\Vertices\to\RR\), expanding the square edge by edge gives
+	\begin{align}
+		\sum_{\{u,v\}\in\Edges}\bigl(f(u)-f(v)\bigr)^2
+		 & =\sum_{\{u,v\}\in\Edges}\bigl(f(u)^2+f(v)^2-2f(u)f(v)\bigr) \label{eq:edge-energy-expansion}                                                 \\
+		 & =d\sum_{v\in\Vertices}f(v)^2-\sum_{u\in\Vertices}\sum_{\substack{v\in\Vertices\\ \{u,v\}\in\Edges}}f(u)f(v) \label{eq:edge-energy-adjacency} \\
+		 & =d\langle f,f\rangle-\langle \Adjacency{\Graph}f,f\rangle \label{eq:edge-energy-operator}                                                    \\
+		 & =d\langle (\IdentityMatrix-\Markov{\Graph})f,f\rangle . \label{eq:edge-energy-markov}
+	\end{align}
+	Indeed, the first term in \cref{eq:edge-energy-expansion} contributes \(f(v)^2\) once for each of the \(d\) edges incident to \(v\), and the double sum in \cref{eq:edge-energy-adjacency} is the ordered version of \(2\sum_{\{u,v\}\in\Edges}f(u)f(v)\).
+
+	If \cref{eq:poincare-spectral-assumption} holds and \(f\in\mathbf{1}^{\perp}\), then \cref{eq:rayleigh-one-sided-bound,eq:edge-energy-markov} imply
+	\begin{equation}
+		\label{eq:poincare-proof-forward}
+		\sum_{\{u,v\}\in\Edges}\bigl(f(u)-f(v)\bigr)^2
+		=d\bigl(\langle f,f\rangle-\langle \Markov{\Graph}f,f\rangle\bigr)
+		\geq d\varepsilon\langle f,f\rangle,
+	\end{equation}
+	which is \cref{eq:poincare-edge-form}. Conversely, if \cref{eq:poincare-edge-form} holds for every mean-zero \(f\), then \cref{eq:edge-energy-markov} gives
+	\begin{equation}
+		\label{eq:poincare-proof-reverse}
+		d\bigl(\langle f,f\rangle-\langle \Markov{\Graph}f,f\rangle\bigr)\geq d\varepsilon\langle f,f\rangle,
+	\end{equation}
+	and therefore \(\langle \Markov{\Graph}f,f\rangle\leq (1-\varepsilon)\langle f,f\rangle\) for every \(f\in\mathbf{1}^{\perp}\). Applying the same variational characterization again proves \cref{eq:poincare-spectral-assumption}. Finally,
+	\begin{equation}
+		\label{eq:gradient-counts-edges-twice}
+		\sum_{v\in\Vertices}\abs{\nabla_{\Graph} f(v)}^2
+		=2\sum_{\{u,v\}\in\Edges}\bigl(f(u)-f(v)\bigr)^2,
+	\end{equation}
+	because the summation over \(v\) counts each unordered edge once from each endpoint, and so \cref{eq:poincare-edge-form} and \cref{eq:poincare-gradient-form} are equivalent.
+\end{proof}
+
+The spectral formulation does more than certify edge expansion. Once expansion is expressed as a lower bound on the energy of every nonconstant function, it also explains why expanders resist faithful low-dimensional geometric representations. We record this consequence before returning to the Cheeger inequality, because it illustrates that the same spectral gap that rules out sparse cuts also rules out drawings in which graph distance behaves like Euclidean distance.
+
+\subsection{Metric Distortion}
+\label{subsec:metric-distortion}
+
+The geometric obstruction can be made quantitative by viewing a graph as a metric space. If \(\Graph=(\Vertices,\Edges)\) is connected, its shortest-path metric is the function \(\operatorname{dist}_\Graph\colon \Vertices\times \Vertices\to \RR_{\geq 0}\) that records the minimum number of edges in a path joining two vertices. Thus the question of whether an expander can be drawn faithfully in Euclidean space becomes the question of whether the metric space \((\Vertices,\operatorname{dist}_\Graph)\) admits a low-distortion embedding into a Hilbert space.
+
+\begin{definition}[Metric Embedding Distortion]
+	\label{def:metric-embedding-distortion}
+	Let \((X,\rho)\) be a finite metric space, and let \(f\colon X\to \ell_2\). We define the expansion, contraction, and distortion of \(f\) by
+	\begin{equation}
+		\label{eq:embedding-expansion-definition}
+		\EmbExpansion(f)\coloneqq \max_{\substack{x,y\in X\\x\neq y}}\frac{\norm{f(x)-f(y)}_2}{\rho(x,y)},
+	\end{equation}
+	\begin{equation}
+		\label{eq:embedding-contraction-definition}
+		\EmbContraction(f)\coloneqq \max_{\substack{x,y\in X\\x\neq y}}\frac{\rho(x,y)}{\norm{f(x)-f(y)}_2},
+	\end{equation}
+	and
+	\begin{equation}
+		\label{eq:embedding-distortion-definition}
+		\EmbDistortion(f)\coloneqq \EmbExpansion(f)\EmbContraction(f).
+	\end{equation}
+	The Euclidean distortion of \(X\), denoted \(c_2(X,\rho)\), is the infimum of \(\EmbDistortion(f)\) over all maps \(f\colon X\to \ell_2\).
+\end{definition}
+
+The normalization in \cref{def:metric-embedding-distortion} is invariant under scaling \(f\), which is why distortion is the right quantity rather than expansion alone. An embedding of distortion \(1\) is an isometry, while a bounded-distortion embedding is allowed to stretch all distances by a common scale and then make only a bounded multiplicative error. The Johnson--Lindenstrauss lemma says that finite subsets of Euclidean space can be projected to dimension \(\bigO(\varepsilon^{-2}\log n)\) while changing all pairwise distances by a factor \(1\pm\varepsilon\)~\cite{JL1984}; in sharp contrast, Bourgain proved that every \(n\)-point metric embeds into Hilbert space with distortion \(\bigO(\log n)\), and that this order is the worst possible~\cite{Bou1985}. Expanders realize this worst case.
+
+The following characterization, due to Linial, London, and Rabinovich~\cite{LLR1995}, is the form of metric duality that we shall use. It is the dual of a semidefinite program whose primal variables are the Gram matrix entries of the vectors realizing the embedding.
+
+\begin{theorem}[Linial--London--Rabinovich Duality]
+	\label{thm:llr-euclidean-distortion-dual}
+	Let \((X,\rho)\) be a finite metric space with \(X=\{x_1,\ldots,x_n\}\). Then
+	\begin{equation}
+		\label{eq:llr-dual-characterization}
+		c_2(X,\rho)=\max_{\substack{\vec{P}\in\PSD_n\\\vec{P}\vec{1}=\vec{0}}}
+		\left(
+		\frac{\sum_{i,j:\vec{P}_{ij}>0}\vec{P}_{ij}\rho(x_i,x_j)^2}
+		{-\sum_{i,j:\vec{P}_{ij}<0}\vec{P}_{ij}\rho(x_i,x_j)^2}
+		\right)^{1/2},
+	\end{equation}
+	where terms with \(\rho(x_i,x_j)=0\) contribute zero and the maximum is taken over real symmetric positive semidefinite matrices.
+\end{theorem}
+
+\begin{proof}
+	The proof is included to make clear why a positive semidefinite matrix can certify that no low-distortion Euclidean embedding exists. The primal object is a Gram matrix for the image vectors of an embedding, and the distortion constraints are linear inequalities in its entries. The dual object is a nonnegative combination of these inequalities that eliminates the Gram variables and leaves behind a purely metric contradiction.
+
+	Fix a number \(\gamma\geq 1\). Since the distortion is unchanged if we multiply all image vectors by the same positive scalar, the existence of an embedding with distortion at most \(\gamma\) is equivalent to the existence of vectors \(u_1,\ldots,u_n\) in some Euclidean space such that, for all \(i,j\),
+	\begin{equation}
+		\label{eq:llr-primal-distance-window}
+		\rho(x_i,x_j)^2\leq \norm{u_i-u_j}_2^2\leq \gamma^2\rho(x_i,x_j)^2.
+	\end{equation}
+	Let \(\vec{Z}\) be the Gram matrix \(\vec{Z}_{ij}=\langle u_i,u_j\rangle\). Then \(\vec{Z}\) is positive semidefinite, and
+	\begin{equation}
+		\label{eq:llr-gram-distance-expression}
+		\norm{u_i-u_j}_2^2=\vec{Z}_{ii}+\vec{Z}_{jj}-2\vec{Z}_{ij}.
+	\end{equation}
+	Conversely, every positive semidefinite matrix \(\vec{Z}\) is the Gram matrix of some vectors, since \(\vec{Z}=\vec{U}\vec{U}^{\mathsf{T}}\) for a real matrix \(\vec{U}\). Thus \cref{eq:llr-primal-distance-window} is equivalent to feasibility of the semidefinite system
+	\begin{equation}
+		\label{eq:llr-primal-sdp}
+		\vec{Z}\succeq 0
+		\quad\text{and}\quad
+		\rho(x_i,x_j)^2\leq \vec{Z}_{ii}+\vec{Z}_{jj}-2\vec{Z}_{ij}\leq \gamma^2\rho(x_i,x_j)^2
+	\end{equation}
+	for every pair \(i,j\).
+
+	We next recall the elementary separation of the positive semidefinite cone. A symmetric matrix \(\vec{Z}\) is positive semidefinite if and only if
+	\begin{equation}
+		\label{eq:psd-cone-dual}
+		\sum_{i,j}\vec{Q}_{ij}\vec{Z}_{ij}\geq 0
+	\end{equation}
+	for every positive semidefinite matrix \(\vec{Q}\). Indeed, if \(\vec{Z}\succeq 0\) and \(\vec{Q}\succeq 0\), then writing \(\vec{Q}=\sum_r q_rq_r^{\mathsf{T}}\) gives
+	\begin{equation}
+		\label{eq:psd-cone-forward}
+		\sum_{i,j}\vec{Q}_{ij}\vec{Z}_{ij}=\sum_r q_r^{\mathsf{T}}\vec{Z}q_r\geq 0.
+	\end{equation}
+	Conversely, if \cref{eq:psd-cone-dual} holds for every \(\vec{Q}\succeq 0\), then applying it to \(\vec{Q}=qq^{\mathsf{T}}\) gives \(q^{\mathsf{T}}\vec{Z}q\geq 0\) for every \(q\), which is exactly \(\vec{Z}\succeq 0\).
+
+	Let \(\vec{P}\succeq 0\) satisfy \(\vec{P}\vec{1}=\vec{0}\). We derive the lower bound on \(c_2(X,\rho)\) supplied by this \(\vec{P}\). Multiplying the lower inequality in \cref{eq:llr-primal-distance-window,eq:llr-gram-distance-expression} by \(\vec{P}_{ij}\) for pairs with \(\vec{P}_{ij}>0\), and multiplying the upper inequality by \(\vec{P}_{ij}\) for pairs with \(\vec{P}_{ij}<0\), we obtain
+	\begin{equation}
+		\label{eq:llr-positive-pair-constraint}
+		\vec{P}_{ij}\rho(x_i,x_j)^2\leq \vec{P}_{ij}(\vec{Z}_{ii}+\vec{Z}_{jj}-2\vec{Z}_{ij})
+		\quad\text{if }\vec{P}_{ij}>0,
+	\end{equation}
+	and
+	\begin{equation}
+		\label{eq:llr-negative-pair-constraint}
+		\vec{P}_{ij}\gamma^2\rho(x_i,x_j)^2\leq \vec{P}_{ij}(\vec{Z}_{ii}+\vec{Z}_{jj}-2\vec{Z}_{ij})
+		\quad\text{if }\vec{P}_{ij}<0,
+	\end{equation}
+	because multiplying by a negative number reverses the upper inequality. Adding \cref{eq:llr-positive-pair-constraint,eq:llr-negative-pair-constraint} over all ordered pairs gives
+	\begin{equation}
+		\label{eq:llr-summed-dual-before-cancellation}
+		\sum_{\vec{P}_{ij}>0}\vec{P}_{ij}\rho(x_i,x_j)^2+\gamma^2\sum_{\vec{P}_{ij}<0}\vec{P}_{ij}\rho(x_i,x_j)^2
+		\leq
+		\sum_{i,j}\vec{P}_{ij}(\vec{Z}_{ii}+\vec{Z}_{jj}-2\vec{Z}_{ij}).
+	\end{equation}
+	The right-hand side vanishes up to a nonpositive term. Indeed, since \(\vec{P}\vec{1}=\vec{0}\) and \(\vec{P}\) is symmetric,
+	\begin{equation}
+		\label{eq:llr-row-sum-cancellation}
+		\sum_{i,j}\vec{P}_{ij}(\vec{Z}_{ii}+\vec{Z}_{jj})=
+		\sum_i \vec{Z}_{ii}\sum_j\vec{P}_{ij}+\sum_j\vec{Z}_{jj}\sum_i\vec{P}_{ij}=0.
+	\end{equation}
+	Moreover, since \(\vec{P}\succeq 0\) and \(\vec{Z}\succeq 0\), \cref{eq:psd-cone-dual} gives \(\sum_{i,j}\vec{P}_{ij}\vec{Z}_{ij}\geq 0\). Hence \cref{eq:llr-summed-dual-before-cancellation,eq:llr-row-sum-cancellation} imply
+	\begin{equation}
+		\label{eq:llr-dual-necessary-inequality}
+		\sum_{\vec{P}_{ij}>0}\vec{P}_{ij}\rho(x_i,x_j)^2+\gamma^2\sum_{\vec{P}_{ij}<0}\vec{P}_{ij}\rho(x_i,x_j)^2\leq 0.
+	\end{equation}
+	Rearranging \cref{eq:llr-dual-necessary-inequality} yields
+	\begin{equation}
+		\label{eq:llr-single-certificate-lower-bound}
+		\gamma^2\geq
+		\frac{\sum_{\vec{P}_{ij}>0}\vec{P}_{ij}\rho(x_i,x_j)^2}
+		{-\sum_{\vec{P}_{ij}<0}\vec{P}_{ij}\rho(x_i,x_j)^2}.
+	\end{equation}
+	Since every embedding of distortion at most \(\gamma\) must satisfy \cref{eq:llr-single-certificate-lower-bound} for every feasible \(\vec{P}\), taking the supremum over such \(\vec{P}\) gives the lower-bound direction of \cref{eq:llr-dual-characterization}. The reverse direction is the strong duality theorem for semidefinite programs applied to \cref{eq:llr-primal-sdp}; the primal has the usual harmless strictly feasible perturbation after quotienting by the all-ones direction, and this yields equality as proved by Linial, London, and Rabinovich~\cite{LLR1995}.
+\end{proof}
+
+\cref{thm:llr-euclidean-distortion-dual} is useful because it changes the task of proving a lower bound on distortion into the task of designing a positive semidefinite matrix. In the expander application below, the matrix will reward pairs that are far in the graph metric and penalize adjacent pairs, and the spectral gap will be exactly the condition ensuring positive semidefiniteness.
+
+\begin{lemma}[A Far Perfect Matching]
+	\label{lem:far-perfect-matching}
+	Let \(\Graph\) be a \(d\)-regular graph on an even number \(n\) of vertices, where \(d\geq 3\). There is a perfect matching \(M\) of the vertex set such that every matched pair \(\{u,v\}\in M\) satisfies
+	\begin{equation}
+		\label{eq:far-matching-distance-lower-bound}
+		\operatorname{dist}_\Graph(u,v)\geq \left\lfloor \log_d(n/4)\right\rfloor+1.
+	\end{equation}
+\end{lemma}
+
+\begin{proof}
+	The argument constructs an auxiliary dense graph whose edges join vertices that are far apart in the original graph. Bounded degree ensures that each metric ball contains only exponentially many vertices in its radius, so once the radius is logarithmic and the constant is chosen conservatively, at least half of all vertices remain outside the ball. Dirac's Hamiltonicity theorem then turns this density statement into a Hamilton cycle, and every other edge of that cycle gives the desired perfect matching.
+
+	Put
+	\begin{equation}
+		\label{eq:far-matching-radius}
+		R\coloneqq \left\lfloor \log_d(n/4)\right\rfloor.
+	\end{equation}
+	For every vertex \(x\), the number of vertices at distance exactly \(t\geq 1\) from \(x\) is at most \(d(d-1)^{t-1}\). Therefore the ball of radius \(R\) around \(x\) has size at most
+	\begin{equation}
+		\label{eq:bounded-degree-ball-count}
+		1+\sum_{t=1}^{R}d(d-1)^{t-1}
+		=
+		1+d\frac{(d-1)^R-1}{d-2}
+		\leq 1+d(d-1)^R
+		\leq 2d^R.
+	\end{equation}
+	By \cref{eq:far-matching-radius}, we have \(d^R\leq n/4\), and hence \cref{eq:bounded-degree-ball-count} gives
+	\begin{equation}
+		\label{eq:bounded-degree-ball-half}
+		\abs{\Ball_R^\Graph(x)}\leq n/2.
+	\end{equation}
+	Let \(H\) be the graph on vertex set \(\Vertices(\Graph)\) in which two distinct vertices are adjacent if their distance in \(\Graph\) is greater than \(R\). By \cref{eq:bounded-degree-ball-half}, every vertex has at least \(n/2\) neighbors in \(H\). Dirac's theorem~\cite{Dir1952} therefore implies that \(H\) contains a Hamilton cycle. Since \(n\) is even, taking alternate edges along this Hamilton cycle gives a perfect matching in \(H\). Every edge of this matching joins two vertices whose \(\Graph\)-distance is greater than \(R\), which is exactly \cref{eq:far-matching-distance-lower-bound}.
+\end{proof}
+
+We can now combine the metric duality certificate with expansion. The theorem below says that a bounded-degree spectral expander is not merely hard to separate by cuts; it is also hard to realize faithfully inside Euclidean geometry, since many graph-metrically distant pairs must be placed far apart while adjacent pairs must remain close.
+
+\begin{theorem}[Expanders Have Logarithmic Euclidean Distortion]
+	\label{thm:expanders-have-logarithmic-euclidean-distortion}
+	Let \(d\geq 3\), let \(\varepsilon>0\), and let \(n\geq 4d\). If \(\Graph\) is a connected \(d\)-regular graph on an even number \(n\) of vertices and the second largest eigenvalue of the unnormalized adjacency matrix \(\Adjacency{\Graph}\) is at most \(d-\varepsilon\), then
+	\begin{equation}
+		\label{eq:expander-euclidean-distortion-lower-bound}
+		c_2(\Vertices(\Graph),\operatorname{dist}_\Graph)\geq
+		\left\lfloor \log_d(n/4)\right\rfloor
+		\sqrt{\frac{\varepsilon}{2d}}.
+	\end{equation}
+	In particular, every bounded-degree spectral expander family has Euclidean distortion \(\Omega(\log n)\).
+\end{theorem}
+
+\begin{proof}
+	The proof builds a dual certificate for \cref{thm:llr-euclidean-distortion-dual}. The graph Laplacian contributes negative off-diagonal entries on genuine graph edges, whose metric length is only one, while a far perfect matching contributes positive off-diagonal entries on pairs whose graph distance is logarithmic. The spectral gap is exactly what makes the resulting matrix positive semidefinite, so the dual ratio compares logarithmically long positive pairs with unit-length negative pairs.
+
+	Let \(M\) be the far perfect matching supplied by \cref{lem:far-perfect-matching}, and let \(\vec{B}\) be its adjacency matrix. Thus \(\vec{B}\) is symmetric, \(\vec{B}\vec{1}=\vec{1}\), and \(\vec{B}\) is the adjacency matrix of a \(1\)-regular graph. Define the symmetric matrix
+	\begin{equation}
+		\label{eq:expander-distortion-certificate}
+		\vec{P}\coloneqq d\IdentityMatrix-\Adjacency{\Graph}+\frac{\varepsilon}{2}(\vec{B}-\IdentityMatrix).
+	\end{equation}
+	Since \((d\IdentityMatrix-\Adjacency{\Graph})\vec{1}=\vec{0}\) and \((\vec{B}-\IdentityMatrix)\vec{1}=\vec{0}\), we have
+	\begin{equation}
+		\label{eq:distortion-certificate-row-sums}
+		\vec{P}\vec{1}=\vec{0}.
+	\end{equation}
+
+	We next prove that \(\vec{P}\succeq 0\). Let \(x\in\RR^\Vertices\), and write \(x=a\vec{1}+y\), where \(y\perp\vec{1}\). Since both matrices in \cref{eq:expander-distortion-certificate} annihilate \(\vec{1}\), it suffices to bound \(y^{\mathsf{T}}\vec{P}y\). By the variational characterization of adjacency eigenvalues on \(\vec{1}^{\perp}\), and by the hypothesis \(\lambda_2(\Adjacency{\Graph})\leq d-\varepsilon\),
+	\begin{equation}
+		\label{eq:laplacian-gap-quadratic-bound}
+		y^{\mathsf{T}}(d\IdentityMatrix-\Adjacency{\Graph})y
+		=d\norm{y}_2^2-y^{\mathsf{T}}\Adjacency{\Graph}y
+		\geq d\norm{y}_2^2-(d-\varepsilon)\norm{y}_2^2
+		=\varepsilon\norm{y}_2^2.
+	\end{equation}
+	On the other hand, since \(M\) is a perfect matching,
+	\begin{equation}
+		\label{eq:matching-negative-quadratic-form}
+		y^{\mathsf{T}}(\vec{B}-\IdentityMatrix)y
+		=
+		\sum_{\{u,v\}\in M}(2y_uy_v-y_u^2-y_v^2)
+		=
+		-\sum_{\{u,v\}\in M}(y_u-y_v)^2.
+	\end{equation}
+	Using \((a-b)^2\leq 2a^2+2b^2\) on each matched edge and using the fact that every vertex is matched exactly once, \cref{eq:matching-negative-quadratic-form} gives
+	\begin{equation}
+		\label{eq:matching-quadratic-lower-bound}
+		y^{\mathsf{T}}(\vec{B}-\IdentityMatrix)y
+		\geq -2\sum_{\{u,v\}\in M}(y_u^2+y_v^2)
+		=-2\norm{y}_2^2.
+	\end{equation}
+	Combining \cref{eq:expander-distortion-certificate,eq:laplacian-gap-quadratic-bound,eq:matching-quadratic-lower-bound}, we obtain
+	\begin{equation}
+		\label{eq:distortion-certificate-psd}
+		y^{\mathsf{T}}\vec{P}y
+		\geq
+		\varepsilon\norm{y}_2^2+\frac{\varepsilon}{2}(-2\norm{y}_2^2)
+		=0.
+	\end{equation}
+	Hence \(\vec{P}\succeq 0\), and \cref{eq:distortion-certificate-row-sums} makes \(\vec{P}\) feasible for \cref{thm:llr-euclidean-distortion-dual}.
+
+	It remains to evaluate the dual ratio. The negative off-diagonal entries of \(\vec{P}\) occur on the ordered pairs corresponding to edges of \(\Graph\), where each entry is \(-1\) and each graph distance is \(1\). The diagonal entries contribute no metric length, and the matching edges have graph distance at least \(R+1\), where \(R\) is defined in \cref{eq:far-matching-radius}. Therefore
+	\begin{equation}
+		\label{eq:distortion-denominator-bound}
+		-\sum_{\vec{P}_{uv}<0}\vec{P}_{uv}\operatorname{dist}_\Graph(u,v)^2\leq dn,
+	\end{equation}
+	because a \(d\)-regular graph has \(dn\) ordered edge incidences, and
+	\begin{equation}
+		\label{eq:distortion-numerator-bound}
+		\sum_{\vec{P}_{uv}>0}\vec{P}_{uv}\operatorname{dist}_\Graph(u,v)^2
+		\geq
+		\frac{\varepsilon}{2}\,n\,(R+1)^2,
+	\end{equation}
+	because the perfect matching contributes \(n\) ordered off-diagonal entries of value \(\varepsilon/2\). Applying \cref{thm:llr-euclidean-distortion-dual} with the feasible matrix \(\vec{P}\), and then using \cref{eq:distortion-denominator-bound,eq:distortion-numerator-bound}, yields
+	\begin{equation}
+		\label{eq:distortion-final-ratio}
+		c_2(\Vertices(\Graph),\operatorname{dist}_\Graph)
+		\geq
+		\left(
+		\frac{(\varepsilon/2)n(R+1)^2}{dn}
+		\right)^{1/2}
+		=(R+1)\sqrt{\frac{\varepsilon}{2d}}.
+	\end{equation}
+	Finally, \(R+1\geq \lfloor\log_d(n/4)\rfloor\) by \cref{eq:far-matching-radius}, and \cref{eq:expander-euclidean-distortion-lower-bound} follows.
+\end{proof}
+
+\cref{thm:expanders-have-logarithmic-euclidean-distortion} gives the geometric form of the same obstruction seen earlier in cuts and random walks. A graph with constant degree and constant spectral gap behaves as though many vertices are mutually far in its intrinsic metric, yet its edges insist that neighboring vertices remain at unit distance; Euclidean space cannot satisfy both demands without losing a logarithmic factor.
 
 \subsection{The Cheeger Inequality}
 \label{subsec:cheeger}
@@ -337,10 +1240,20 @@ The discrete Cheeger inequality is the basic theorem saying that the combinatori
 
 \begin{theorem}[Discrete Cheeger Inequality]
 	\label{thm:cheeger}
-	Let \(G\) be a connected \(d\)-regular graph, and let \(\mu_2\) be the second-largest eigenvalue of \(\Markov{G}=\vec{A}_G/d\). Then
-	\[
-		\frac{1-\mu_2}{2}\leq \EdgeExpansion(G)\leq \sqrt{2(1-\mu_2)}.
-	\]
+	Let \(\Graph\) be a connected \(d\)-regular graph, and let \(\mu_2\) be the second-largest eigenvalue of \(\Markov{\Graph}=\Adjacency{\Graph}/d\). Then
+	\begin{equation}
+		\label{eq:discrete-cheeger-inequality}
+		\frac{1-\mu_2}{2}\leq \EdgeExpansion(\Graph)\leq \sqrt{2(1-\mu_2)}.
+	\end{equation}
 \end{theorem}
 
-The left inequality says that a spectral gap forces every cut to have many escaping edges. The right inequality says that if the spectral gap is small, then a sparse cut can be found by sorting an eigenvector and sweeping over its level sets. The full proof is given in \cref{subsec:cheeger-proof}.
+The left inequality in \cref{eq:discrete-cheeger-inequality} says that a spectral gap forces every cut to have many escaping edges. The right inequality says that if the spectral gap is small, then a sparse cut can be found by sorting an eigenvector and sweeping over its level sets. The full proof is given in \cref{subsec:cheeger-proof}.
+
+The upper bound in \cref{thm:cheeger} is algorithmic rather than merely existential. In the notation of \cref{def:spectral-sweep-partitioning}, the sweep over a second eigenvector returns a set \(S\) satisfying
+\begin{equation}
+	\label{eq:cheeger-sweep-regular-guarantee}
+	\frac{\abs{\partial S}}{d\abs{S}}\leq \sqrt{2(1-\mu_2)}.
+\end{equation}
+Equivalently, since a \(d\)-regular graph satisfies \(\NormLaplacian{\Graph}=\IdentityMatrix-\Markov{\Graph}\), the first nonzero normalized-Laplacian eigenvalue is \(\lambda_1=1-\mu_2\), and \cref{eq:cheeger-sweep-regular-guarantee} is the bound \(\EdgeExpansion(S)\leq\sqrt{2\lambda_1}\). Thus spectral partitioning gives a constant-factor approximation to conductance on expander families, where \(\lambda_1=\Theta(1)\), whereas the best general-purpose approximation guarantees for sparsest cut and conductance require more powerful relaxations, such as the semidefinite programming framework of Arora, Rao, and Vazirani~\cite{ARV2009}.
+
+\parhead{Algorithmic Meaning of Expansion.} The algorithmic lesson is that a constant spectral gap forbids a sparse balanced cut, forces logarithmic diameter through repeated growth of balls, and contracts the nonuniform component of a random walk in logarithmically many steps. For graph partitioning, this means that an expander is deliberately hostile to clustering objectives based on conductance, because every candidate cluster leaks a constant fraction of its incident edge mass. For approximation algorithms, the same phenomenon often simplifies the instance: once a graph behaves like a random regular graph at the level of all large cuts, estimates based on eigenvalues and mixing can replace a search over exponentially many partitions, as formalized in different ways by the expander mixing lemma and Cheeger-type inequalities.
