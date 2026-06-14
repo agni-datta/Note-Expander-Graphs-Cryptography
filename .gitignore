@@ -39,6 +39,8 @@
 *.synctex(busy)
 *.synctex.gz
 *.synctex.gz(busy)
+.texmf-config/
+.texmf-var/
 latex.out/
 rubber.cache
 

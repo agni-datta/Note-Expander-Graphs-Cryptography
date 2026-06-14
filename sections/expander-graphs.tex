@@ -1,7 +1,219 @@
 \section{Expander Graphs}
 \label{sec:expander-graphs}
 
-An expander graph is a sparse graph with no sparse cut. More precisely, every set of vertices that is not already a macroscopic part of the graph must have many edges leaving it, or many new neighbors outside it, depending on the chosen definition. The strength of the subject is that these definitions are robust. They differ in constants and degree factors, but for bounded-degree graph families they all capture the same phenomenon.
+An expander graph is a sparse graph with no sparse cut. More precisely, every set of vertices that is not already a macroscopic part of the graph must have many edges leaving it, or many new neighbors outside it, depending on the chosen definition. The strength of the subject is that these definitions are robust. They differ in constants, degree factors, and the range of set sizes on which expansion is demanded, but for bounded-degree graph families they capture the same qualitative phenomenon.
+
+\subsection{Neighborhood Expansion}
+\label{subsec:neighborhood-expansion}
+
+We first fix the neighborhood notation that will be used throughout the combinatorial part of the note. If \(G=(V,E)\) is a graph and \(U\subseteq V\), then the external neighborhood of \(U\) is
+\[
+	\extNbr_G(U)\coloneqq \{v\in V\setminus U\mid \text{there exists }u\in U\text{ such that }\{u,v\}\in E\}.
+\]
+If \(U,W\subseteq V\) are disjoint, then the relative external neighborhood of \(U\) in \(W\) is
+\[
+	\extNbr_G(U,W)\coloneqq \{v\in W\mid \text{there exists }u\in U\text{ such that }\{u,v\}\in E\},
+\]
+so that \(\extNbr_G(U)=\extNbr_G(U,V\setminus U)\). We write \(\edgeBetween_G(U,W)\) for the number of edges with one endpoint in \(U\) and the other endpoint in \(W\), counted with multiplicity when the graph is a multigraph. When the underlying graph is clear, we omit the subscript \(G\).
+
+\begin{definition}[Vertex Expander]
+	\label{def:alpha-expander}
+	Let \(G=(V,E)\) be a graph on \(n\) vertices, and let \(\alpha>0\). We say that \(G\) is an \(\alpha\)-vertex expander if every set \(U\subseteq V\) with \(0<\abs{U}\leq n/2\) satisfies
+	\[
+		\abs{\extNbr_G(U)}\geq \alpha\abs{U}.
+	\]
+\end{definition}
+
+The cutoff at \(n/2\) is a convention rather than a mathematical boundary. It is the right convention for cuts, since every cut has a smaller side, and it is also strong enough to imply basic global consequences such as connectedness. Indeed, if \(G\) were disconnected and \(C\) were a connected component of size at most \(n/2\), then \(\extNbr_G(C)=\emptyset\), contradicting \cref{def:alpha-expander}. If all connected components had size greater than \(n/2\), there could be at most one such component, and the graph would again be connected.
+
+It is often useful to ask for expansion only at selected scales. This is especially common in arguments where one first proves expansion for sets of a prescribed size and then extracts a genuinely expanding induced subgraph.
+
+\begin{definition}[Scale-Restricted Vertex Expansion]
+	\label{def:scale-restricted-expansion}
+	Let \(G=(V,E)\) be a graph, let \(I\subseteq\NN\), and let \(\alpha>0\). We say that \(G\) is an \((I,\alpha)\)-vertex expander if every set \(U\subseteq V\) with \(\abs{U}\in I\) satisfies
+	\[
+		\abs{\extNbr_G(U)}\geq \alpha\abs{U}.
+	\]
+	For a positive integer \(k\), we say that \(G\) is a \((k,\alpha)\)-vertex expander if it is an \((\{1,\ldots,k\},\alpha)\)-vertex expander.
+\end{definition}
+
+Thus an \(\alpha\)-vertex expander on \(n\) vertices is the same object as an \((\{1,\ldots,\lfloor n/2\rfloor\},\alpha)\)-vertex expander, up to the harmless rounding convention at \(n/2\). The converse is not literally true when expansion is required only at one scale, because a graph may expand all sets of size \(n/100\) while still having isolated vertices. Nevertheless, for the qualitative uses in this note, expansion at a linear scale can often be converted into ordinary expansion after passing to a large induced subgraph. The basic mechanism is the following deletion lemma, which is a standard form of the expansion-extraction argument used in the graph-expansion literature; see the survey of Hoory, Linial, and Wigderson~\cite{HLW2006} and the decomposition work of Moshkovitz and Shapira~\cite{SODA:MosSha15} for broader context.
+
+\begin{lemma}[Interval Expansion Deletion]
+	\label{lem:interval-expansion-deletion}
+	Let \(G\) be a graph on \(n\) vertices, and suppose that every set \(U\subseteq V(G)\) with \(n/3\leq\abs{U}\leq 2n/3\) satisfies \(\abs{\extNbr_G(U)}\geq\alpha\abs{U}\). Then there is a set \(Z\subseteq V(G)\) with \(\abs{Z}<n/3\) such that the induced graph \(G[V(G)\setminus Z]\) is an \(\alpha\)-vertex expander.
+\end{lemma}
+
+\begin{proof}
+	The key observation is that bad nonexpanding sets can be deleted one by one, and the union of all deleted sets remains bad in the original graph. If the union ever entered the interval on which expansion is assumed, this would contradict the hypothesis. The only remaining point is to check that the union cannot jump over the whole interval in a single deletion step.
+
+	Start with \(G_0=G\). As long as the current graph \(G_i\) contains a set \(A_i\subseteq V(G_i)\) with \(0<\abs{A_i}\leq \abs{V(G_i)}/2\) and \(\abs{\extNbr_{G_i}(A_i)}<\alpha\abs{A_i}\), delete \(A_i\) and set \(G_{i+1}=G_i[V(G_i)\setminus A_i]\). Let \(Z_i=A_0\cup\cdots\cup A_{i-1}\) be the set deleted before the \(i\)-th step.
+
+	We claim that
+	\[
+		\abs{\extNbr_G(Z_i)}<\alpha\abs{Z_i}
+	\]
+	for every \(i\geq 1\). Every vertex in \(\extNbr_G(Z_i)\) is adjacent in \(G\) to some first deleted set \(A_j\), and if the vertex was not deleted before \(A_j\), then it is counted in \(\extNbr_{G_j}(A_j)\). If the vertex was deleted before \(A_j\), then it lies in \(Z_i\) and is not counted in the external neighborhood of \(Z_i\). Thus
+	\[
+		\extNbr_G(Z_i)\subseteq \bigcup_{j<i}\extNbr_{G_j}(A_j),
+	\]
+	and therefore
+	\[
+		\abs{\extNbr_G(Z_i)}\leq \sum_{j<i}\abs{\extNbr_{G_j}(A_j)}<\alpha\sum_{j<i}\abs{A_j}=\alpha\abs{Z_i},
+	\]
+	as claimed.
+
+	The expansion hypothesis implies that \(\abs{Z_i}\) never lies in the interval \([n/3,2n/3]\). Suppose, toward a contradiction, that \(\abs{Z_i}\) first exceeds \(2n/3\) after deleting \(A_{i-1}\). Then \(\abs{Z_{i-1}}<n/3\), and the deletion rule gives
+	\[
+		\abs{A_{i-1}}\leq \frac{\abs{V(G_{i-1})}}{2}=\frac{n-\abs{Z_{i-1}}}{2}.
+	\]
+	It follows that
+	\[
+		\abs{Z_i}=\abs{Z_{i-1}}+\abs{A_{i-1}}\leq \abs{Z_{i-1}}+\frac{n-\abs{Z_{i-1}}}{2}=\frac{n+\abs{Z_{i-1}}}{2}<\frac{2n}{3},
+	\]
+	contradicting the choice of \(i\). Hence the procedure halts with \(\abs{Z_i}<n/3\), since the graph loses at least one vertex at each deletion step and cannot continue indefinitely.
+
+	Let \(Z\) be the final deleted set and let \(H=G[V(G)\setminus Z]\). By the stopping condition, every set \(A\subseteq V(H)\) with \(0<\abs{A}\leq \abs{V(H)}/2\) satisfies \(\abs{\extNbr_H(A)}\geq \alpha\abs{A}\). Thus \(H\) is an \(\alpha\)-vertex expander.
+\end{proof}
+
+The same deletion mechanism, combined with elementary scale-lifting arguments, gives the following qualitative principle. For every \(c,\alpha\in(0,1]\), there are constants \(c',\alpha'>0\) such that if \(G\) is a \((\{\lfloor cn\rfloor\},\alpha)\)-vertex expander on \(n\) vertices, then \(G\) contains an induced subgraph on at least \(c'n\) vertices that is an \(\alpha'\)-vertex expander. We shall not need the exact constants in this note; the point is that expansion at one linear scale already forces an expanding subgraph of linear size.
+
+The hypothesis that the relevant expanding scale is linear in \(n\) cannot be removed. If \(k=o(n)\), then a graph may be a \((k,\alpha)\)-vertex expander for local reasons and still fail to contain any linearly large expanding induced subgraph. For example, a disjoint union of cliques of size about \((1+\alpha)k\) expands all sufficiently small sets inside their own clique, but it has no connected component of linear size. More subtle examples show that strong local expansion can coexist with separators in every large induced subgraph; the construction of Moshkovitz and Shapira~\cite{SODA:MosSha15} is a useful warning that local expansion and global expansion are genuinely different notions unless the scale is already linear.
+
+\subsection{Basic Consequences of Vertex Expansion}
+\label{subsec:basic-alpha-expander-properties}
+
+We next record the most immediate consequences of \cref{def:alpha-expander}. These facts are elementary, but they explain why the cutoff at \(n/2\) is the natural convention for a first definition. Expansion up to half the graph already implies that metric balls grow exponentially until they become macroscopic, and this growth forces logarithmic diameter.
+
+For a graph \(G=(V,E)\), a vertex \(v\in V\), and an integer \(t\geq 0\), let
+\[
+	\Ball_t^G(v)\coloneqq \{w\in V\mid \operatorname{dist}_G(v,w)\leq t\}
+\]
+be the ball of radius \(t\) around \(v\). When the graph is clear, we write \(\Ball_t(v)\).
+
+\begin{proposition}[Growth of Balls]
+	\label{prop:ball-growth}
+	Let \(G=(V,E)\) be an \(\alpha\)-vertex expander on \(n\geq 2\) vertices. For every \(v\in V\) and every integer \(t\geq 0\),
+	\[
+		\abs{\Ball_t(v)}\geq \min\{n/2,(1+\alpha)^t\}.
+	\]
+\end{proposition}
+
+\begin{proof}
+	The proof is an induction on the radius. The point is that, as long as the current ball has size at most \(n/2\), the expansion hypothesis adds at least an \(\alpha\)-fraction of new vertices at the next step. Once the ball has size at least \(n/2\), the asserted lower bound no longer asks for further growth.
+
+	For \(t=0\), we have \(\Ball_0(v)=\{v\}\), and hence
+	\[
+		\abs{\Ball_0(v)}=1=\min\{n/2,1\},
+	\]
+	since \(n\geq 2\). Suppose now that the claim holds for \(t-1\), where \(t\geq 1\). If \(\abs{\Ball_{t-1}(v)}\geq n/2\), then \(\Ball_{t-1}(v)\subseteq \Ball_t(v)\), and therefore
+	\[
+		\abs{\Ball_t(v)}\geq \abs{\Ball_{t-1}(v)}\geq n/2\geq \min\{n/2,(1+\alpha)^t\}.
+	\]
+	It remains to consider the case in which \(\abs{\Ball_{t-1}(v)}<n/2\). Put \(U=\Ball_{t-1}(v)\). By the induction hypothesis,
+	\[
+		\abs{U}\geq \min\{n/2,(1+\alpha)^{t-1}\}.
+	\]
+	Since \(\abs{U}<n/2\), the minimum in the last display cannot be \(n/2\), and hence \(\abs{U}\geq (1+\alpha)^{t-1}\). Moreover, every external neighbor of \(U\) lies at distance at most \(t\) from \(v\), so
+	\[
+		U\cup \extNbr_G(U)\subseteq \Ball_t(v).
+	\]
+	The sets \(U\) and \(\extNbr_G(U)\) are disjoint by definition of external neighborhood, and \cref{def:alpha-expander} gives \(\abs{\extNbr_G(U)}\geq \alpha\abs{U}\). Thus
+	\[
+		\abs{\Ball_t(v)}\geq \abs{U}+\abs{\extNbr_G(U)}\geq (1+\alpha)\abs{U}\geq (1+\alpha)^t.
+	\]
+	This proves the induction step.
+\end{proof}
+
+\begin{corollary}[Logarithmic Diameter]
+	\label{cor:logarithmic-diameter}
+	If \(G\) is an \(\alpha\)-vertex expander on \(n\geq 2\) vertices, then
+	\[
+		\operatorname{diam}(G)\leq 2\left\lceil\frac{\log(n/2)}{\log(1+\alpha)}\right\rceil+1.
+	\]
+	In particular, \(\operatorname{diam}(G)=O_\alpha(\log n)\).
+\end{corollary}
+
+\begin{proof}
+	The idea is to grow two balls, one from each endpoint. After logarithmically many steps each ball has size at least half the graph. If the two balls intersect, the two centers are close through the intersection; if they do not intersect, expansion has already implied connectedness, and the two half-sized parts must be joined by an edge.
+
+	Let \(u,v\in V\), and set
+	\[
+		t=\left\lceil\frac{\log(n/2)}{\log(1+\alpha)}\right\rceil.
+	\]
+	By \cref{prop:ball-growth}, both \(\Ball_t(u)\) and \(\Ball_t(v)\) have size at least \(n/2\). If these two balls intersect, then there is a vertex \(w\in \Ball_t(u)\cap \Ball_t(v)\), and therefore
+	\[
+		\operatorname{dist}_G(u,v)\leq \operatorname{dist}_G(u,w)+\operatorname{dist}_G(w,v)\leq 2t.
+	\]
+	If the two balls do not intersect, then they both have size exactly \(n/2\) and their union is all of \(V\). Since \cref{def:alpha-expander} implies that \(G\) is connected, there is an edge with one endpoint in \(\Ball_t(u)\) and the other endpoint in \(\Ball_t(v)\). This edge gives a path from \(u\) to \(v\) of length at most \(2t+1\). Since \(u\) and \(v\) were arbitrary, the displayed diameter bound follows.
+\end{proof}
+
+We can also connect this elementary vertex-expansion definition to the more analytic language of conductance and mixing. If \(G\) is an \(\alpha\)-vertex expander with maximum degree \(\Delta\), then the Cheeger constant defined below satisfies \(h(G)\geq \alpha/\Delta\). Indeed, for every nonempty \(U\subseteq V\) with \(\abs{U}\leq n/2\), each vertex in \(\extNbr_G(U)\) is incident to at least one edge from \(U\), and hence
+\[
+	\edgeBetween_G(U,V\setminus U)\geq \abs{\extNbr_G(U)}\geq \alpha\abs{U}.
+\]
+Since \(\vol_G(U)\leq \Delta\abs{U}\), the ratio defining \(h(G)\) is at least \(\alpha/\Delta\) on the smaller side of every cut.
+
+Consequently, when \(\alpha=\Theta(1)\) and \(\Delta=O(1)\), the lazy simple random walk on \(G\) mixes in \(O(\log n)\) steps by the classical conductance bound of Jerrum and Sinclair~\cite{STOC:JerSin88}; see also Levin, Peres, and Wilmer~\cite{LPW2009} for a systematic treatment of mixing times. The bounded-degree assumption is essential for this conclusion. If one takes two cliques of size \(n/2\) and joins them by a perfect matching, the resulting graph is a constant vertex expander, but a random walk started inside one clique crosses to the other side only after \(\Theta(n)\) steps on average, because only one of the \(\Theta(n)\) incident edges at a typical vertex leaves its clique.
+
+These elementary consequences show that \cref{def:alpha-expander} already enforces global structure. Later arguments use stronger forms of the same principle, where expansion prevents sublinear separators, supports long paths and cycles, or makes sparse local constraints behave like global constraints.
+
+\subsection{Examples and Limitations}
+\label{subsec:examples-alpha-expanders}
+
+We now record a few basic sources of \(\alpha\)-vertex expanders. The purpose of the list is not merely to exhibit examples, but also to calibrate what one should and should not expect from the weak vertex-expansion assumption in \cref{def:alpha-expander}. In particular, the examples below show that expansion by itself neither forces non-bipartiteness nor guarantees the presence of arbitrary bounded-degree subgraphs.
+
+\begin{example}[Complete Bipartite Graphs]
+	\label{ex:complete-bipartite-expander}
+	Let \(G=K_{a,b}\), where \(a=\lfloor \alpha n\rfloor\), \(b=n-a\), and \(0<\alpha\leq 1/2\). Up to the harmless rounding in \(a\), the graph \(G\) is an \(\alpha\)-vertex expander.
+
+	Indeed, let \(A,B\) be the two sides of the bipartition, with \(\abs{A}=a\) and \(\abs{B}=b\), and let \(U\subseteq A\cup B\) satisfy \(0<\abs{U}\leq n/2\). Write \(U_A=U\cap A\) and \(U_B=U\cap B\). If both \(U_A\) and \(U_B\) are nonempty, then every vertex outside \(U\) is adjacent to a vertex in \(U\), and therefore
+	\[
+		\abs{\extNbr_G(U)}=n-\abs{U}\geq \abs{U}\geq \alpha\abs{U}.
+	\]
+	If \(U\subseteq A\), then \(\extNbr_G(U)=B\), and so \(\abs{\extNbr_G(U)}=b\geq \alpha\abs{U}\). If \(U\subseteq B\), then \(\extNbr_G(U)=A\), and \(\abs{A}\geq \alpha\abs{U}\) because \(\abs{U}\leq n/2\) and \(\alpha\leq 1/2\), after adjusting constants for the rounding of \(a\).
+
+	This example is deliberately dense, but it has sparse analogues obtained by replacing the complete bipartite cut by a bounded-degree bipartite expander between two linear-sized parts. Its main lesson is structural rather than quantitative: an \(\alpha\)-vertex expander may be bipartite, and hence no theorem about weak vertex expanders can promise an odd cycle without imposing an additional hypothesis.
+\end{example}
+
+\begin{example}[Spectral Certificates]
+	\label{ex:spectral-certificates}
+	The spectral method gives the most common algebraic certificate for expansion. Let \(G\) be a \(d\)-regular graph on \(n\) vertices, let \(A(G)\) be its adjacency matrix, and write
+	\[
+		d=\lambda_1(A(G))\geq \lambda_2(A(G))\geq\cdots\geq \lambda_n(A(G))
+	\]
+	for the eigenvalues of \(A(G)\). If \(\lambda_2=\lambda_2(A(G))\), then the Cheeger inequality in \cref{thm:cheeger}, together with the comparison between edge and vertex expansion in \cref{prop:edge-vertex-expansion}, implies that \(G\) is an \(\alpha\)-vertex expander with
+	\[
+		\alpha\geq \frac{d-\lambda_2}{2d}.
+	\]
+	Thus a bounded-degree regular graph with a constant additive gap \(d-\lambda_2\) is a weak vertex expander. Conversely, bounded-degree vertex expansion forces a spectral gap after the usual Cheeger-type loss; this is one of the main reasons that combinatorial, random-walk, and spectral definitions of expansion are interchangeable at the qualitative level. We refer to Alon~\cite{Alo1986}, Alon and Milman~\cite{AM1985}, Chung~\cite{Chu1997}, and Hoory, Linial, and Wigderson~\cite{HLW2006} for the standard spectral background.
+
+	The same point has a non-regular formulation. If \(D\) is the degree matrix and \(A\) is the adjacency matrix, the normalized Laplacian is
+	\[
+		\mathcal{L}(G)=I-D^{-1/2}AD^{-1/2},
+	\]
+	with the usual convention on isolated vertices. If \(0=\mu_0\leq \mu_1\leq\cdots\leq \mu_{n-1}\) are the eigenvalues of \(\mathcal{L}(G)\), then the graph Cheeger inequality gives
+	\[
+		\frac{h(G)^2}{2}\leq \mu_1\leq 2h(G).
+	\]
+	Consequently, for graphs without isolated vertices and with bounded maximum degree, keeping \(\mu_1\) bounded away from zero is another way of certifying vertex expansion bounded away from zero.
+\end{example}
+
+\begin{example}[Subdividing Edges]
+	\label{ex:subdivision-expander}
+	Expansion is stable, with a quantitative loss, under bounded subdivisions. If \(G\) is an \(\alpha\)-vertex expander of maximum degree \(\Delta\), and \(G^{(\ell)}\) is obtained by subdividing every edge of \(G\) exactly \(\ell\) times, then \(G^{(\ell)}\) is a \(c_{\Delta}\alpha/(\ell+1)\)-vertex expander for some constant \(c_{\Delta}>0\) depending only on \(\Delta\). The proof is a charging argument along the subdivided paths: a set in \(G^{(\ell)}\) either cuts many of these paths, which gives boundary vertices directly, or contains long pieces of many paths, in which case projecting those pieces back to \(G\) produces a set whose expansion in \(G\) supplies the missing boundary. We shall only use the qualitative conclusion that the loss is linear in the subdivision length.
+
+	This construction is a useful warning. Starting from an excellent bounded-degree expander and subdividing every edge once already produces a graph in which no two vertices of degree greater than two are adjacent. Hence one cannot hope to embed, as a subgraph, even a fixed tree containing two adjacent vertices of degree three. Weak expanders nevertheless retain enough global structure to force long paths, long cycles under mild additional hypotheses, and large minors; these are the kinds of conclusions that survive subdivision.
+\end{example}
+
+\begin{example}[Random Regular Graphs]
+	\label{ex:random-regular-expanders}
+	For every fixed \(d\geq 3\), a graph drawn uniformly from the \(d\)-regular graphs on \(n\) vertices is, with probability tending to one as \(n\to\infty\), an \(\alpha_d\)-vertex expander for some constant \(\alpha_d>0\). One can prove this directly in the configuration model by bounding the probability of a sparse cut, as in Bollobas~\cite{Bol1988}. One can also pass through the spectral route: Friedman's theorem on the second eigenvalue of random regular graphs~\cite{STOC:Friedman03} gives, with high probability,
+	\[
+		\lambda_2(A(G))\leq 2\sqrt{d-1}+o(1),
+	\]
+	and \cref{ex:spectral-certificates} then gives constant vertex expansion for every fixed \(d\geq 3\).
+\end{example}
 
 \subsection{Edge Expansion}
 \label{subsec:edge-expansion}
@@ -16,6 +228,20 @@ An expander graph is a sparse graph with no sparse cut. More precisely, every se
 \end{definition}
 
 The normalization by \(d\abs{S}\) makes \(\EdgeExpansion(G)\) a number in \([0,1]\). It is the minimum fraction of edges leaving a set \(S\), where \(S\) is allowed to range over the smaller side of a cut. The restriction \(\abs{S}\leq n/2\) is not an extra assumption. Since \(\partial S=\partial(V\setminus S)\), every cut has a smaller side.
+
+For a non-regular graph, the corresponding edge-isoperimetric quantity is usually written in terms of volume. If \(G=(V,E)\) is any graph and \(U\subseteq V\), define
+\[
+	\vol_G(U)\coloneqq \sum_{v\in U}\deg_G(v).
+\]
+The Cheeger constant of \(G\) is
+\[
+	h(G)\coloneqq \min_{\emptyset\neq U\subsetneq V}\frac{\edgeBetween_G(U,V\setminus U)}{\min\{\vol_G(U),\vol_G(V\setminus U)\}}.
+\]
+Thus \(h(G)\) measures the smallest fraction of incident edge-volume that must cross a cut. In a \(d\)-regular graph this definition agrees with \(\EdgeExpansion(G)\), up to the choice of the smaller side of the cut, since \(\vol_G(U)=d\abs{U}\). If the maximum degree of \(G\) is bounded by \(\Delta\), then edge expansion also forces vertex expansion, because
+\[
+	\abs{\extNbr_G(U)}\geq \frac{\edgeBetween_G(U,V\setminus U)}{\Delta}.
+\]
+This is the precise sense in which, for bounded-degree graph families, the edge and vertex formulations are qualitatively equivalent; see the expander survey of Hoory, Linial, and Wigderson~\cite{HLW2006} and the isoperimetric inequalities of Alon and Milman~\cite{AM1985}.
 
 \begin{example}[Complete Graph]
 	\label{ex:complete-graph}

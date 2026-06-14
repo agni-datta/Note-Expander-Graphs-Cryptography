@@ -61,13 +61,22 @@
 \let\BigO\bigO
 \renewcommand{\vec}[1]{\mathbf{#1}}
 \newclass{\LOGSPACE}{LOGSPACE}
+\providecommand{\Adjacency}[1]{\vec{A}_{#1}}
+\providecommand{\Ball}{B}
+\providecommand{\CombLaplacian}[1]{\vec{L}_{#1}}
 \providecommand{\Condenser}{\mathsf{Con}}
+\providecommand{\DegreeMatrix}[1]{\vec{D}_{#1}}
+\providecommand{\Dirichlet}{\mathcal{E}}
 \providecommand{\EdgeExpansion}{h}
 \providecommand{\Expander}{\mathsf{G}}
 \providecommand{\Extractor}{\mathsf{Ext}}
+\providecommand{\edgeBetween}{e}
+\providecommand{\extNbr}{N}
+\providecommand{\NormLaplacian}[1]{\mathcal{L}_{#1}}
 \providecommand{\Markov}[1]{\vec{P}_{#1}}
 \providecommand{\MinEntropy}{\mathrm{H}_\infty}
 \providecommand{\Mixing}{\tau_{\mathrm{mix}}}
+\providecommand{\Rayleigh}{\mathcal{R}}
 \providecommand{\RandomWalk}[2]{W_{#1}^{#2}}
 \providecommand{\Rot}{\mathsf{Rot}}
 \providecommand{\SecondEigenvalue}{\lambda_2}
@@ -112,7 +121,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{abstract}
-	Expander graphs are sparse graphs that nevertheless behave, in several quantitative senses, like highly connected graphs. This note gives a self-contained introduction to the parts of expander theory that repeatedly appear in cryptography and pseudorandomness. We develop the combinatorial definitions of edge and vertex expansion, the spectral definition through the normalized adjacency operator, and the passage between these viewpoints through the discrete Cheeger inequality and the expander mixing lemma. We then discuss explicit constructions, including algebraic Ramanujan graphs and the zig-zag product, and explain how expansion enters randomness extraction, pseudorandom generators, expander codes, hash constructions, and communication-efficient cryptographic protocols. The guiding point is that expansion is a robust form of mixing, and that this mixing converts short random seeds, sparse communication patterns, or local constraints into global pseudorandomness and fault tolerance.
+	Expander graphs are sparse graphs that nevertheless behave, in several quantitative senses, like highly connected graphs. This note gives a self-contained introduction to the parts of expander theory that repeatedly appear in cryptography and pseudorandomness. We first take a spectral detour through the normalized Laplacian, Rayleigh quotients, and random walks, because these notions provide the analytic language in which expansion is most cleanly compared with mixing. We then develop the combinatorial definitions of edge and vertex expansion, the spectral definition through the normalized adjacency operator, and the passage between these viewpoints through the discrete Cheeger inequality and the expander mixing lemma. We finally discuss explicit constructions, including algebraic Ramanujan graphs and the zig-zag product, and explain how expansion enters randomness extraction, pseudorandom generators, expander codes, hash constructions, and communication-efficient cryptographic protocols. The guiding point is that expansion is a robust form of mixing, and that this mixing converts short random seeds, sparse communication patterns, or local constraints into global pseudorandomness and fault tolerance.
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -133,6 +142,7 @@
 
 \input{sections/introduction}
 \input{sections/preliminaries}
+\input{sections/spectral-graph-primer}
 \input{sections/expander-graphs}
 \input{sections/spectral-theory}
 \input{sections/constructions}
@@ -152,7 +162,7 @@
 
 \begin{small}
 	\bibliography{abbrev0,bibliography,crypto}
-	\bibliographystyle{acm}
+	\bibliographystyle{aomalpha}
 \end{small}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

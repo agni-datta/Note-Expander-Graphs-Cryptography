@@ -45,6 +45,184 @@ Impagliazzo and Wigderson~\cite{IW1997} showed how hardness assumptions can be c
 
 Loosely speaking, the time average of any bounded function along the walk concentrates around its space average exponentially fast in $t$, with concentration rate governed by the spectral gap. This is what makes walk-based pseudorandom generators secure: any statistical test that the output fails would imply that some function concentrates differently along the walk than along a truly random sequence, contradicting the expander Chernoff bound.
 
+\begin{theorem}[Derandomized Error Reduction by an Expander Walk]
+	\label{thm:expander-walk-error-reduction}
+	Let \(A(x,r)\) be a randomized Boolean algorithm using \(m\) random bits, and suppose that, for every input \(x\), the set
+	\[
+		B_x\coloneqq \{r\in\bits^m\mid A(x,r)\text{ is incorrect}\}
+	\]
+	has size at most \(2^m/3\). Let \(G\) be an explicit \((2^m,d,\lambda)\)-expander with \(\lambda\leq 1/8\), whose vertices are identified with \(\bits^m\). If \(r_0,r_1,\ldots,r_t\) is a random walk on \(G\) started from a uniform vertex, and if \(A'(x)\) outputs the majority value among \(A(x,r_0),\ldots,A(x,r_t)\), then
+	\[
+		\Prob[A'(x)\text{ is incorrect}]\leq \exp\left(-\frac{49t}{4608}\right).
+	\]
+	Moreover, if \(d\) is a power of two and the neighbor function of \(G\) is computable from an edge label, then \(A'\) uses \(m+t\log d\) random bits.
+\end{theorem}
+
+\begin{proof}
+	The proof is the usual independent-repetition argument with independence replaced by expander-walk concentration. The bad random strings form a set of density at most \(1/3\), and the majority vote fails only if the walk visits this bad set on at least half of its steps. The expander Chernoff bound says that this event is exponentially unlikely in the walk length, even though consecutive samples are not independent.
+
+	Fix an input \(x\), and define \(f_x\colon V(G)\to[0,1]\) by \(f_x(r)=1\) if \(r\in B_x\), and \(f_x(r)=0\) otherwise. Since \(r\) is uniform on \(\bits^m\), the mean of \(f_x\) over \(V(G)\) is
+	\[
+		\mu_x=\EE_{r\sample V(G)}[f_x(r)]=\frac{\abs{B_x}}{2^m}\leq \frac{1}{3}.
+	\]
+	The majority vote made by \(A'\) is incorrect only if at least half of the sampled random strings are bad, which is the event
+	\[
+		\frac{1}{t+1}\sum_{i=0}^t f_x(r_i)\geq \frac{1}{2}.
+	\]
+	Since \(\mu_x\leq 1/3\), this event implies
+	\[
+		\frac{1}{t+1}\sum_{i=0}^t f_x(r_i)\geq \mu_x+\frac{1}{6}.
+	\]
+	Applying \cref{lem:expander-chernoff} with \(\delta=1/6\) gives
+	\[
+		\Prob[A'(x)\text{ is incorrect}]
+		\leq
+		\exp\left(-\frac{(1-\lambda)^2t}{72}\right).
+	\]
+	The assumption \(\lambda\leq 1/8\) implies \(1-\lambda\geq 7/8\), and hence
+	\[
+		\frac{(1-\lambda)^2t}{72}\geq \frac{(7/8)^2t}{72}=\frac{49t}{64\cdot 72}=\frac{49t}{4608}.
+	\]
+	Substituting this lower bound in the exponent proves the stated error probability.
+
+	To sample the walk, the algorithm first chooses \(r_0\in\bits^m\), which costs \(m\) random bits. At each of the next \(t\) steps, it chooses one of the \(d\) outgoing edge labels, which costs exactly \(\log d\) random bits because \(d\) is a power of two. Therefore the total randomness is \(m+t\log d\), as claimed.
+\end{proof}
+
+\subsection{Fault-Tolerant Computation by Majority Correction}
+\label{subsec:fault-tolerant-computation}
+
+The same pseudorandomness principle also appears in the classical problem of reliable computation from unreliable components, initiated by von Neumann~\cite{vN1956} and developed further by Dobrushin and Ortyukov~\cite{DO1977}, Pippenger~\cite{FOCS:Pippenger85}, and Spielman~\cite{FOCS:Spielman96}. The informal objective is to replace every gate of a circuit by a small cloud of copies and to connect consecutive layers by a sparse graph in such a way that local failures do not accumulate into a global error. Expanders are exactly the right graphs for this purpose, because a set of erroneous copies cannot easily convince many correct copies in the next layer that the wrong value has a majority.
+
+\begin{figure}[t]
+	\centering
+	\adjustbox{max width=\textwidth}{%
+		\begin{tikzpicture}[
+			x=1cm,
+			y=1cm,
+			gate/.style={circle, draw, minimum size=7mm, inner sep=0pt},
+			maj/.style={rectangle, draw, rounded corners=1pt, minimum width=8mm, minimum height=6mm, inner sep=1pt},
+			wire/.style={-Latex, line width=0.35pt},
+			expwire/.style={line width=0.25pt}
+		]
+			\node[gate] (xone) at (0,1.2) {\(\wedge\)};
+			\node[gate] (xtwo) at (0,0) {\(\vee\)};
+			\node[gate] (xthree) at (0,-1.2) {\(\neg\)};
+			\node[gate] (gone) at (2.2,0.6) {\(\wedge\)};
+			\node[gate] (gtwo) at (2.2,-0.6) {\(\vee\)};
+			\node[gate] (out) at (4.1,0) {\(f\)};
+			\draw[wire] (xone) -- (gone);
+			\draw[wire] (xtwo) -- (gone);
+			\draw[wire] (xtwo) -- (gtwo);
+			\draw[wire] (xthree) -- (gtwo);
+			\draw[wire] (gone) -- (out);
+			\draw[wire] (gtwo) -- (out);
+			\node at (2.05,-2.0) {original circuit};
+			\foreach \i/\y in {1/1.2,2/0.4,3/-0.4,4/-1.2} {
+				\node[gate] (a\i) at (7,\y) {\(\wedge\)};
+				\node[maj] (m\i) at (8.35,\y) {\(\operatorname{Maj}\)};
+				\node[gate] (b\i) at (9.7,\y) {\(\vee\)};
+				\draw[wire] (a\i) -- (m\i);
+				\draw[wire] (m\i) -- (b\i);
+			}
+			\foreach \i in {1,2,3,4} {
+				\foreach \j in {1,2,3,4} {
+					\pgfmathtruncatemacro{\test}{mod(\i+2*\j,3)}
+					\ifnum\test=0
+						\draw[expwire] (a\i.east) -- (m\j.west);
+					\fi
+				}
+			}
+			\foreach \i in {1,2,3,4} {
+				\foreach \j in {1,2,3,4} {
+					\pgfmathtruncatemacro{\testb}{mod(2*\i+\j,3)}
+					\ifnum\testb=1
+						\draw[expwire] (m\i.east) -- (b\j.west);
+					\fi
+				}
+			}
+			\node at (8.35,-2.0) {replicated layers with majority gates};
+			\draw[-Latex, line width=0.45pt] (4.9,0) -- (6.1,0);
+		\end{tikzpicture}%
+	}
+	\caption{A schematic replacement of a circuit layer by several copies connected through sparse majority checks. The thin wires represent an expander-like interconnection pattern, whose role is to ensure that a small set of erroneous copies has too little local density to control the next layer.}
+	\label{fig:expander-majority-circuit}
+\end{figure}
+
+The schematic in \cref{fig:expander-majority-circuit} should be read as a local picture rather than as a complete circuit transformation. Each gate is copied several times, and the value passed to the next layer is mediated by majority gates whose input neighborhoods are chosen from a bounded-degree expander. The following lemma isolates the graph-theoretic fact that makes such a correction layer useful.
+
+\begin{lemma}[Majority Containment in a Spectral Expander]
+	\label{lem:majority-containment}
+	Let \(G=(V,E)\) be an \((n,d,\lambda)\)-expander with \(\lambda\leq 1/8\). If \(S\subseteq V\) satisfies \(\abs{S}\leq n/8\), and if
+	\[
+		M(S)\coloneqq \left\{v\in V\mid \abs{N(v)\cap S}>\frac{d}{2}\right\},
+	\]
+	then
+	\[
+		\abs{M(S)}\leq \frac{\abs{S}}{9}.
+	\]
+\end{lemma}
+
+\begin{proof}
+	The proof compares two counts of the edges between the suspected bad set and the vertices that see it as a majority. The definition of \(M(S)\) gives a lower bound on this edge count, while the expander mixing lemma gives an upper bound. If \(M(S)\) were not much smaller than \(S\), these two estimates would be incompatible.
+
+	Write \(m=\abs{M(S)}\) and \(s=\abs{S}\). Every vertex in \(M(S)\) has more than \(d/2\) neighbors in \(S\), and therefore
+	\[
+		e(M(S),S)>\frac{dm}{2}.
+	\]
+	On the other hand, \cref{lem:expander-mixing}, applied with the two sets \(M(S)\) and \(S\), gives
+	\[
+		e(M(S),S)\leq \frac{dms}{n}+\lambda d\sqrt{ms}.
+	\]
+	Combining the lower and upper bounds, and then dividing by \(d>0\), yields
+	\[
+		\frac{m}{2}<\frac{ms}{n}+\lambda\sqrt{ms}.
+	\]
+	Since \(s\leq n/8\), we have \(s/n\leq 1/8\), and hence
+	\[
+		\frac{m}{2}<\frac{m}{8}+\lambda\sqrt{ms}.
+	\]
+	Subtracting \(m/8\) from both sides gives
+	\[
+		\frac{3m}{8}<\lambda\sqrt{ms}.
+	\]
+	Using \(\lambda\leq 1/8\), we obtain
+	\[
+		\frac{3m}{8}<\frac{1}{8}\sqrt{ms}.
+	\]
+	Multiplying by \(8\) gives
+	\[
+		3m<\sqrt{ms}.
+	\]
+	If \(m=0\), then the desired bound is immediate. If \(m>0\), squaring both sides gives
+	\[
+		9m^2<ms.
+	\]
+	Dividing by \(m\) gives \(9m<s\), and hence \(m<s/9\). In particular, \(\abs{M(S)}\leq \abs{S}/9\), after weakening the strict inequality to a non-strict one.
+\end{proof}
+
+\begin{corollary}[Decay of Majority Infection]
+	\label{cor:majority-infection-decay}
+	Let \(G\) be as in \cref{lem:majority-containment}. If \(S_{t+1}=M(S_t)\) and \(\abs{S_0}\leq n/8\), then
+	\[
+		\abs{S_t}\leq \frac{\abs{S_0}}{9^t}
+	\]
+	for every \(t\geq 0\). In particular, \(S_t=\emptyset\) once \(t>\log_9 n\).
+\end{corollary}
+
+\begin{proof}
+	The infection rule says that a vertex becomes bad only when a majority of its neighbors were bad in the previous round. The majority-containment lemma says that such vertices form a set smaller by a constant factor, as long as the current bad set is at most \(n/8\).
+
+	We prove the displayed bound by induction on \(t\). For \(t=0\), it is the identity \(\abs{S_0}\leq \abs{S_0}\). Suppose it holds for some \(t\geq 0\). Since \(\abs{S_t}\leq \abs{S_0}\leq n/8\), \cref{lem:majority-containment} applies to \(S_t\), and gives
+	\[
+		\abs{S_{t+1}}=\abs{M(S_t)}\leq \frac{\abs{S_t}}{9}.
+	\]
+	Using the induction hypothesis, we get
+	\[
+		\abs{S_{t+1}}\leq \frac{1}{9}\cdot \frac{\abs{S_0}}{9^t}=\frac{\abs{S_0}}{9^{t+1}}.
+	\]
+	This proves the induction. Since \(\abs{S_0}\leq n\), the bound gives \(\abs{S_t}<1\) whenever \(9^t>n\). The set size is an integer, and therefore \(\abs{S_t}=0\) in that case.
+\end{proof}
+
 \subsection{Hash Functions from Expander Graphs}
 \label{subsec:hash-functions}
 
@@ -80,7 +258,7 @@ The security argument is not merely that the honest parties remain connected. Co
 	The literature on sparse-communication MPC is technically diverse, and not every use of a sparse graph is literally an expander argument. The useful heuristic is nevertheless stable. If a protocol replaces complete communication by local communication, then some expansion-like property must prevent local failures or corruptions from becoming global separations.
 \end{remark}
 
-\subsection{Derandomization and Hardness Amplification}
+\subsection{Hardness Amplification}
 \label{subsec:derandomization}
 
 Expanders play a central role in derandomization, which is the process of replacing random choices in a probabilistic algorithm by pseudorandom choices generated from a short seed. The key tool is a pseudorandom generator whose security is based on a worst-case hardness assumption rather than a concrete intractability assumption, and expanders are what makes such generators efficient.
