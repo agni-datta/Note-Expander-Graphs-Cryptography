@@ -35,11 +35,11 @@ where we use the convention that \(d_v^{-1/2}=0\) when \(d_v=0\). Written entryw
 	\NormLaplacian{\Graph}(u,v)=
 	\begin{cases}
 		1                        & \text{if }u=v\text{ and }d_v>0, \\
-		-\frac{1}{\sqrt{d_ud_v}} & \text{if }\{u,v\}\in\Edges,     \\
+		-\dfrac{1}{\sqrt{d_ud_v}} & \text{if }\{u,v\}\in\Edges,     \\
 		0                        & \text{otherwise.}
 	\end{cases}
 \end{equation}
-Thus the normalized Laplacian differs from the adjacency matrix in two ways. It first subtracts adjacency from degree, which makes constant functions invisible to the operator, and it then rescales by the square roots of degrees, which makes the definition behave well for non-regular graphs.
+Thus, the normalized Laplacian differs from the adjacency matrix in two ways. It first subtracts adjacency from degree, which makes constant functions invisible to the operator, and it then rescales by the square roots of degrees, which makes the definition behave well for non-regular graphs.
 
 \begin{proposition}[Dirichlet Form of the Combinatorial Laplacian]
 	\label{prop:combinatorial-laplacian-dirichlet}
@@ -85,7 +85,7 @@ Thus the normalized Laplacian differs from the adjacency matrix in two ways. It 
 	\begin{equation}
 		\langle g,\NormLaplacian{\Graph}g\rangle=\sum_{\{u,v\}\in\Edges}\left(\frac{g(u)}{\sqrt{d_u}}-\frac{g(v)}{\sqrt{d_v}}\right)^2,
 	\end{equation}
-	where vertices of degree zero do not occur in the displayed edge sum.
+	where the vertices of degree zero do not occur in the displayed edge sum.
 \end{proposition}
 
 \begin{proof}
@@ -233,13 +233,13 @@ whenever the denominator is nonzero.
 	\begin{equation}
 		f_0(u)-f_0(v)=\left(f(u)-\GraphMean{f}\right)-\left(f(v)-\GraphMean{f}\right)=f(u)-f(v).
 	\end{equation}
-	Thus subtracting the weighted mean leaves the numerator unchanged and turns the denominator into \(\sum_v d_v(f(v)-\GraphMean{f})^2\). Applying the first characterization to \(f_0\), and observing that every weighted-mean-zero function arises in this way from itself, proves the second characterization.
+	Thus, subtracting the weighted mean leaves the numerator unchanged and turns the denominator into \(\sum_v d_v(f(v)-\GraphMean{f})^2\). Applying the first characterization to \(f_0\), and observing that every weighted-mean-zero function arises in this way from itself, proves the second characterization.
 \end{proof}
 
 \subsection{Conductance and Spectral Partitioning}
 \label{subsec:conductance-spectral-partitioning}
 
-The Rayleigh characterization in \cref{prop:lambda-one-rayleigh} explains why the normalized Laplacian is the matrix that appears in graph partitioning. A partition should have few edges crossing the cut relative to the amount of graph mass on the smaller side, and the denominator in the normalized Rayleigh quotient is exactly the degree-weighted mass against which edge variation is measured. Thus the second eigenvector is not merely a certificate that the graph has a sparse cut; it is also a real-valued relaxation of the problem of finding such a cut.
+The Rayleigh characterization in \cref{prop:lambda-one-rayleigh} explains why the normalized Laplacian is the matrix that appears in graph partitioning. A partition should have few edges crossing the cut relative to the amount of graph mass on the smaller side, and the denominator in the normalized Rayleigh quotient is exactly the degree-weighted mass against which edge variation is measured. Therefore, the second eigenvector is not merely a certificate that the graph has a sparse cut; it is also a real-valued relaxation of the problem of finding such a cut.
 
 For a graph with edge weights \(w_{uv}=w_{vu}\geq 0\), write
 \begin{equation}
@@ -263,7 +263,7 @@ and the conductance of a nonempty proper set \(S\) is
 \end{equation}
 For unweighted \(d\)-regular graphs, \cref{eq:weighted-conductance-set} reduces, up to the harmless convention of always choosing the smaller side, to the edge-expansion quantity used later in \cref{def:edge-expansion}. This normalization is the right one for algorithms, because a cut isolating one high-degree vertex should not be judged in the same way as a balanced cut crossing the same number of edges.
 
-The normalized Laplacian turns the discrete partitioning problem into a continuous one. If \(f\) is nearly constant on two regions and changes mainly across the boundary between them, then the numerator in \cref{prop:lambda-one-rayleigh} is small, whereas the denominator is large when both regions have substantial volume. Conversely, if an eigenvector for \(\lambda_1\) has small Rayleigh quotient, then sorting vertices by the rescaled values
+The normalized Laplacian turns the discrete partitioning problem into a continuous one. If \(f\) is nearly constant on two regions and changes mainly across the boundary between them, then the numerator in \cref{prop:lambda-one-rayleigh} is small, whereas the denominator is large when both regions have substantial volume. Conversely, if an eigenvector for \(\lambda_1\) has a small Rayleigh quotient, then sorting the vertices by the rescaled values
 \begin{equation}
 	\label{eq:sweep-order-normalized-laplacian}
 	\frac{g(v)}{\sqrt{d_v}},
@@ -344,7 +344,7 @@ where \(g\) is an eigenvector of \(\NormLaplacian{\Graph}\), produces threshold 
 \subsection{Adjacency Spectra of Regular Graphs}
 \label{subsec:adjacency-spectra-regular-graphs}
 
-The normalized Laplacian is the most stable object for non-regular graphs, but the adjacency matrix is often the more economical object for regular graphs, and much of the expander literature moves between these two languages without warning. We spell out this passage explicitly, because it is the point at which the spectral gap of a random walk, the second adjacency eigenvalue, and the first nonzero Laplacian eigenvalue become the same quantitative phenomenon written in three normalizations.
+The normalized Laplacian is the most stable object for non-regular graphs, but the adjacency matrix is often the more economical object for regular graphs, and much of the expander literature moves between these two languages without warning. We spell out this passage explicitly because it is the point at which the spectral gap of a random walk, the second adjacency eigenvalue, and the first nonzero Laplacian eigenvalue become the same quantitative phenomenon written in three normalizations.
 
 Let \(\Graph\) be a \(d\)-regular graph, and let the eigenvalues of \(\Adjacency{\Graph}\) be written in nonincreasing order as
 \begin{equation}
@@ -522,7 +522,7 @@ We next record a typical use of the extreme end of the adjacency spectrum. The r
 			-s  & \text{if }v\notin S.
 		\end{cases}
 	\end{equation}
-	If \(s=0\), then the claimed inequality is immediate, since its left-hand side is \(0\). We therefore assume \(s>0\). Since \(d>0\), the graph has no independent set equal to all of \(\Vertices\), and hence \(s<n\). Thus the vector \(x\) is nonzero and the quantity \(ns(n-s)\) that appears below is positive.
+	If \(s=0\), then the claimed inequality is immediate, since its left-hand side is \(0\). We therefore assume \(s>0\). Since \(d>0\), the graph has no independent set equal to all of \(\Vertices\), and hence \(s<n\). Hence, the vector \(x\) is nonzero, and the quantity \(ns(n-s)\) that appears below is positive.
 	Then
 	\begin{equation}
 		\langle x,\vec{1}\rangle=s(n-s)+(n-s)(-s)=s(n-s)-s(n-s)=0.
@@ -613,7 +613,7 @@ The next facts explain why the normalized Laplacian spectrum is naturally confin
 \end{lemma}
 
 \begin{proof}
-	The quadratic form of \(\NormLaplacian{\Graph}\) is a sum of squares over edges. Hence a vector lies in the zero eigenspace exactly when all these squares vanish, which means that the rescaled value \(g(v)/\sqrt{d_v}\) is constant on each nontrivial connected component, while isolated vertices contribute their own independent zero vectors.
+	The quadratic form of \(\NormLaplacian{\Graph}\) is a sum of squares over edges. Hence, a vector lies in the zero eigenspace exactly when all these squares vanish, which means that the rescaled value \(g(v)/\sqrt{d_v}\) is constant on each nontrivial connected component, while isolated vertices contribute their own independent zero vectors.
 
 	Let \(g\in\RR^\Vertices\). Since \(\NormLaplacian{\Graph}\) is positive semidefinite by \cref{cor:laplacian-spectrum-nonnegative}, the condition \(\NormLaplacian{\Graph}g=\vec{0}\) is equivalent to
 	\begin{equation}
@@ -691,7 +691,7 @@ The next facts explain why the normalized Laplacian spectrum is naturally confin
 	\end{equation}
 	Thus equality holds exactly when \(a=-b\). Applying this to \(a=f(u)\) and \(b=f(v)\), we get \(f(u)=-f(v)\) on every edge touched by the support of \(f\).
 
-	Choose a vertex \(x\) with \(f(x)\neq 0\), and let \(C\) be its connected component. Along any path starting from \(x\), the value of \(f\) alternates sign at every step and never becomes zero. Therefore every edge of \(C\) joins a vertex at even distance from \(x\) to a vertex at odd distance from \(x\). If there were an edge joining two vertices of the same parity, the sign alternation along paths from \(x\) would force the two endpoint values to have the same sign, while the edge condition would require them to have opposite signs. Hence no such edge exists, and \(C\) is bipartite. Since \(f(x)\neq 0\), the component \(C\) contains an edge and is nontrivial.
+	Choose a vertex \(x\) with \(f(x)\neq 0\), and let \(C\) be its connected component. Along any path starting from \(x\), the value of \(f\) alternates sign at every step and never becomes zero. Therefore, every edge of \(C\) joins a vertex at even distance from \(x\) to a vertex at odd distance from \(x\). If there were an edge joining two vertices of the same parity, the sign alternation along paths from \(x\) would force the two endpoint values to have the same sign, while the edge condition would require them to have opposite signs. Hence, no such edge exists, and \(C\) is bipartite. Since \(f(x)\neq 0\), the component \(C\) contains an edge and is nontrivial.
 
 	Conversely, suppose \(C\) is a nontrivial bipartite connected component with bipartition \(C=A\cup B\). Define \(f\colon \Vertices\to\RR\) by setting \(f(v)=1\) for \(v\in A\), \(f(v)=-1\) for \(v\in B\), and \(f(v)=0\) for \(v\notin C\). For every edge \(\{u,v\}\) inside \(C\), the endpoints lie on opposite sides of the bipartition, and hence
 	\begin{equation}
@@ -723,7 +723,7 @@ The following computations give useful checks on the normalization. They also ex
 	\begin{equation}
 		\NormLaplacian{K_n}=\IdentityMatrix-\frac{1}{n-1}\Adjacency{K_n}.
 	\end{equation}
-	The adjacency matrix of \(K_n\) is \(\vec{J}-\IdentityMatrix\), where \(\vec{J}\) is the all-ones matrix. The vector \(\vec{1}\) is an eigenvector of \(\vec{J}-\IdentityMatrix\) with eigenvalue \(n-1\), because \(\vec{J}\vec{1}=n\vec{1}\) and \((\vec{J}-\IdentityMatrix)\vec{1}=(n-1)\vec{1}\). Every vector \(x\perp \vec{1}\) satisfies \(\vec{J}x=\vec{0}\), and hence \((\vec{J}-\IdentityMatrix)x=-x\). Therefore the normalized Laplacian eigenvalues are
+	The adjacency matrix of \(K_n\) is \(\vec{J}-\IdentityMatrix\), where \(\vec{J}\) is the all-ones matrix. The vector \(\vec{1}\) is an eigenvector of \(\vec{J}-\IdentityMatrix\) with eigenvalue \(n-1\), because \(\vec{J}\vec{1}=n\vec{1}\) and \((\vec{J}-\IdentityMatrix)\vec{1}=(n-1)\vec{1}\). Every vector \(x\perp \vec{1}\) satisfies \(\vec{J}x=\vec{0}\), and hence \((\vec{J}-\IdentityMatrix)x=-x\). Hence, the normalized Laplacian eigenvalues are
 	\begin{equation}
 		1-\frac{n-1}{n-1}=0
 		\quad\text{and}\quad
@@ -736,7 +736,7 @@ The following computations give useful checks on the normalization. They also ex
 	\label{ex:laplacian-complete-bipartite}
 	For the complete bipartite graph \(K_{m,n}\), the normalized Laplacian has eigenvalues \(0\), \(1\) with multiplicity \(m+n-2\), and \(2\). To see this, write the bipartition as \(A\cup B\), where \(\abs{A}=m\) and \(\abs{B}=n\). A vector supported on \(A\) whose coordinates sum to zero is annihilated by the normalized adjacency operator \(\IdentityMatrix-\NormLaplacian{K_{m,n}}\), because every vertex in \(B\) sees the same normalized sum over \(A\), namely zero, and every vertex in \(A\) has no neighbor in \(A\). The same reasoning applies to vectors supported on \(B\) whose coordinates sum to zero. These two subspaces have total dimension \((m-1)+(n-1)=m+n-2\), and on them the normalized Laplacian acts as the identity.
 
-	It remains to diagonalize the two-dimensional space of vectors that are constant on each side after degree normalization. The vector \(\DegreeMatrix{\Graph}^{1/2}\vec{1}\), which equals \(\sqrt{n}\) on vertices of \(A\) and \(\sqrt{m}\) on vertices of \(B\), gives eigenvalue \(0\). The vector that equals \(\sqrt{n}\) on vertices of \(A\) and equals \(-\sqrt{m}\) on vertices of \(B\) alternates sign across every edge in the normalized sense and therefore gives eigenvalue \(2\), as in the proof of \cref{lem:top-eigenvalue-bipartite}. Since the dimensions add to \(m+n\), this accounts for the full spectrum. A star is the special case \(K_{1,n-1}\), and hence it has the same spectral pattern with \(m+n\) replaced by the number of vertices.
+	It remains to diagonalize the two-dimensional space of vectors that are constant on each side after degree normalization. The vector \(\DegreeMatrix{\Graph}^{1/2}\vec{1}\), which equals \(\sqrt{n}\) on vertices of \(A\) and \(\sqrt{m}\) on vertices of \(B\), gives eigenvalue \(0\). The vector that equals \(\sqrt{n}\) on the vertices of \(A\) and equals \(-\sqrt{m}\) on the vertices of \(B\) alternates sign across every edge in the normalized sense and therefore gives eigenvalue \(2\), as in the proof of \cref{lem:top-eigenvalue-bipartite}. Since the dimensions add to \(m+n\), this accounts for the full spectrum. A star is the special case \(K_{1,n-1}\), and hence it has the same spectral pattern with \(m+n\) replaced by the number of vertices.
 \end{example}
 
 \begin{example}[Cycles and Cubes]

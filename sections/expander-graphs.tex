@@ -55,14 +55,14 @@ An expander graph is a sparse graph with no sparse cut. More precisely, every se
 	\label{fig:expansion-versus-bottleneck}
 \end{figure}
 
-The comparison in \cref{fig:expansion-versus-bottleneck} is the informal model behind the formal definitions below. The left-hand graph shows why sparsity alone is not enough, since a small set can be separated from the rest of the graph by very few crossing edges, whereas the right-hand graph shows the feature that expansion enforces, namely that every small set must expose many exits. In theoretical informatics, abbreviated \textsc{ti}, this distinction should be read as a resource statement rather than merely as a graph-theoretic curiosity: bounded degree means that every vertex has only a constant local communication budget, whereas expansion says that no small region can isolate information, errors, randomness, or adversarial influence without exposing a proportional interface to the rest of the system.
+The comparison in \cref{fig:expansion-versus-bottleneck} is the informal model behind the formal definitions below. The left-hand graph shows why sparsity alone is not enough, since a small set can be separated from the rest of the graph by very few crossing edges, whereas the right-hand graph shows the feature that expansion enforces, namely that every small set must expose many exits. This distinction should be read as a resource statement rather than merely as a graph-theoretic curiosity: bounded degree means that every vertex has only a constant local communication budget, whereas expansion says that no small region can isolate information, errors, randomness, or adversarial influence without exposing a proportional interface to the rest of the system.
 
 \subsection{Why Expanders Are Extremal}
 \label{subsec:why-expanders-are-extremal}
 
 The most misleading thing about expanders is that they invite a picture and then punish the picture. A drawing on a page already asks the graph to behave like a low-dimensional geometric object, whereas a good expander is a graph whose large-scale behavior systematically resists that request. Thus \cref{fig:expansion-versus-bottleneck} should not be read as a faithful visualization of a large expander, but only as a schematic representation of what fails in a bottlenecked graph and what is forbidden in an expanding graph.
 
-This point is useful both in theoretical computer science and in applications. A path, a cycle, a grid, a tree, and a dumbbell graph all admit simple drawings because they have visible geometric or separator structure, and exactly this structure creates small cuts, slow diffusion, and small spectral gap. In contrast, an expander is sparse but behaves, for many large-scale tests, like a complete graph whose edges have been thinned without introducing a bottleneck. This is why expanders reduce randomness, support efficient error-correcting codes, underlie pseudorandom constructions, and serve as limiting examples for graph algorithms that are expected to behave differently on low-dimensional data and on noisy highly connected data; see the survey of Hoory, Linial, and Wigderson~\cite{HLW2006} and Vadhan's monograph~\cite{Vad2012}.
+This point is useful both in theoretical computer science and in applications. A path, a cycle, a grid, a tree, and a dumbbell graph all admit simple drawings because they have visible geometric or separator structure, and exactly this structure creates small cuts, slow diffusion, and a small spectral gap. In contrast, an expander is sparse but behaves, for many large-scale tests, like a complete graph whose edges have been thinned without introducing a bottleneck. This is why expanders reduce randomness, support efficient error-correcting codes, underlie pseudorandom constructions, and serve as limiting examples for graph algorithms that are expected to behave differently on low-dimensional data and on noisy, highly connected data; see the survey of Hoory, Linial, and Wigderson~\cite{HLW2006} and Vadhan's monograph~\cite{Vad2012}.
 
 There is also a useful distinction between the theoretical and practical meanings of sparsity. In the classical expander definition, the degree \(d\) is fixed independently of \(n\), because the strongest phenomenon is that constant local information can force global connectivity, mixing, and pseudorandomness. If \(d\) grows like a polylogarithm in \(n\), many concentration effects already become available, while if \(d\) is comparable to \(n\), the complete graph is no longer being approximated by a genuinely sparse object. The constant-degree regime is therefore the cleanest mathematical regime, even though in data analysis one often uses the word expander-like for irregular or weighted graphs whose conductance and discrepancy properties resemble those of a bounded-degree expander.
 
@@ -104,7 +104,7 @@ It is often useful to ask for expansion only at selected scales. This is especia
 	For a positive integer \(k\), we say that \(\Graph\) is a \((k,\alpha)\)-vertex expander if it is an \((\{1,\ldots,k\},\alpha)\)-vertex expander.
 \end{definition}
 
-Thus an \(\alpha\)-vertex expander on \(n\) vertices is the same object as an \((\{1,\ldots,\lfloor n/2\rfloor\},\alpha)\)-vertex expander, up to the harmless rounding convention at \(n/2\), because \cref{eq:alpha-expander-condition,eq:scale-restricted-expansion-condition} impose the same inequality on the same family of sets. The converse is not literally true when expansion is required only at one scale, because a graph may expand all sets of size \(n/100\) while still having isolated vertices. Nevertheless, for the qualitative uses in this note, expansion at a linear scale can often be converted into ordinary expansion after passing to a large induced subgraph. The basic mechanism is the following deletion lemma, which is a standard form of the expansion-extraction argument used in the graph-expansion literature; see the survey of Hoory, Linial, and Wigderson~\cite{HLW2006} and the decomposition work of Moshkovitz and Shapira~\cite{SODA:MosSha15} for broader context.
+Thus an \(\alpha\)-vertex expander on \(n\) vertices is the same object as an \((\{1,\ldots,\lfloor n/2\rfloor\},\alpha)\)-vertex expander, up to the harmless rounding convention at \(n/2\), because \cref{eq:alpha-expander-condition,eq:scale-restricted-expansion-condition} impose the same inequality on the same family of sets. The converse is not literally true when expansion is required only at one scale, because a graph may expand all sets of size \(n/100\) while still having isolated vertices. Nevertheless, for the qualitative uses in this note, expansion at a linear scale can often be converted into ordinary expansion after passing to a large induced subgraph. The basic mechanism is the following deletion lemma, which is a standard form of the expansion-extraction argument used in the graph-expansion literature; see the survey of Hoory, Linial, and Wigderson~\cite{HLW2006} and the decomposition work of Moshkovitz and Shapira~\cite{SODA:MosSha15} for a broader context.
 
 \begin{lemma}[Interval Expansion Deletion]
 	\label{lem:interval-expansion-deletion}
@@ -143,7 +143,7 @@ Thus an \(\alpha\)-vertex expander on \(n\) vertices is the same object as an \(
 		\label{eq:interval-jump-contradiction}
 		\abs{Z_i}=\abs{Z_{i-1}}+\abs{A_{i-1}}\leq \abs{Z_{i-1}}+\frac{n-\abs{Z_{i-1}}}{2}=\frac{n+\abs{Z_{i-1}}}{2}<\frac{2n}{3},
 	\end{equation}
-	contradicting the choice of \(i\). Hence the procedure halts with \(\abs{Z_i}<n/3\), since the graph loses at least one vertex at each deletion step and cannot continue indefinitely.
+	contradicting the choice of \(i\). Hence, the procedure halts with \(\abs{Z_i}<n/3\), since the graph loses at least one vertex at each deletion step and cannot continue indefinitely.
 
 	Let \(Z\) be the final deleted set and let \(H=\Graph[\Vertices(\Graph)\setminus Z]\). By the stopping condition, every set \(A\subseteq \Vertices(H)\) with \(0<\abs{A}\leq \abs{\Vertices(H)}/2\) satisfies \(\abs{\extNbr_H(A)}\geq \alpha\abs{A}\). Thus \(H\) is an \(\alpha\)-vertex expander.
 \end{proof}
@@ -272,7 +272,7 @@ be the ball of radius \(t\) around \(v\). When the graph is clear, we write \(\B
 	\label{fig:random-walk-cycle-expander}
 \end{figure}
 
-\cref{fig:random-walk-cycle-expander} puts the ball-growth argument in probabilistic language. On a cycle, a walk started from one vertex remains concentrated near its starting point for a long time, while on an expander the same bounded-degree local rule spreads mass across many new vertices at each scale until the walk has no small region left in which to remain concentrated.
+\cref{fig:random-walk-cycle-expander} puts the ball-growth argument in probabilistic language. On a cycle, a walk started from one vertex remains concentrated near its starting point for a long time, while on an expander, the same bounded-degree local rule spreads mass across many new vertices at each scale until the walk has no small region left in which to remain concentrated.
 
 We can also connect this elementary vertex-expansion definition to the more analytic language of conductance and mixing. If \(\Graph\) is an \(\alpha\)-vertex expander with maximum degree \(\Delta\), then the Cheeger constant defined below satisfies \(h(\Graph)\geq \alpha/\Delta\). Indeed, for every nonempty \(U\subseteq \Vertices\) with \(\abs{U}\leq n/2\), each vertex in \(\extNbr_\Graph(U)\) is incident to at least one edge from \(U\), and hence
 \begin{equation}
@@ -338,7 +338,7 @@ The adjective balanced is important. In a bounded-degree graph, deleting the nei
 \end{proposition}
 
 \begin{proof}
-	The proof reverses the deletion argument used in \cref{lem:interval-expansion-deletion}. We repeatedly delete sets that fail to expand inside the current graph, and we track the union of all deleted sets in the original graph. If this union ever becomes large enough to serve as one side of a balanced separation, then its small external neighborhood becomes a forbidden small separator; hence the deletion process must stop early, and the remaining induced graph is expanding by construction.
+	The proof reverses the deletion argument used in \cref{lem:interval-expansion-deletion}. We repeatedly delete sets that fail to expand inside the current graph, and we track the union of all deleted sets in the original graph. If this union ever becomes large enough to serve as one side of a balanced separation, then its small external neighborhood becomes a forbidden small separator; hence, the deletion process must stop early, and the remaining induced graph is expanding by construction.
 
 	Start with \(\Graph_0=\Graph\). As long as the current graph \(\Graph_i\) contains a set \(A_i\subseteq \Vertices(\Graph_i)\) satisfying
 	\begin{equation}
@@ -387,7 +387,7 @@ The adjective balanced is important. In a bounded-degree graph, deleting the nei
 	\end{equation}
 	Hence \(S_i\) is a balanced separator according to \cref{def:balanced-separator}, separating \(Z_i\) from \(Y_i\), while \cref{eq:separator-small-neighborhood-from-deletion} says that \(\abs{S_i}<\beta n\). This contradicts the hypothesis that every balanced separator has size at least \(\beta n\).
 
-	The deletion process therefore halts with a deleted set \(Z\) satisfying
+	The deletion process, therefore, halts with a deleted set \(Z\) satisfying
 	\begin{equation}
 		\label{eq:separator-final-deleted-size}
 		\abs{Z}<\frac{n}{3}.
@@ -498,7 +498,7 @@ The separator criterion is qualitative, since it assumes the absence of small se
 		\label{eq:locally-sparse-medium-neighbor-bound}
 		\abs{\extNbr_H(U)}\geq \frac{\eta}{\Delta}\abs{U}=\alpha\abs{U}.
 	\end{equation}
-	Combining \cref{eq:locally-sparse-small-neighbor-bound,eq:locally-sparse-medium-neighbor-bound}, we see that \(H\) is an \(\alpha\)-vertex expander, since every set of size at most \(\abs{W}/2\) is either small or medium. In this case \cref{eq:locally-sparse-current-size} gives the required induced expander on more than \(\beta n\) vertices.
+	Combining \cref{eq:locally-sparse-small-neighbor-bound,eq:locally-sparse-medium-neighbor-bound}, we see that \(H\) is an \(\alpha\)-vertex expander, since every set of size at most \(\abs{W}/2\) is either small or medium. In this case, \cref{eq:locally-sparse-current-size} gives the required induced expander on more than \(\beta n\) vertices.
 
 	Otherwise, there is a set \(U\subseteq W\) satisfying \cref{eq:locally-sparse-medium-range} that spans at least \((\rho_r-\eta)\abs{U}\) edges in \(H\). We then define
 	\begin{equation}
@@ -521,7 +521,7 @@ The separator criterion is qualitative, since it assumes the absence of small se
 		\label{eq:locally-sparse-too-small}
 		\abs{\Vertices(\Graph^{(L)})}\leq \frac{n}{2^L}<\beta n,
 	\end{equation}
-	where the strict inequality follows from \cref{eq:locally-sparse-rounds}. On the other hand, \cref{eq:locally-sparse-current-density,eq:locally-sparse-threshold-above-c2} applied with \(r=L\) would force \(\Graph^{(L)}\) to have edge density greater than \(c_2\), contradicting local sparseness because of \cref{eq:locally-sparse-too-small}. Thus the process terminates in one of the expansion cases above, and the induced subgraph obtained there proves the theorem.
+	where the strict inequality follows from \cref{eq:locally-sparse-rounds}. On the other hand, \cref{eq:locally-sparse-current-density,eq:locally-sparse-threshold-above-c2} applied with \(r=L\) would force \(\Graph^{(L)}\) to have edge density greater than \(c_2\), contradicting local sparseness because of \cref{eq:locally-sparse-too-small}. Thus, the process terminates in one of the expansion cases above, and the induced subgraph obtained there proves the theorem.
 \end{proof}
 
 \cref{thm:locally-sparse-graphs-contain-expanders} should be viewed as a density-versus-local-sparseness principle. Global density says that there are enough edges somewhere to support expansion, local sparseness says that these edges cannot all be trapped inside a small exceptional set, and bounded degree lets us convert edge escape into vertex escape.
@@ -641,7 +641,7 @@ The bipartite example in \cref{fig:bipartite-expander-example} should be read as
 		\label{eq:spectral-vertex-expansion-certificate}
 		\alpha\geq \frac{d-\lambda_2}{2d}.
 	\end{equation}
-	Thus a bounded-degree regular graph with a constant additive gap \(d-\lambda_2\) is a weak vertex expander by \cref{eq:spectral-vertex-expansion-certificate}. Conversely, bounded-degree vertex expansion forces a spectral gap after the usual Cheeger-type loss; this is one of the main reasons that combinatorial, random-walk, and spectral definitions of expansion are interchangeable at the qualitative level. We refer to Alon~\cite{Alo1986}, Alon and Milman~\cite{AM1985}, Chung~\cite{Chu1997}, and Hoory, Linial, and Wigderson~\cite{HLW2006} for the standard spectral background.
+	Thus, a bounded-degree regular graph with a constant additive gap \(d-\lambda_2\) is a weak vertex expander by \cref{eq:spectral-vertex-expansion-certificate}. Conversely, bounded-degree vertex expansion forces a spectral gap after the usual Cheeger-type loss; this is one of the main reasons that combinatorial, random-walk, and spectral definitions of expansion are interchangeable at the qualitative level. We refer to Alon~\cite{Alo1986}, Alon and Milman~\cite{AM1985}, Chung~\cite{Chu1997}, and Hoory, Linial, and Wigderson~\cite{HLW2006} for the standard spectral background.
 
 	The same point has a non-regular formulation. If \(\DegreeMatrix{\Graph}\) is the degree matrix and \(\Adjacency{\Graph}\) is the adjacency matrix, the normalized Laplacian is
 	\begin{equation}
@@ -698,7 +698,7 @@ The Cheeger constant of \(\Graph\) is
 	\label{eq:cheeger-constant-definition}
 	h(\Graph)\coloneqq \min_{\emptyset\neq U\subsetneq \Vertices}\frac{\edgeBetween_\Graph(U,\Vertices\setminus U)}{\min\{\vol_\Graph(U),\vol_\Graph(\Vertices\setminus U)\}}.
 \end{equation}
-Thus \(h(\Graph)\) in \cref{eq:cheeger-constant-definition} measures the smallest fraction of incident edge-volume from \cref{eq:volume-definition} that must cross a cut. In a \(d\)-regular graph this definition agrees with \(\EdgeExpansion(\Graph)\), up to the choice of the smaller side of the cut, since \(\vol_\Graph(U)=d\abs{U}\). If the maximum degree of \(\Graph\) is bounded by \(\Delta\), then edge expansion also forces vertex expansion, because
+Thus \(h(\Graph)\) in \cref{eq:cheeger-constant-definition} measures the smallest fraction of incident edge-volume from \cref{eq:volume-definition} that must cross a cut. In a \(d\)-regular graph, this definition agrees with \(\EdgeExpansion(\Graph)\), up to the choice of the smaller side of the cut, since \(\vol_\Graph(U)=d\abs{U}\). If the maximum degree of \(\Graph\) is bounded by \(\Delta\), then edge expansion also forces vertex expansion, because
 \begin{equation}
 	\label{eq:edge-expansion-to-vertex-expansion}
 	\abs{\extNbr_\Graph(U)}\geq \frac{\edgeBetween_\Graph(U,\Vertices\setminus U)}{\Delta}.

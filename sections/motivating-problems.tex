@@ -62,12 +62,12 @@ Expansion enters this problem through sparse parity checks. If the coordinates o
 \subsection{Deterministic Error Amplification}
 \label{subsec:motivating-deterministic-error-amplification}
 
-The third motivation concerns randomized algorithms. Suppose a language \(L\subseteq\bits^*\) has a one-sided randomized algorithm \(A\), meaning that there is a polynomial \(m=m(\abs{x})\) such that \(A(x,r)\) uses a uniformly random \(r\in\bits^m\), always accepts when \(x\in L\), and accepts with probability at most \(1/17\) when \(x\notin L\). The numerical constant has no significance, since any constant below one can be reduced to any other by a constant number of repetitions; we use \(1/17\) only to keep the later inequalities strict. Independent repetition reduces the error exponentially, but it also consumes \(m\) fresh random bits in every trial.
+The third motivation concerns randomized algorithms. Suppose a language \(\Language\subseteq\bits^*\) has a one-sided randomized algorithm \(\advA\), meaning that there is a polynomial \(m=m(\abs{x})\) such that \(\advA(x,r)\) uses a uniformly random \(r\in\bits^m\), always accepts when \(x\in \Language\), and accepts with probability at most \(1/17\) when \(x\notin \Language\). The numerical constant has no significance, since any constant below one can be reduced to any other by a constant number of repetitions; we use \(1/17\) only to keep the later inequalities strict. Independent repetition reduces the error exponentially, but it also consumes \(m\) fresh random bits in every trial.
 
-The resource question is therefore not whether error can be reduced, but how much additional randomness is necessary. If \(x\notin L\), define the bad set
+The resource question is therefore not whether error can be reduced, but how much additional randomness is necessary. If \(x\notin \Language\), define the bad set
 \begin{equation}
 	\label{eq:rp-bad-random-strings}
-	B_x\coloneqq \{r\in\bits^m\mid A(x,r)=1\}.
+	B_x\coloneqq \{r\in\bits^m\mid \advA(x,r)=1\}.
 \end{equation}
 The promise says only that \(\abs{B_x}\leq 2^m/16\). We would like to test several strings while choosing far fewer than several independent \(m\)-bit samples. Expanders supply exactly this kind of dependent sampling. One chooses a random vertex of a graph on \(\bits^m\), examines the few neighbors of this vertex, and relies on expansion to ensure that a small bad set cannot contain the entire neighborhood of many starting vertices. The same idea later appears in stronger form as expander-walk error reduction, where the bad event decays exponentially in the walk length while the number of random bits grows only by \(\log d\) per step.
 
@@ -291,7 +291,7 @@ The coding application uses the small-set part of the definition rather than the
 \begin{proof}
 	The construction turns right vertices into parity checks. The rate is large because the number of checks is at most \(3n/4\), and the distance is large because any small nonzero support has a unique neighboring check, which detects it.
 
-	Index the \(n\) coordinates by \(\LeftSet\), and define the \(\abs{\RightSet}\times n\) parity-check matrix \(\vec{H}\) over \(\\FF_2\) by
+	Index the \(n\) coordinates by \(\LeftSet\), and define the \(\abs{\RightSet}\times n\) parity-check matrix \(\vec{H}\) over \(\FF_2\) by
 	\begin{equation}
 		\label{eq:magical-code-check-matrix}
 		\vec{H}_{u,v}=
@@ -303,7 +303,7 @@ The coding application uses the small-set part of the definition rather than the
 	Let
 	\begin{equation}
 		\label{eq:magical-code-definition}
-		C\coloneqq \{x\in\\FF_2^n\mid \vec{H}x=0\}.
+		C\coloneqq \{x\in\FF_2^n\mid \vec{H}x=0\}.
 	\end{equation}
 	Since \(\vec{H}\) has at most \(3n/4\) rows, its rank is at most \(3n/4\), and therefore
 	\begin{equation}
@@ -331,21 +331,21 @@ The final motivating application returns to randomness. Instead of drawing many 
 
 \begin{theorem}[One-Sided Error Reduction with One Random Seed]
 	\label{thm:magical-error-reduction}
-	Let \(A(x,r)\) be a one-sided randomized algorithm using \(m\) random bits, and suppose that for every \(x\notin L\),
+	Let \(\advA(x,r)\) be a one-sided randomized algorithm using \(m\) random bits, and suppose that for every \(x\notin \Language\),
 	\begin{equation}
 		\label{eq:magical-error-original}
-		\Pr_{r\sample\bits^m}[A(x,r)=1]\leq \frac{1}{17}.
+		\Pr_{r\sample\bits^m}[\advA(x,r)=1]\leq \frac{1}{17}.
 	\end{equation}
-	Let \(\Graph=(\LeftSet,\RightSet,\Edges)\) be an \((n,n;d)\)-magical graph with \(n=2^m\), and identify both \(\LeftSet\) and \(\RightSet\) with \(\bits^m\). The algorithm that chooses one uniform \(r\in\LeftSet\), evaluates \(A(x,r')\) on all \(d\) neighbors \(r'\) of \(r\), and accepts if and only if all \(d\) evaluations accept has one-sided error at most \(1/(10d)+1/n\).
+	Let \(\Graph=(\LeftSet,\RightSet,\Edges)\) be an \((n,n;d)\)-magical graph with \(n=2^m\), and identify both \(\LeftSet\) and \(\RightSet\) with \(\bits^m\). The algorithm that chooses one uniform \(r\in\LeftSet\), evaluates \(\advA(x,r')\) on all \(d\) neighbors \(r'\) of \(r\), and accepts if and only if all \(d\) evaluations accept has one-sided error at most \(1/(10d)+1/n\).
 \end{theorem}
 
 \begin{proof}
 	The only way the new algorithm errs on a no-instance is if the entire neighborhood of the chosen seed lies in the bad set. Expansion says that there cannot be many such seeds, because a moderately large collection of them would have too large a neighborhood to fit inside the bad set.
 
-	Fix \(x\notin L\), and let
+	Fix \(x\notin \Language\), and let
 	\begin{equation}
 		\label{eq:magical-bad-set}
-		B_x=\{r'\in\RightSet\mid A(x,r')=1\}.
+		B_x=\{r'\in\RightSet\mid \advA(x,r')=1\}.
 	\end{equation}
 	By \cref{eq:magical-error-original}, \(\abs{B_x}\leq n/17\). Let
 	\begin{equation}

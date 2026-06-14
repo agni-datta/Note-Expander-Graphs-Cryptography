@@ -514,14 +514,14 @@ We now prove \cref{thm:cheeger}. The lower bound is a direct Rayleigh quotient a
 		=
 		\sqrt{2\Rayleigh(f)}\,d\sum_{v\in \Vertices}f(v)^2.
 	\end{equation}
-	This contradicts the strict lower bound with \(\alpha=\sqrt{2\Rayleigh(f)}\). Hence there exists a nonempty threshold set \(T_t\) such that
+	This contradicts the strict lower bound with \(\alpha=\sqrt{2\Rayleigh(f)}\). Hence, there exists a nonempty threshold set \(T_t\) such that
 	\begin{equation}
 		\frac{\abs{\partial T_t}}{d\abs{T_t}}\leq \sqrt{2\Rayleigh(f)}.
 	\end{equation}
 	Since \(T_t=S_{\sqrt{t}}\), this is the required threshold set.
 \end{proof}
 
-\begin{proof}[Proof of the upper bound in \cref{thm:cheeger}]
+\begin{proof}[Upper bound in~\cref{thm:cheeger}]
 	The proof first turns an eigenvector into a nonnegative function supported on at most half the vertices without increasing the Rayleigh quotient. The sweep lemma then finds one threshold cut whose expansion is controlled by that quotient.
 
 	Let \(g\perp\vec{1}\) be an eigenvector for \(\mu_2\), normalized so that \(g\neq 0\). By \cref{lem:rayleigh}, applied to this eigenvector, we have

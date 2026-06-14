@@ -1,11 +1,7 @@
 \section{Preliminaries}
 \label{sec:preliminaries}
 
-We write \(\NN,\ZZ,\QQ,\RR,\CC\) for the natural numbers, integers, rationals, real numbers, and complex numbers. For \(n \in \NN\), we write \([n] \coloneqq \{1,\ldots,n\}\). The binary alphabet is \(\bits\), and \(\bits^n\) and \(\bits^*\) denote strings of length \(n\) and all finite strings. If \(\calS\) is finite, then \(x \sample \calS\) means that \(x\) is sampled uniformly from \(\calS\), and \(\vec{U}_{\calS}\) denotes the uniform distribution over \(\calS\). When \(\calS=\bits^m\), we also write \(\vec{U}_m\).
-
-All vectors are column vectors, and vectors and matrices are typeset in bold by writing \(\vec{x}\) and \(\vec{M}\). For \(\vec{x} \in \RR^n\), we write \(\norm{\vec{x}}_1,\norm{\vec{x}}_2,\norm{\vec{x}}_\infty\) for the usual norms. The all-ones vector is \(\vec{1}\). The normalized all-ones vector is \(\vec{e}_0 \coloneqq \vec{1}/\sqrt{n}\), while the probability vector of the uniform distribution is \(\vec{u}\coloneqq \vec{1}/n\). These two vectors play different roles. The former has Euclidean norm one and is used in spectral decompositions; the latter has total mass one and is used as a distribution.
-
-For a real symmetric matrix \(\vec{M}\), its eigenvalues are ordered as \(\mu_1(\vec{M})\geq \mu_2(\vec{M})\geq \cdots \geq \mu_n(\vec{M})\). We write \(\norm{\vec{M}}_2\) for the operator norm induced by the Euclidean norm and \(\rho(\vec{M})\) for the spectral radius. If \(\vec{M}\) preserves the subspace \(\vec{1}^{\perp}\), then \(\vec{M}|_{\vec{1}^{\perp}}\) denotes the restriction of \(\vec{M}\) to that subspace.
+We write \(\NN,\ZZ,\QQ,\RR,\CC\) for the natural numbers, integers, rationals, real numbers, and complex numbers. For \(n \in \NN\), we write \([n] \coloneqq \{1,\ldots,n\}\). The binary alphabet is \(\bits\), and \(\bits^n\) and \(\bits^*\) denote strings of length \(n\) and all finite strings. If \(\calS\) is finite, then \(x \sample \calS\) means that \(x\) is sampled uniformly from \(\calS\), and \(\vec{U}_{\calS}\) denotes the uniform distribution over \(\calS\). When \(\calS=\bits^m\), we also write \(\vec{U}_m\). All vectors are column vectors, and vectors and matrices are typeset in bold by writing \(\vec{x}\) and \(\vec{M}\). For \(\vec{x} \in \RR^n\), we write \(\norm{\vec{x}}_1,\norm{\vec{x}}_2,\norm{\vec{x}}_\infty\) for the usual norms. The all-ones vector is \(\vec{1}\). The normalized all-ones vector is \(\vec{e}_0 \coloneqq \vec{1}/\sqrt{n}\), while the probability vector of the uniform distribution is \(\vec{u}\coloneqq \vec{1}/n\). These two vectors play different roles. The former has Euclidean norm one and is used in spectral decompositions; the latter has total mass one and is used as a distribution. For a real symmetric matrix \(\vec{M}\), its eigenvalues are ordered as \(\mu_1(\vec{M})\geq \mu_2(\vec{M})\geq \cdots \geq \mu_n(\vec{M})\). We write \(\norm{\vec{M}}_2\) for the operator norm induced by the Euclidean norm and \(\rho(\vec{M})\) for the spectral radius. If \(\vec{M}\) preserves the subspace \(\vec{1}^{\perp}\), then \(\vec{M}|_{\vec{1}^{\perp}}\) denotes the restriction of \(\vec{M}\) to that subspace.
 
 \subsection{Graphs}
 \label{subsec:graphs}
@@ -20,7 +16,7 @@ and the external vertex boundary of \(S\) is
 \begin{equation}
 	\delta S \coloneqq \{v\in \Vertices\setminus S \mid \exists u\in S \;:\; \{u,v\}\in\Edges\}.
 \end{equation}
-For a \(d\)-regular graph, the volume of \(S\) is \(\vol(S)=d\abs{S}\). In a non-regular graph one would instead set \(\vol(S)=\sum_{v\in S}\deg(v)\), but the regular case is enough for the main body of this note.
+For a \(d\)-regular graph, the volume of \(S\) is \(\vol(S)=d\abs{S}\). In a non-regular graph, one would instead set \(\vol(S)=\sum_{v\in S}\deg(v)\), but the regular case is enough for the main body of this note.
 
 \begin{definition}[Neighbor Function]
 	\label{def:rotation-map}
@@ -28,7 +24,7 @@ For a \(d\)-regular graph, the volume of \(S\) is \(\vol(S)=d\abs{S}\). In a non
 	\begin{equation}
 		\Rot_\Graph \colon \Vertices\times[d]\to \Vertices\times[d].
 	\end{equation}
-	If \(\Rot_\Graph(v,i)=(w,j)\), then the \(i\)-th edge incident to \(v\) leads to \(w\), and from the other endpoint the same edge is seen as the \(j\)-th edge incident to \(w\). The consistency condition is \(\Rot_\Graph(\Rot_\Graph(v,i))=(v,i)\).
+	If \(\Rot_\Graph(v,i)=(w,j)\), then the \(i\)-th edge incident to \(v\) leads to \(w\), and from the other endpoint, the same edge is seen as the \(j\)-th edge incident to \(w\). The consistency condition is \(\Rot_\Graph(\Rot_\Graph(v,i))=(v,i)\).
 \end{definition}
 
 The rotation-map representation is the right one for explicit expanders. It makes the graph locally computable. Given a vertex and an edge label, one can compute the next vertex without writing down the entire adjacency matrix. This is the representation used by the zig-zag product and by random-walk constructions.
@@ -106,7 +102,7 @@ and induction on \(t\) gives
 	\label{eq:markov-evolution-powers}
 	\mu_t=\vec{P}^{\,t}\mu_0.
 \end{equation}
-Thus the qualitative behavior of the process is encoded in the powers of \(\vec{P}\). A distribution \(\pi\) is stationary if
+Thus, the qualitative behavior of the process is encoded in the powers of \(\vec{P}\). A distribution \(\pi\) is stationary if
 \begin{equation}
 	\label{eq:stationary-distribution}
 	\vec{P}\pi=\pi,
